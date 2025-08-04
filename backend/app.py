@@ -1,5 +1,5 @@
 # backend/app.py
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, make_response
 from flask_cors import CORS
 import requests
 import os
@@ -12,7 +12,9 @@ BADGES_DIR = os.path.join(os.path.dirname(__file__), 'team-badges')
 
 @app.route('/backend/team-badges/<path:filename>')
 def team_badge(filename):
-    return send_from_directory(BADGES_DIR, filename)
+    response = make_response(send_from_directory(BADGES_DIR, filename))
+    response.headers['Cache-Control'] = 'public, max-age=31536000'
+    return response
 
 @app.route('/api/hello')
 def hello():
