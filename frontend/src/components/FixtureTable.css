@@ -1,0 +1,28 @@
+/* Sticky badge header and cell */
+th.sticky-badge,
+.sticky-badge {
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  background: #444 !important;
+  z-index: 21 !important;
+}
+/* Adjust adjacent sticky columns to sit next to the badge column */
+th.sticky-id {
+  left: 0 !important;
+  z-index: 99 !important;
+}
+th.sticky-name {
+  position: sticky !important;
+  top: 0 !important;
+  left: 65px !important; /* Match badge column width */
+  background: #444 !important;
+  z-index: 20 !important;
+  overflow: hidden !important;
+}
+td.sticky-name {
+  position: sticky !important;
+  left: 65px !important; /* Match badge column width */
+  z-index: 3 !important;
+  overflow: hidden !important;
+}

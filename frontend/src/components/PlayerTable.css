@@ -1,0 +1,53 @@
+/* Sticky for both horizontal and vertical scroll */
+th.sticky-badge,
+.sticky-badge {
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  background: #444 !important;
+  z-index: 21 !important;
+}
+
+th.sticky-web-name,
+.sticky-web-name {
+  position: sticky !important;
+  top: 0 !important;
+  left: 40px !important; /* Match badge column width */
+  background: #444 !important;
+  z-index: 20 !important;
+}
+
+td.sticky-id {
+  position: sticky !important;
+  left: 0 !important;
+  background: #444 !important;
+  z-index: 3 !important;
+}
+
+.sticky-badge {
+  position: sticky;
+  left: 0;
+  background: #444;
+  z-index: 20;
+}
+
+.sticky-web-name {
+  position: sticky;
+  left: 40px; /* Match badge column width */
+  background: #444;
+  z-index: 19;
+}
+
+th.sticky-web-name,
+.sticky-web-name {
+  left: 60px !important; /* Match badge column width */
+}
+
+/* filepath: /home/sahen/fpl-data/frontend/src/components/PlayerTable.css */
+.filter-bar {
+  background: #444;
+  padding: 12px 16px;
+  display: flex;
+  gap: 1rem; /* Adds spacing between filter elements */
+  align-items: center;
+}
