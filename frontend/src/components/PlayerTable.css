@@ -60,3 +60,7 @@ td.sticky-badge {
   background: #444 !important;
   z-index: 10 !important;
 }
+
+.player-detail-modal {
+  padding: 32px 24px;
+}

@@ -9,6 +9,8 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import Dialog from '@mui/material/Dialog';
+import PlayerDetail from './PlayerDetail';
 import type { Element, Team } from '../types/fpl';
 import './PlayerTable.css';
 
@@ -66,6 +68,8 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [teamFilter, setTeamFilter] = React.useState<string>(''); // e.g. team name
   const [minutesFilter, setMinutesFilter] = React.useState<string>(''); // new filter for minutes
   const [costFilter, setCostFilter] = React.useState<string>(''); // new filter for cost
+  const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -174,7 +178,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             {sortedPlayers
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((player) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={player.id}>
+                <TableRow key={player.id}>
                   {columns.map((column) => {
                     let value = player[column.id as keyof Element];
                     if (column.id === 'team') {
@@ -207,6 +211,21 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                     if (column.id === 'element_type') {
                       value = positionMap[player.element_type] || player.element_type;
                     }
+                    if (column.id === 'web_name') {
+                      return (
+                        <TableCell
+                          key={column.id}
+                          className="sticky-web-name"
+                          style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                          onClick={() => {
+                            setSelectedPlayer(player);
+                            setDialogOpen(true);
+                          }}
+                        >
+                          {player.web_name}
+                        </TableCell>
+                      );
+                    }
                     return (
                       <TableCell
                         key={column.id}
@@ -237,6 +256,21 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {/* Player Detail Modal */}
+      <Dialog 
+        open={dialogOpen} 
+        onClose={() => setDialogOpen(false)} 
+        maxWidth="lg" fullWidth
+      >
+        {selectedPlayer && (
+          <PlayerDetail
+            player={selectedPlayer}
+            team={teams.find(t => t.id === selectedPlayer.team)}
+            teams={teams} 
+            onClose={() => setDialogOpen(false)}
+          />
+        )}
+      </Dialog>
     </Paper>
   );
 }

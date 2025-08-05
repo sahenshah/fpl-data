@@ -1,0 +1,19 @@
+.player-detail-modal {
+  background: #41054b; 
+  padding: 32px 24px;
+  color: #fff;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
+}
+
+.player-names-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.player-name {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
