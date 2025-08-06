@@ -241,6 +241,10 @@ const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
                       value = player.elite_selected_percent ?? '-';
                     }
 
+                    if (column.id === 'selected_by_percent') {
+                      value = value !== undefined && value !== null ? `${value}%` : '-';
+                    }
+
                     if (column.id === 'team') {
                       const team = teams.find(t => t.id === player.team);
                       value = team ? team.name : value;
