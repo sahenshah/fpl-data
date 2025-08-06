@@ -1,8 +1,9 @@
 # backend/app.py
-from flask import Flask, jsonify, send_from_directory, make_response
+from flask import Flask, jsonify, send_from_directory, make_response, request
 from flask_cors import CORS
 import requests
 import os
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all domains on all routes
@@ -67,6 +68,37 @@ def event_live(gw):
         return jsonify(data)
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
+
+# Load CSV once at startup
+fpl_data = pd.read_csv('cleaned_fpl_data.csv')
+
+@app.route('/api/csv-predicted-points')
+def csv_predicted_points():
+    player_name = request.args.get('name')
+    gw = request.args.get('gw')  # e.g. 'GW1', 'GW2', etc.
+    if not player_name or not gw:
+        return jsonify({'error': 'Missing name or gw'}), 400
+    row = fpl_data[fpl_data['Name'].str.lower() == player_name.lower()]
+    if row.empty or gw not in fpl_data.columns:
+        return jsonify({'predicted_points': None})
+    predicted = float(row.iloc[0][gw])
+    return jsonify({'predicted_points': predicted})
+
+@app.route('/api/player-csv-summary')
+def player_csv_summary():
+    player_name = request.args.get('name')
+    if not player_name:
+        return jsonify({'error': 'Missing name'}), 400
+    # Normalize names for matching
+    row = fpl_data[fpl_data['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')]
+    if row.empty:
+        return jsonify({'total': None, 'points_per_m': None, 'elite_percent': None})
+    r = row.iloc[0]
+    return jsonify({
+        'total': r['Total'],
+        'points_per_m': r['Points/£M'],
+        'elite_percent': r['Elite%']
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)

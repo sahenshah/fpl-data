@@ -85,6 +85,9 @@ function FixtureRow(props: { row: PlayerFixture; teams?: Team[] }) {
         >
           {row.difficulty}
         </TableCell>
+        <TableCell align="right">
+          {row.predicted_points !== undefined && row.predicted_points !== null ? row.predicted_points : '-'}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
@@ -109,6 +112,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
   const [fixtures, setFixtures] = React.useState<PlayerFixture[]>([]);
   const [historyPast, setHistoryPast] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [csvPredictedPoints, setCsvPredictedPoints] = React.useState<{ [gw: string]: number }>({});
 
   React.useEffect(() => {
     setLoading(true);
@@ -121,6 +125,20 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       })
       .catch(() => setLoading(false));
   }, [player.id]);
+
+  React.useEffect(() => {
+    async function fetchCsvPoints() {
+      const points: { [gw: string]: number } = {};
+      for (const fix of fixtures) {
+        const gwKey = `GW${fix.event}`;
+        const res = await fetch(`/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}`);
+        const data = await res.json();
+        points[gwKey] = data.predicted_points;
+      }
+      setCsvPredictedPoints(points);
+    }
+    if (fixtures.length > 0) fetchCsvPoints();
+  }, [player.web_name, fixtures]);
 
   const positionMap: Record<number, string> = {
     1: 'GK',
@@ -167,11 +185,21 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                 <TableCell align="right">Home Score</TableCell>
                 <TableCell align="right">Away Score</TableCell>
                 <TableCell align="right">Difficulty</TableCell>
+                <TableCell align="right">Predicted Points</TableCell> {/* <-- Added column */}
               </TableRow>
             </TableHead>
             <TableBody>
               {fixtures.slice(0, 38).map(fix => (
-                <FixtureRow key={fix.id} row={fix} teams={teams} />
+                <FixtureRow
+                  key={fix.id}
+                  row={{
+                    ...fix,
+                    predicted_points: csvPredictedPoints[`GW${fix.event}`] !== undefined
+                      ? csvPredictedPoints[`GW${fix.event}`]
+                      : null
+                  }}
+                  teams={teams}
+                />
               ))}
             </TableBody>
           </Table>

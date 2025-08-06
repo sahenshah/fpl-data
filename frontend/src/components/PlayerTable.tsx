@@ -21,7 +21,7 @@ interface PlayerTableProps {
 
 const columns = [
   { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
-  { id: 'badge', label: '', minWidth: 40, align: 'center' }, // Add this line
+  { id: 'badge', label: '', minWidth: 40, align: 'center' },
   { id: 'web_name', label: 'Web Name', minWidth: 100, align: 'left' },
   { id: 'first_name', label: 'First Name', minWidth: 100, align: 'left' },
   { id: 'second_name', label: 'Second Name', minWidth: 100, align: 'left' },
@@ -30,7 +30,9 @@ const columns = [
   { id: 'now_cost', label: 'Cost', minWidth: 50, align: 'right', format: (value: number) => (value / 10).toFixed(1) },
   { id: 'total_points', label: 'Total Points', minWidth: 80, align: 'right' },
   { id: 'selected_by_percent', label: 'Selected %', minWidth: 80, align: 'right' },
-  // Added advanced stats below
+  { id: 'predicted_points_next5', label: 'Predicted Points (next 5)', minWidth: 80, align: 'right' },
+  { id: 'pp_next5_per_m', label: 'PP (next 5) per £M', minWidth: 80, align: 'right' },
+  { id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
   { id: 'form', label: 'Form', minWidth: 50, align: 'right' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, align: 'right' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, align: 'right' },
@@ -59,17 +61,33 @@ const positionMap: Record<number, string> = {
   4: 'FWD',
 };
 
+// Example: Add to your player loading logic
+async function fetchCsvSummary(playerName: string) {
+  const res = await fetch(`/api/player-csv-summary?name=${encodeURIComponent(playerName)}`);
+  const data = await res.json();
+  return {
+    predicted_points_next5: data.total ?? '-',
+    pp_next5_per_m: data.points_per_m ?? '-',
+    elite_selected_percent: data.elite_percent ?? '-',
+  };
+}
+
+// When building your player rows:
+// (Remove the invalid for-loop. Data enrichment should be handled outside or inside a useEffect if needed.)
+
 export default function PlayerTable({ players, teams }: PlayerTableProps) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [sortBy, setSortBy] = React.useState<string>('id');
-  const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('asc');
-  const [positionFilter, setPositionFilter] = React.useState<string>(''); // e.g. 'GK', 'DEF', etc.
-  const [teamFilter, setTeamFilter] = React.useState<string>(''); // e.g. team name
-  const [minutesFilter, setMinutesFilter] = React.useState<string>(''); // new filter for minutes
-  const [costFilter, setCostFilter] = React.useState<string>(''); // new filter for cost
-  const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+const [page, setPage] = React.useState(0);
+const [rowsPerPage, setRowsPerPage] = React.useState(10);
+const [sortBy, setSortBy] = React.useState<string>('id');
+const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('asc');
+const [positionFilter, setPositionFilter] = React.useState<string>(''); // e.g. 'GK', 'DEF', etc.
+const [teamFilter, setTeamFilter] = React.useState<string>(''); // e.g. team name
+const [minutesFilter, setMinutesFilter] = React.useState<string>(''); // new filter for minutes
+const [costFilter, setCostFilter] = React.useState<string>(''); // new filter for cost
+const [searchTerm, setSearchTerm] = React.useState(''); // new state for search
+const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
+const [dialogOpen, setDialogOpen] = React.useState(false);
+const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -90,14 +108,21 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   };
 
   const filteredPlayers = React.useMemo(() => {
-    return players.filter(player => {
+    return enrichedPlayers.filter(player => {
       const positionMatch = positionFilter ? positionMap[player.element_type] === positionFilter : true;
       const teamMatch = teamFilter ? teams.find(t => t.id === player.team)?.name === teamFilter : true;
       const minutesMatch = minutesFilter ? player.minutes > Number(minutesFilter) : true;
       const costMatch = costFilter ? (player.now_cost / 10) <= Number(costFilter) : true;
-      return positionMatch && teamMatch && minutesMatch && costMatch;
+      const nameMatch = searchTerm
+        ? (
+            player.web_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            player.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            player.second_name?.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        : true;
+      return positionMatch && teamMatch && minutesMatch && costMatch && nameMatch;
     });
-  }, [players, positionFilter, teamFilter, teams, minutesFilter, costFilter]);
+  }, [enrichedPlayers, positionFilter, teamFilter, teams, minutesFilter, costFilter, searchTerm]);
 
   const sortedPlayers = React.useMemo(() => {
     return [...filteredPlayers].sort((a, b) => {
@@ -113,6 +138,22 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         : String(bValue).localeCompare(String(aValue));
     });
   }, [filteredPlayers, sortBy, sortDirection]);
+
+  React.useEffect(() => {
+    async function enrichPlayers() {
+      const enriched = await Promise.all(players.map(async (player) => {
+        const csvSummary = await fetchCsvSummary(player.web_name); // or use a mapping for name
+        return {
+          ...player,
+          predicted_points_next5: csvSummary.predicted_points_next5,
+          pp_next5_per_m: csvSummary.pp_next5_per_m,
+          elite_selected_percent: csvSummary.elite_selected_percent,
+        };
+      }));
+      setEnrichedPlayers(enriched);
+    }
+    enrichPlayers();
+  }, [players]);
 
   return (
     <Paper sx={{ width: '100%', maxWidth: '95vw' }}>
@@ -145,6 +186,13 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           onChange={e => setCostFilter(e.target.value)}
           placeholder="Max Cost"
           style={{ width: 120 }}
+        />
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          placeholder="Search by name"
+          style={{ width: 180 }}
         />
       </div>
       <TableContainer sx={{ maxHeight: 800, maxWidth: '100vw', overflow: 'auto' }}>
@@ -181,6 +229,18 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                 <TableRow key={player.id}>
                   {columns.map((column) => {
                     let value = player[column.id as keyof Element];
+
+                    // Custom logic for new columns
+                    if (column.id === 'predicted_points_next5') {
+                      value = player.predicted_points_next5 ?? '-';
+                    }
+                    if (column.id === 'pp_next5_per_m') {
+                      value = player.pp_next5_per_m ?? '-';
+                    }
+                    if (column.id === 'elite_selected_percent') {
+                      value = player.elite_selected_percent ?? '-';
+                    }
+
                     if (column.id === 'team') {
                       const team = teams.find(t => t.id === player.team);
                       value = team ? team.name : value;

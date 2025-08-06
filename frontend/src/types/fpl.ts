@@ -120,6 +120,9 @@ export interface Element {
   selected_rank_type: number;
   starts_per_90: number;
   clean_sheets_per_90: number;
+  predicted_points_next5: number;
+  pp_next5_per_m: number;
+  elite_selected_percent: string;
 }
 
 export interface FPLBootstrapResponse {
@@ -159,4 +162,5 @@ export interface PlayerFixture {
   event_name: string;
   is_home: boolean;
   difficulty: number;
+  predicted_points: number | null;
 }
