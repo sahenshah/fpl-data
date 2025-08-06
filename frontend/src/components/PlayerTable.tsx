@@ -141,15 +141,17 @@ const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
 
   React.useEffect(() => {
     async function enrichPlayers() {
-      const enriched = await Promise.all(players.map(async (player) => {
-        const csvSummary = await fetchCsvSummary(player.web_name); // or use a mapping for name
-        return {
+      const enriched: Element[] = [];
+      for (const player of players) {
+        // eslint-disable-next-line no-await-in-loop
+        const csvSummary = await fetchCsvSummary(player.web_name);
+        enriched.push({
           ...player,
           predicted_points_next5: csvSummary.predicted_points_next5,
           pp_next5_per_m: csvSummary.pp_next5_per_m,
           elite_selected_percent: csvSummary.elite_selected_percent,
-        };
-      }));
+        });
+      }
       setEnrichedPlayers(enriched);
     }
     enrichPlayers();
