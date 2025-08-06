@@ -13,7 +13,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Typography from '@mui/material/Typography';
 import './PlayerDetail.css';
-
+import PlayerDetailPPChart from './PlayerDetailPPChart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
 
 interface PlayerDetailProps {
@@ -147,6 +147,16 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
     4: 'FWD',
   };
 
+  // Prepare predicted points array for next 5 gameweeks from csvPredictedPoints
+  const next5Fixtures = fixtures.slice(0, 5);
+  const predictedPointsArray = next5Fixtures.map(fix =>
+    csvPredictedPoints[`GW${fix.event}`] !== undefined && csvPredictedPoints[`GW${fix.event}`] !== null
+      ? csvPredictedPoints[`GW${fix.event}`]
+      : 0
+  );
+  // Always use "GW{number}" for labels
+  const gwLabels = next5Fixtures.map(fix => `GW${fix.event}`);
+
   if (!player) return null;
 
   return (
@@ -167,12 +177,13 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         <p className="player-name"><strong></strong> {player.second_name}</p>
       </div>
       <p><strong>Position:</strong> <span className="player-detail-value">{positionMap[player.element_type] || player.element_type}</span></p>
+      <p><strong>Elite Selected:</strong> <span className="player-detail-value">{player.elite_selected_percent}</span></p>
       <p><strong>Cost:</strong> <span className="player-detail-value">{(player.now_cost / 10).toFixed(1)}</span></p>
       <p><strong>Total Points:</strong> <span className="player-detail-value">{player.total_points}</span></p>
       <p><strong>Predicted Points (next 5)</strong> <span className="player-detail-value">{player.predicted_points_next5}</span></p>
       <p><strong>Predicted Points (next 5) /£M:</strong> <span className="player-detail-value">{player.pp_next5_per_m}</span></p>
-      <p><strong>Elite Selected:</strong> <span className="player-detail-value">{player.elite_selected_percent}</span></p>
 
+      <PlayerDetailPPChart predictedPoints={predictedPointsArray} gwLabels={gwLabels} />
       <h3>Fixtures</h3>
       {loading ? (
         <p>Loading fixtures...</p>

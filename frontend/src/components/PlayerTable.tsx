@@ -13,6 +13,7 @@ import Dialog from '@mui/material/Dialog';
 import PlayerDetail from './PlayerDetail';
 import type { Element, Team } from '../types/fpl';
 import './PlayerTable.css';
+import PlayerTablePPChart from './PlayerTablePPChart';
 
 interface PlayerTableProps {
   players: Element[];
@@ -89,6 +90,11 @@ const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null)
 const [dialogOpen, setDialogOpen] = React.useState(false);
 const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
 
+  // Chart data state
+  const [chartPlayers, setChartPlayers] = React.useState<
+    { web_name: string; predicted_points_gw: number[] }[]
+  >([]);
+
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -157,6 +163,47 @@ const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
     enrichPlayers();
   }, [players]);
 
+  // Fetch predicted points for chart when filteredPlayers changes
+  React.useEffect(() => {
+    async function fetchChartData() {
+      const gwKeys = ['GW1', 'GW2', 'GW3', 'GW4', 'GW5'];
+      const results: { web_name: string; predicted_points_gw: number[] }[] = [];
+      // Only use players on the current page
+      const pagePlayers = sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+      for (const player of pagePlayers) {
+        const predicted_points_gw: number[] = [];
+        for (const gw of gwKeys) {
+          const res = await fetch(
+            `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}`
+          );
+          const data = await res.json();
+          predicted_points_gw.push(Number(data.predicted_points) || 0);
+        }
+        results.push({
+          web_name: player.web_name,
+          predicted_points_gw,
+        });
+      }
+      setChartPlayers(results);
+    }
+    if (sortedPlayers.length > 0) {
+      fetchChartData();
+    } else {
+      setChartPlayers([]);
+    }
+  }, [sortedPlayers, page, rowsPerPage]);
+
+  // Use sortedPlayers for pagination and count
+  const totalRows = sortedPlayers.length;
+  const maxPage = Math.max(0, Math.ceil(totalRows / rowsPerPage) - 1);
+
+  // Ensure the current page is not out of bounds
+  React.useEffect(() => {
+    if (page > maxPage) {
+      setPage(maxPage);
+    }
+  }, [page, maxPage, rowsPerPage, totalRows]);
+
   return (
     <Paper sx={{ width: '100%', maxWidth: '95vw' }}>
       <div className="filter-bar">
@@ -197,6 +244,7 @@ const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
           style={{ width: 180 }}
         />
       </div>
+      <PlayerTablePPChart players={chartPlayers} />
       <TableContainer sx={{ maxHeight: 800, maxWidth: '100vw', overflow: 'auto' }}>
         <Table stickyHeader aria-label="players table">
           <TableHead>
@@ -316,9 +364,9 @@ const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={players.length}
+        count={totalRows} // Use sortedPlayers.length instead of players.length
         rowsPerPage={rowsPerPage}
-        page={page}
+        page={page > maxPage ? maxPage : page} // Ensure page is valid
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
