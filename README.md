@@ -1,6 +1,6 @@
 # FPL Data Dashboard
 
-This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes player statistics and predicted points for upcoming gameweeks using predicted data onilne sources.
+This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes player statistics and predicted points for upcoming gameweeks using predicted data from onilne sources.
 
 ## Features
 
