@@ -35,14 +35,6 @@ function App() {
           <p>Players: {fplData.elements.length}</p>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <h2>Teams</h2>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TeamTable teams={fplData.teams} />
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <h2>Players</h2>
             </AccordionSummary>
             <AccordionDetails>
@@ -56,6 +48,14 @@ function App() {
             <AccordionDetails>
               {/* <pre>{JSON.stringify(fixtures, null, 2)}</pre> */}
               <FixtureTable teams={fplData.teams} fixtures={fixtures} /> 
+            </AccordionDetails>
+          </Accordion>
+          <Accordion>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <h2>Teams</h2>
+            </AccordionSummary>
+            <AccordionDetails>
+              <TeamTable teams={fplData.teams} />
             </AccordionDetails>
           </Accordion>
         </div>
