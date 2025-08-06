@@ -77,18 +77,18 @@ async function fetchCsvSummary(playerName: string) {
 // (Remove the invalid for-loop. Data enrichment should be handled outside or inside a useEffect if needed.)
 
 export default function PlayerTable({ players, teams }: PlayerTableProps) {
-const [page, setPage] = React.useState(0);
-const [rowsPerPage, setRowsPerPage] = React.useState(10);
-const [sortBy, setSortBy] = React.useState<string>('id');
-const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('asc');
-const [positionFilter, setPositionFilter] = React.useState<string>(''); // e.g. 'GK', 'DEF', etc.
-const [teamFilter, setTeamFilter] = React.useState<string>(''); // e.g. team name
-const [minutesFilter, setMinutesFilter] = React.useState<string>(''); // new filter for minutes
-const [costFilter, setCostFilter] = React.useState<string>(''); // new filter for cost
-const [searchTerm, setSearchTerm] = React.useState(''); // new state for search
-const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
-const [dialogOpen, setDialogOpen] = React.useState(false);
-const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [sortBy, setSortBy] = React.useState<string>('predicted_points_next5'); // Default sort by predicted points
+  const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc'); // Descending by default
+  const [positionFilter, setPositionFilter] = React.useState<string>(''); // e.g. 'GK', 'DEF', etc.
+  const [teamFilter, setTeamFilter] = React.useState<string>(''); // e.g. team name
+  const [minutesFilter, setMinutesFilter] = React.useState<string>(''); // new filter for minutes
+  const [costFilter, setCostFilter] = React.useState<string>(''); // new filter for cost
+  const [searchTerm, setSearchTerm] = React.useState(''); // new state for search
+  const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
 
   // Chart data state
   const [chartPlayers, setChartPlayers] = React.useState<
