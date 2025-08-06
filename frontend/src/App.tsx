@@ -29,10 +29,7 @@ function App() {
       {fplData && (
         <div>
           <h1>FPL Data</h1>
-          <p>Total Players: {fplData.total_players}</p>
-          <p>Teams: {fplData.teams.length}</p>
-          <p>Gameweeks: {fplData.events.length}</p>
-          <p>Players: {fplData.elements.length}</p>
+          <p>Total FPL Players: {fplData.total_players}</p>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <h2>Players</h2>
