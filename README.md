@@ -123,4 +123,8 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
 ## Customization
 
 - Update `cleaned_fpl_data.csv` with new player data or predictions.
-- Adjust chart and table columns in the frontend as
+- Adjust chart and table columns in the frontend as needed.
+
+## License
+
+MIT
