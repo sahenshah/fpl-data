@@ -23,7 +23,7 @@ interface PlayerDetailProps {
   teams?: Team[]; // Add teams prop
 }
 
-function FixtureRow(props: { row: PlayerFixture; teams?: Team[] }) {
+function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; predicted_xmins?: number }; teams?: Team[] }) {
   const { row, teams } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -88,6 +88,9 @@ function FixtureRow(props: { row: PlayerFixture; teams?: Team[] }) {
         <TableCell align="right">
           {row.predicted_points !== undefined && row.predicted_points !== null ? row.predicted_points : '-'}
         </TableCell>
+        <TableCell align="right">
+          {row.predicted_xmins !== undefined && row.predicted_xmins !== null ? row.predicted_xmins : '-'}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
@@ -113,6 +116,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
   const [historyPast, setHistoryPast] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [csvPredictedPoints, setCsvPredictedPoints] = React.useState<{ [gw: string]: number }>({});
+  const [csvPredictedMinutes, setCsvPredictedMinutes] = React.useState<{ [gw: string]: number }>({});
 
   React.useEffect(() => {
     setLoading(true);
@@ -138,6 +142,20 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       setCsvPredictedPoints(points);
     }
     if (fixtures.length > 0) fetchCsvPoints();
+  }, [player.web_name, fixtures]);
+
+  React.useEffect(() => {
+    async function fetchCsvMinutes() {
+      const minutes: { [gw: string]: number } = {};
+      for (const fix of fixtures) {
+        const gwKey = `GW${fix.event}`;
+        const res = await fetch(`/api/csv-predicted-xmins?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}`);
+        const data = await res.json();
+        minutes[gwKey] = data.predicted_xmins;
+      }
+      setCsvPredictedMinutes(minutes);
+    }
+    if (fixtures.length > 0) fetchCsvMinutes();
   }, [player.web_name, fixtures]);
 
   const positionMap: Record<number, string> = {
@@ -173,17 +191,26 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         <h2 style={{ margin: 0, textAlign: 'center' }}>{player.web_name}</h2>
       </div>
       <div className="player-names-row">
-        <p className="player-name"><strong></strong> {player.first_name}</p>
-        <p className="player-name"><strong></strong> {player.second_name}</p>
+        <p className="player-name"><strong></strong> {player.first_name}{' '}{player.second_name}</p>
       </div>
-      <p><strong>Position:</strong> <span className="player-detail-value">{positionMap[player.element_type] || player.element_type}</span></p>
-      <p><strong>Elite Selected:</strong> <span className="player-detail-value">{player.elite_selected_percent}</span></p>
-      <p><strong>Cost:</strong> <span className="player-detail-value">{(player.now_cost / 10).toFixed(1)}</span></p>
-      <p><strong>Total Points:</strong> <span className="player-detail-value">{player.total_points}</span></p>
-      <p><strong>Predicted Points (next 5)</strong> <span className="player-detail-value">{player.predicted_points_next5}</span></p>
-      <p><strong>Predicted Points (next 5) /£M:</strong> <span className="player-detail-value">{player.pp_next5_per_m}</span></p>
+      <p><strong></strong> <span className="player-detail-value">{positionMap[player.element_type] || player.element_type}</span></p>
+      <p><strong>Elite Selected: </strong> <span className="player-detail-value">{player.elite_selected_percent}</span></p>
+      <p><strong>Cost: </strong> <span className="player-detail-value">{(player.now_cost / 10).toFixed(1)}</span></p>
+      <p><strong>Total Points: </strong> <span className="player-detail-value">{player.total_points}</span></p>
+      <p><strong>xPoints (next 5): </strong> <span className="player-detail-value">{player.predicted_points_next5}</span></p>
+      <p><strong>xPoints (next 5) /£M: </strong> <span className="player-detail-value">{player.pp_next5_per_m}</span></p>
+      <p><strong>xMinutes (next 5): </strong> <span className="player-detail-value">{player.predicted_xmins_next5}</span></p>
+      <p><strong>xMinutes (next 5) /£M: </strong> <span className="player-detail-value">{player.pxm_next5_per_m}</span></p>
 
-      <PlayerDetailPPChart predictedPoints={predictedPointsArray} gwLabels={gwLabels} />
+      <PlayerDetailPPChart
+        predictedPoints={predictedPointsArray}
+        predictedXmins={next5Fixtures.map(fix =>
+          csvPredictedMinutes[`GW${fix.event}`] !== undefined && csvPredictedMinutes[`GW${fix.event}`] !== null
+            ? csvPredictedMinutes[`GW${fix.event}`]
+            : 0
+        )}
+        gwLabels={gwLabels}
+      />
       <h3>Fixtures</h3>
       {loading ? (
         <p>Loading fixtures...</p>
@@ -199,7 +226,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                 <TableCell align="right">Home Score</TableCell>
                 <TableCell align="right">Away Score</TableCell>
                 <TableCell align="right">Difficulty</TableCell>
-                <TableCell align="right">Predicted Points</TableCell> {/* <-- Added column */}
+                <TableCell align="right">xPoints</TableCell>
+                <TableCell align="right">xMinutes</TableCell> 
               </TableRow>
             </TableHead>
             <TableBody>
@@ -210,7 +238,10 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                     ...fix,
                     predicted_points: csvPredictedPoints[`GW${fix.event}`] !== undefined
                       ? csvPredictedPoints[`GW${fix.event}`]
-                      : null
+                      : 0,
+                    predicted_xmins: csvPredictedMinutes[`GW${fix.event}`] !== undefined
+                      ? csvPredictedMinutes[`GW${fix.event}`]
+                      : undefined
                   }}
                   teams={teams}
                 />

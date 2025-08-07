@@ -123,6 +123,8 @@ export interface Element {
   predicted_points_next5: number;
   pp_next5_per_m: number;
   elite_selected_percent: string;
+  predicted_xmins_next5: number;
+  pxm_next5_per_m: number;
 }
 
 export interface FPLBootstrapResponse {

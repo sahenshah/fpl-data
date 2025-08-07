@@ -3,6 +3,7 @@ import './PlayerDetailPPChart.css';
 
 interface PlayerDetailPPChartProps {
   predictedPoints: number[];
+  predictedXmins: number[];
   gwLabels?: string[];
 }
 
@@ -10,6 +11,7 @@ const margin = { right: 24 };
 
 export default function PlayerDetailPPChart({
   predictedPoints,
+  predictedXmins,
   gwLabels = ['GW1', 'GW2', 'GW3', 'GW4', 'GW5'],
 }: PlayerDetailPPChartProps) {
   return (
@@ -17,7 +19,8 @@ export default function PlayerDetailPPChart({
       <LineChart
         height={300}
         series={[
-          { data: predictedPoints, label: 'Predicted Points', area: true, showMark: false }
+          { data: predictedPoints, label: 'xPoints', yAxisId: 'leftAxisId', area: true },
+          { data: predictedXmins, label: 'xMinutes', yAxisId: 'rightAxisId' },
         ]}
         xAxis={[
           {
@@ -26,10 +29,8 @@ export default function PlayerDetailPPChart({
           }
         ]}
         yAxis={[
-          {
-            min: 0,         // Set minimum value to 5
-            max: 10,        // Optional: set max if you want to cap at 10
-          }
+          { id: 'leftAxisId', width: 50, min: 0, max: 10, label: 'xPoints' }, // Y axis label
+          { id: 'rightAxisId', position: 'right', min: 0, max: 100, label: 'xMinutes' }, // Right Y axis label
         ]}
         margin={margin}
       />

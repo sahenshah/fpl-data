@@ -71,6 +71,7 @@ def event_live(gw):
 
 # Load CSV once at startup
 fpl_data = pd.read_csv('cleaned_fpl_data.csv')
+fpl_data_xmins = pd.read_csv('cleaned_fpl_data_xmins.csv')
 
 @app.route('/api/csv-predicted-points')
 def csv_predicted_points():
@@ -83,6 +84,18 @@ def csv_predicted_points():
         return jsonify({'predicted_points': None})
     predicted = float(row.iloc[0][gw])
     return jsonify({'predicted_points': predicted})
+
+@app.route('/api/csv-predicted-xmins')
+def csv_predicted_xmins():
+    player_name = request.args.get('name')
+    gw = request.args.get('gw')  # e.g. 'GW1', 'GW2', etc.
+    if not player_name or not gw:
+        return jsonify({'error': 'Missing name or gw'}), 400
+    row = fpl_data_xmins[fpl_data_xmins['Name'].str.lower() == player_name.lower()]
+    if row.empty or gw not in fpl_data_xmins.columns:
+        return jsonify({'predicted_xmins': None})
+    predicted = float(row.iloc[0][gw])
+    return jsonify({'predicted_xmins': predicted})
 
 @app.route('/api/player-csv-summary')
 def player_csv_summary():
@@ -98,6 +111,21 @@ def player_csv_summary():
         'total': r['Total'],
         'points_per_m': r['Points/£M'],
         'elite_percent': r['Elite%']
+    })
+
+@app.route('/api/player-csv-xmins-summary')
+def player_csv_xmins_summary():
+    player_name = request.args.get('name')
+    if not player_name:
+        return jsonify({'error': 'Missing name'}), 400
+    row = fpl_data_xmins[fpl_data_xmins['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')]
+    if row.empty:
+        return jsonify({'total': None, 'xmins_per_m': None, 'elite_percent': None})
+    r = row.iloc[0]
+    return jsonify({
+        'total': float(r['Total']) if pd.notnull(r['Total']) else None,
+        'xmins_per_m': float(r['xMins/£M']) if pd.notnull(r['xMins/£M']) else None,
+        'elite_percent': str(r['Elite%']) if pd.notnull(r['Elite%']) else None
     })
 
 if __name__ == '__main__':

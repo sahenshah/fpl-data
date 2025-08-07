@@ -1,10 +1,11 @@
 .css-18dsvps-MuiChartsLegend-root,
 .css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tickLabel,
-.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tickLabel {
+.css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tickLabel,
+.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-label { 
   fill: #fff !important;
   color: #fff !important;
 }
 
-.player-detail-ppchart .MuiLineElement-root {
+/* .player-detail-ppchart .MuiLineElement-root {
   display: none;
-}
+} */

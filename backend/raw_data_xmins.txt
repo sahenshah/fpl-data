@@ -1,0 +1,2769 @@
+		xMins	GW1	GW2	GW3	GW4	GW5	Total	/£M	Elite%	
+	
+M.Salah
+MD 14.5
+89	89	87	85	83	82	426	5.9	56.8%	Submit
+	
+Palmer
+MD 10.5
+89	89	87	86	81	80	423	8.1	53.0%	Submit
+	
+Haaland
+FW 14.0
+89	89	85	80	79	80	413	5.9	19.6%	Submit
+	
+Marmoush
+MD 8.5
+77	77	73	72	72	70	364	8.6	14.0%	Submit
+	
+Watkins
+FW 9.0
+85	85	82	85	85	81	418	9.3	14.3%	Submit
+	
+B.Fernandes
+MD 9.0
+90	90	88	86	85	83	432	9.6	13.3%	Submit
+	
+Wirtz
+MD 8.5
+85	85	81	78	76	77	397	9.3	33.6%	Submit
+	
+Saka
+MD 10.0
+89	89	83	83	80	76	411	8.2	15.6%	Submit
+	
+Isak
+FW 10.5
+87	87	83	80	79	80	409	7.8	28.6%	Submit
+	
+Eze
+MD 7.5
+88	88	80	80	78	81	407	10.9	9.1%	Submit
+	
+Solanke
+FW 7.5
+80	80	77	78	74	75	384	10.2	12.8%	Submit
+	
+Rogers
+MD 7.0
+89	89	84	84	85	81	423	12.1	25.4%	Submit
+	
+Gibbs-White
+MD 7.5
+89	89	82	83	80	79	413	11.0	4.7%	Submit
+	
+Bowen
+FW 8.0
+88	88	86	82	84	82	422	10.6	19.8%	Submit
+	
+Wood
+FW 7.5
+81	81	74	76	73	74	378	10.1	16.3%	Submit
+	
+Sarr
+MD 6.5
+83	83	81	78	77	74	393	12.1	2.2%	Submit
+	
+Neto
+MD 7.0
+84	84	80	79	80	74	397	11.3	4.4%	Submit
+	
+Gakpo
+MD 7.5
+68	68	66	62	62	58	316	8.4	3.9%	Submit
+	
+Virgil
+DF 6.0
+88	88	89	86	86	77	426	14.2	22.7%	Submit
+	
+Frimpong
+DF 6.0
+78	78	78	74	72	72	374	12.5	26.2%	Submit
+	
+Mitoma
+MD 6.5
+83	83	81	80	77	76	397	12.2	5.8%	Submit
+	
+Semenyo
+MD 7.0
+87	87	84	80	79	78	408	11.7	5.1%	Submit
+	
+Ødegaard
+MD 8.0
+83	83	77	76	75	71	382	9.6	3.3%	Submit
+	
+Tielemans
+MD 6.0
+84	84	79	82	80	78	403	13.4	1.6%	Submit
+	
+Ndiaye
+MD 6.5
+79	79	76	76	75	72	378	11.6	12.3%	Submit
+	
+Evanilson
+FW 7.0
+84	84	78	75	79	73	389	11.1	2.5%	Submit
+	
+Mbeumo
+MD 8.0
+79	79	78	79	72	72	380	9.5	17.0%	Submit
+	
+Mateta
+FW 7.5
+69	69	67	68	65	66	335	8.9	6.3%	Submit
+	
+Welbeck
+FW 6.5
+76	76	73	74	72	68	363	11.2	7.8%	Submit
+	
+Murillo
+DF 5.5
+88	88	87	84	83	82	424	15.4	4.6%	Submit
+	
+Enzo
+MD 6.5
+89	89	89	84	82	84	428	13.2	4.1%	Submit
+	
+Muñoz
+DF 5.5
+88	88	88	86	85	82	429	15.6	8.6%	Submit
+	
+Strand Larsen
+FW 6.5
+81	81	79	75	76	75	386	11.9	5.9%	Submit
+	
+Mac Allister
+MD 6.5
+84	84	79	73	76	73	385	11.8	1.5%	Submit
+	
+Schade
+MD 7.0
+77	77	76	74	75	72	374	10.7	2.0%	Submit
+	
+A.Becker
+GK 5.5
+93	93	89	86	84	87	439	16.0	10.8%	Submit
+	
+Rice
+MD 6.5
+84	84	75	81	75	74	389	12.0	7.4%	Submit
+	
+Pedro Porro
+DF 5.5
+76	76	82	75	80	74	387	14.1	10.9%	Submit
+	
+Bruno G.
+MD 6.5
+89	89	86	86	83	84	428	13.2	1.4%	Submit
+	
+Lacroix
+DF 5.0
+90	90	86	84	86	82	428	17.1	1.0%	Submit
+	
+Cunha
+MD 8.0
+72	72	74	71	68	68	353	8.8	10.7%	Submit
+	
+Raya
+GK 5.5
+92	92	91	91	90	93	457	16.6	18.2%	Submit
+	
+Rodrigo
+MD 6.5
+85	85	86	84	78	79	412	12.7	1.6%	Submit
+	
+Anderson
+MD 5.5
+84	84	86	82	81	79	412	15.0	3.9%	Submit
+	
+L.Paquetá
+MD 6.0
+79	79	75	71	68	70	363	12.1	1.0%	Submit
+	
+Iwobi
+MD 6.5
+82	82	79	77	76	74	388	11.9	1.4%	Submit
+	
+Damsgaard
+MD 6.0
+85	85	79	79	77	78	398	13.3	1.2%	Submit
+	
+Joelinton
+MD 6.0
+88	88	82	80	79	79	408	13.6	0.4%	Submit
+	
+Kudus
+MD 6.5
+74	74	71	67	67	63	342	10.5	25.8%	Submit
+	
+Sánchez
+GK 5.0
+93	93	92	92	89	87	453	18.1	15.2%	Submit
+	
+Tarkowski
+DF 5.5
+93	93	89	87	87	85	441	16.0	4.8%	Submit
+	
+N.Williams
+DF 5.0
+88	88	84	83	86	80	421	16.8	3.5%	Submit
+	
+Milenković
+DF 5.5
+89	89	88	88	85	87	437	15.9	8.7%	Submit
+	
+Konaté
+DF 5.5
+84	84	80	75	75	75	389	14.1	2.8%	Submit
+	
+Colwill
+DF 5.0
+87	87	84	82	81	82	416	16.6	5.5%	Submit
+	
+Ederson M.
+GK 5.5
+92	92	89	85	89	87	442	16.1	3.7%	Submit
+	
+Caicedo
+MD 5.5
+88	88	87	84	84	82	425	15.5	7.3%	Submit
+	
+Malen
+MD 5.5
+60	60	60	59	57	56	292	10.6	2.4%	Submit
+	
+Cucurella
+DF 6.0
+84	84	81	78	79	77	399	13.3	19.1%	Submit
+	
+Andersen
+DF 4.5
+92	92	87	87	84	85	435	19.3	1.2%	Submit
+	
+Alcaraz
+MD 5.5
+79	79	77	76	77	71	380	13.8	0.3%	Submit
+	
+Munetsi
+MD 5.5
+84	84	82	79	79	83	407	14.8	0.1%	Submit
+	
+Wissa
+FW 7.5
+59	59	65	65	60	61	310	8.3	7.1%	Submit
+	
+Richards
+DF 4.5
+88	88	82	78	82	82	412	18.3	0.8%	Submit
+	
+Vicario
+GK 5.0
+93	93	93	93	93	91	463	18.5	3.5%	Submit
+	
+Schär
+DF 5.5
+89	89	87	79	79	83	417	15.2	2.3%	Submit
+	
+Gabriel
+DF 6.0
+76	76	81	84	80	79	400	13.3	22.9%	Submit
+	
+Wilson
+MD 5.5
+70	70	66	60	62	53	311	11.3	1.3%	Submit
+	
+Kluivert
+MD 7.0
+73	73	69	61	59	62	324	9.3	4.8%	Submit
+	
+Guéhi
+DF 4.5
+92	92	89	87	89	84	441	19.6	13.3%	Submit
+	
+Saliba
+DF 6.0
+89	89	88	88	86	82	433	14.4	14.0%	Submit
+	
+Sels
+GK 5.0
+94	94	92	92	89	90	457	18.3	17.9%	Submit
+	
+McNeil
+MD 6.0
+76	76	74	73	73	70	366	12.2	0.9%	Submit
+	
+Tonali
+MD 5.5
+88	88	85	81	84	79	417	15.2	2.4%	Submit
+	
+Gyökeres
+FW 9.0
+44	44	45	49	58	59	255	5.7	24.2%	Submit
+	
+Hall
+DF 5.5
+85	85	86	84	83	80	418	15.2	2.8%	Submit
+	
+Leno
+GK 5.0
+93	93	92	91	91	92	459	18.4	1.7%	Submit
+	
+Gordon
+MD 7.5
+64	64	63	61	61	61	310	8.3	3.0%	Submit
+	
+Collins
+DF 5.0
+91	91	89	85	82	84	431	17.2	1.7%	Submit
+	
+Pickford
+GK 5.5
+92	92	92	91	89	89	453	16.5	12.3%	Submit
+	
+Robinson
+DF 5.0
+91	91	86	84	80	83	424	17.0	6.4%	Submit
+	
+Areola
+GK 4.5
+94	94	91	91	91	90	457	20.3	5.9%	Submit
+	
+Kelleher
+GK 4.5
+93	93	93	90	91	90	457	20.3	32.2%	Submit
+	
+Romero
+DF 5.0
+90	90	87	83	81	77	418	16.7	1.7%	Submit
+	
+Reijnders
+MD 5.5
+68	68	72	70	67	63	340	12.4	4.8%	Submit
+	
+Gomes
+MD 5.5
+89	89	86	84	83	81	423	15.4	0.1%	Submit
+	
+Gana
+MD 5.5
+89	89	88	82	79	82	420	15.3	0.1%	Submit
+	
+Verbruggen
+GK 4.5
+94	94	92	91	90	89	456	20.3	7.0%	Submit
+	
+Perri
+GK 4.5
+94	94	92	93	92	90	461	20.5	0.3%	Submit
+	
+Konsa
+DF 4.5
+89	89	90	89	86	86	440	19.6	23.5%	Submit
+	
+Georginio
+MD 6.0
+61	61	62	57	55	51	286	9.5	0.4%	Submit
+	
+Petrović
+GK 4.5
+90	90	91	89	88	88	446	19.8	4.7%	Submit
+	
+Branthwaite
+DF 5.5
+90	90	85	83	84	82	424	15.4	1.9%	Submit
+	
+Henderson
+GK 5.0
+91	91	89	86	86	80	432	17.3	3.4%	Submit
+	
+José Sá
+GK 4.5
+94	94	93	91	94	91	463	20.6	2.5%	Submit
+	
+Hudson-Odoi
+MD 6.0
+71	71	72	66	68	64	341	11.4	1.9%	Submit
+	
+Adingra
+MD 5.5
+76	76	73	75	72	67	363	13.2	2.8%	Submit
+	
+Cash
+DF 4.5
+81	81	79	73	69	75	377	16.8	1.7%	Submit
+	
+Aït-Nouri
+DF 6.0
+63	63	60	59	66	58	306	10.2	23.9%	Submit
+	
+Estève
+DF 4.0
+90	90	90	90	88	85	443	22.1	11.8%	Submit
+	
+Baleba
+MD 5.0
+86	86	80	79	79	77	401	16.0	4.5%	Submit
+	
+Wan-Bissaka
+DF 4.5
+88	88	87	84	84	81	424	18.8	31.6%	Submit
+	
+Anthony
+MD 5.5
+76	76	73	68	66	71	354	12.9	0.1%	Submit
+	
+Tel
+MD 6.5
+55	55	52	51	51	52	261	8.0	0.2%	Submit
+	
+Dorgu
+DF 4.5
+80	80	77	74	75	71	377	16.8	5.0%	Submit
+	
+Mitchell
+DF 5.0
+78	78	79	78	72	69	376	15.0	1.0%	Submit
+	
+Van den Berg
+DF 4.5
+90	90	88	86	83	80	427	19.0	0.4%	Submit
+	
+Thiago
+FW 6.0
+55	55	50	57	52	57	271	9.0	1.0%	Submit
+	
+Minteh
+MD 6.0
+63	63	58	59	60	59	299	10.0	1.2%	Submit
+	
+Szoboszlai
+MD 6.5
+67	67	49	49	47	44	256	7.9	1.8%	Submit
+	
+Kilman
+DF 4.5
+92	92	86	87	81	84	430	19.1	0.4%	Submit
+	
+Aina
+DF 5.0
+89	89	90	87	85	79	430	17.2	17.8%	Submit
+	
+Senesi
+DF 4.5
+86	86	83	79	80	81	409	18.2	0.7%	Submit
+	
+Tavernier
+MD 5.5
+64	64	61	61	56	56	298	10.8	0.4%	Submit
+	
+Ekitiké
+FW 8.5
+43	43	46	46	48	41	224	5.3	5.0%	Submit
+	
+Gvardiol
+DF 6.0
+67	67	69	67	67	61	331	11.0	17.3%	Submit
+	
+Cullen
+MD 5.0
+91	91	87	89	87	87	441	17.6	0.1%	Submit
+	
+Piroe
+FW 5.5
+69	69	67	62	60	59	317	11.5	3.5%	Submit
+	
+Lewis-Skelly
+DF 5.5
+77	77	76	75	70	70	368	13.4	5.6%	Submit
+	
+Todibo
+DF 4.5
+89	89	84	82	82	83	420	18.7	0.1%	Submit
+	
+Zabarnyi
+DF 5.0
+90	90	88	84	86	80	428	17.1	0.5%	Submit
+	
+Mykolenko
+DF 5.0
+89	89	83	84	81	80	417	16.7	4.5%	Submit
+	
+Xhaka
+MD 5.0
+87	87	86	84	82	82	421	16.8	2.1%	Submit
+	
+Garner
+MD 5.0
+83	83	77	79	75	75	389	15.6	0.1%	Submit
+	
+Onana
+GK 5.0
+88	44	86	91	91	92	404	16.2	0.1%	Submit
+	
+Roefs
+GK 4.5
+88	88	88	89	84	83	432	19.2	0.1%	Submit
+	
+Flemming
+FW 5.5
+71	71	70	65	66	65	337	12.3	0.2%	Submit
+	
+Truffert
+DF 4.5
+88	88	86	84	83	82	423	18.8	1.3%	Submit
+	
+James
+MD 5.5
+66	66	63	67	64	66	326	11.9	0.9%	Submit
+	
+João Pedro
+FW 7.5
+69	69	50	51	49	47	266	7.1	52.5%	Submit
+	
+Muniz
+FW 5.5
+63	63	57	55	50	50	275	10.0	2.5%	Submit
+	
+Ndoye
+MD 6.0
+63	63	64	67	57	62	313	10.4	0.3%	Submit
+	
+Kerkez
+DF 6.0
+69	69	65	62	68	58	322	10.7	10.7%	Submit
+	
+Füllkrug
+FW 6.0
+60	60	63	63	63	57	306	10.2	1.9%	Submit
+	
+Foden
+MD 8.0
+45	45	46	50	44	43	228	5.7	3.2%	Submit
+	
+Pope
+GK 5.0
+83	83	82	79	78	79	401	16.0	3.9%	Submit
+	
+Fofana
+DF 4.5
+76	76	73	70	66	71	356	15.8	0.3%	Submit
+	
+J.Ramsey
+MD 5.5
+61	61	60	58	59	58	296	10.8	0.6%	Submit
+	
+Rúben
+DF 5.5
+74	74	73	76	69	69	361	13.1	2.4%	Submit
+	
+Kamara
+MD 5.0
+83	83	83	78	76	80	400	16.0	0.2%	Submit
+	
+Carvalho
+MD 5.0
+57	57	50	52	56	56	271	10.8	0.3%	Submit
+	
+Agbadou
+DF 4.5
+91	91	85	80	80	84	420	18.7	0.4%	Submit
+	
+E.Le Fée
+MD 5.0
+70	70	73	68	66	63	340	13.6	1.2%	Submit
+	
+Bassey
+DF 4.5
+90	90	86	87	86	79	428	19.0	0.4%	Submit
+	
+Souček
+MD 6.0
+71	71	71	70	65	65	342	11.4	0.9%	Submit
+	
+Van Hecke
+DF 4.5
+87	87	87	81	83	79	417	18.5	1.2%	Submit
+	
+Lukić
+MD 5.0
+80	80	76	82	75	72	385	15.4	0.1%	Submit
+	
+De Cuyper
+DF 4.5
+67	67	65	66	63	63	324	14.4	8.2%	Submit
+	
+Ballard
+DF 4.5
+90	90	87	83	80	82	422	18.8	0.3%	Submit
+	
+Mayenda
+FW 5.5
+67	67	62	64	58	58	309	11.2	0.5%	Submit
+	
+Martinez
+GK 5.0
+0	0	92	92	91	91	366	14.6	0.5%	Submit
+	
+Edwards
+MD 5.0
+64	64	64	63	63	62	316	12.6	0.2%	Submit
+	
+Van de Ven
+DF 4.5
+87	87	86	80	81	78	412	18.3	17.4%	Submit
+	
+Pau
+DF 4.5
+73	73	76	73	76	73	371	16.5	0.4%	Submit
+	
+O'Brien
+DF 5.0
+88	88	87	83	79	79	416	16.6	0.4%	Submit
+	
+De Ligt
+DF 5.0
+82	82	74	76	72	71	375	15.0	1.0%	Submit
+	
+Bentancur
+MD 5.5
+77	77	71	71	68	63	350	12.7	0.1%	Submit
+	
+Wharton
+MD 5.0
+68	68	63	62	62	63	318	12.7	0.5%	Submit
+	
+André
+MD 5.5
+87	87	83	77	78	81	406	14.8	0.1%	Submit
+	
+Bogle
+DF 4.5
+86	86	86	81	79	78	410	18.2	0.7%	Submit
+	
+Havertz
+FW 7.5
+57	57	56	54	50	46	263	7.0	1.4%	Submit
+	
+Lewis-Potter
+DF 5.0
+78	78	74	71	70	66	359	14.4	0.5%	Submit
+	
+Burn
+DF 5.0
+76	76	74	68	70	68	356	14.2	3.2%	Submit
+	
+Trossard
+MD 7.0
+46	46	46	41	42	41	216	6.2	1.5%	Submit
+	
+Henderson
+MD 5.0
+75	75	72	65	63	58	333	13.3	0.4%	Submit
+	
+Elanga
+MD 7.0
+55	55	50	50	52	52	259	7.4	9.8%	Submit
+	
+Rodon
+DF 4.0
+89	89	85	85	82	79	420	21.0	1.8%	Submit
+	
+N.Jackson
+FW 6.5
+0	0	62	63	60	63	248	7.6	0.1%	Submit
+	
+Zubimendi
+MD 5.5
+60	60	65	69	73	76	343	12.5	1.7%	Submit
+	
+Raúl
+FW 6.5
+34	34	43	46	52	50	225	6.9	2.4%	Submit
+	
+Toti
+DF 4.5
+89	89	88	84	81	83	425	18.9	0.2%	Submit
+	
+Ward-Prowse
+MD 6.0
+60	60	58	58	63	59	298	9.9	0.4%	Submit
+	
+Hume
+DF 4.5
+87	87	84	83	80	74	408	18.1	0.3%	Submit
+	
+Tete
+DF 4.5
+68	68	70	62	56	61	317	14.1	0.2%	Submit
+	
+Stach
+MD 5.0
+73	73	70	65	64	66	338	13.5	0.1%	Submit
+	
+Gudmundsson
+DF 4.0
+82	82	78	76	70	71	377	18.9	2.0%	Submit
+	
+Reinildo
+DF 4.0
+89	89	87	88	81	81	426	21.3	8.3%	Submit
+	
+Beto
+FW 5.5
+53	53	49	48	50	46	246	8.9	13.9%	Submit
+	
+Bernardo
+MD 6.5
+57	57	59	58	59	51	284	8.7	0.6%	Submit
+	
+Livramento
+DF 5.0
+73	73	71	68	67	69	348	13.9	4.3%	Submit
+	
+James
+DF 5.5
+55	55	55	54	45	52	261	9.5	4.6%	Submit
+	
+Dalot
+DF 4.5
+71	71	72	71	67	73	354	15.7	2.7%	Submit
+	
+Mazraoui
+DF 5.0
+70	70	66	63	60	60	319	12.8	1.1%	Submit
+	
+Bellegarde
+MD 5.5
+53	53	55	54	57	49	268	9.7	0.1%	Submit
+	
+Odobert
+MD 5.5
+48	48	48	47	49	47	239	8.7	0.1%	Submit
+	
+Sangaré
+MD 5.0
+63	63	67	64	63	63	320	12.8	0.1%	Submit
+	
+McGinn
+MD 5.5
+47	47	47	48	51	54	247	9.0	0.6%	Submit
+	
+Gravenberch
+MD 5.5
+0	0	78	79	77	76	310	11.3	0.1%	Submit
+	
+Doherty
+DF 4.5
+72	72	73	68	72	72	357	15.9	0.2%	Submit
+	
+Andreas
+MD 5.5
+43	43	45	47	52	48	235	8.5	0.5%	Submit
+	
+Gnonto
+MD 5.5
+54	54	54	52	52	54	266	9.7	0.7%	Submit
+	
+Amad
+MD 6.5
+51	51	52	51	50	53	257	7.9	3.7%	Submit
+	
+Smith Rowe
+MD 6.0
+45	45	52	51	44	50	242	8.1	1.2%	Submit
+	
+Barry
+FW 6.0
+48	48	48	47	50	51	244	8.1	1.2%	Submit
+	
+White
+DF 5.5
+66	66	58	53	51	50	278	10.1	0.9%	Submit
+	
+Bergvall
+MD 5.5
+51	51	52	57	58	51	269	9.8	0.2%	Submit
+	
+Weiss
+GK 4.5
+69	69	67	68	67	67	338	15.0	0.2%	Submit
+	
+Hannibal
+MD 5.0
+65	65	62	62	60	60	309	12.4	0.2%	Submit
+	
+Roberts
+MD 5.5
+52	52	53	48	48	49	250	9.1	0.1%	Submit
+	
+Yarmoliuk
+MD 5.0
+63	63	61	59	58	54	295	11.8	0.1%	Submit
+	
+Walker
+DF 4.5
+85	85	82	81	84	75	407	18.1	2.2%	Submit
+	
+Kayode
+DF 4.5
+76	76	66	67	58	56	323	14.4	0.3%	Submit
+	
+Martinelli
+MD 7.0
+43	43	36	37	38	38	192	5.5	1.4%	Submit
+	
+Berge
+MD 5.0
+71	71	67	66	62	65	331	13.2	0.1%	Submit
+	
+Barnes
+MD 6.5
+39	39	42	42	40	36	199	6.1	0.5%	Submit
+	
+Diarra
+MD 5.5
+60	60	60	64	59	59	302	11.0	0.1%	Submit
+	
+Longstaff
+MD 5.0
+62	62	63	65	63	62	315	12.6	0.3%	Submit
+	
+Johnson
+MD 7.0
+36	36	42	43	42	42	205	5.9	3.5%	Submit
+	
+Adams
+MD 5.0
+86	86	82	56	42	40	306	12.2	0.2%	Submit
+	
+R.Gomes
+DF 4.5
+56	56	57	53	55	52	273	12.1	0.1%	Submit
+	
+Digne
+DF 4.5
+43	43	51	51	47	48	240	10.7	1.7%	Submit
+	
+Tuanzebe
+DF 4.0
+78	78	68	70	70	63	349	17.4	3.6%	Submit
+	
+Hartman
+DF 4.0
+69	69	69	67	62	60	327	16.4	0.4%	Submit
+	
+Scott
+MD 5.0
+70	70	68	37	35	40	250	10.0	0.1%	Submit
+	
+Diouf
+DF 4.5
+59	59	53	52	45	42	251	11.2	2.8%	Submit
+	
+Walker-Peters
+DF 4.5
+61	61	61	69	65	59	315	14.0	0.5%	Submit
+	
+Tanaka
+MD 5.0
+65	65	63	59	60	56	303	12.1	0.4%	Submit
+	
+Boscagli
+DF 4.5
+55	55	60	58	58	50	281	12.5	0.2%	Submit
+	
+Yoro
+DF 4.5
+56	56	61	62	59	55	293	13.0	1.1%	Submit
+	
+Maatsen
+DF 4.5
+47	47	46	46	46	45	230	10.2	0.9%	Submit
+	
+Gittens
+MD 6.5
+39	39	33	32	32	38	174	5.4	0.3%	Submit
+	
+Mainoo
+MD 5.0
+52	52	56	52	58	49	267	10.7	1.0%	Submit
+	
+Bruun Larsen
+MD 5.5
+49	49	45	44	40	40	218	7.9	0.1%	Submit
+	
+Mavropanos
+DF 4.5
+41	41	52	56	55	56	260	11.6	0.1%	Submit
+	
+Højlund
+FW 6.5
+33	33	36	40	45	44	198	6.1	1.1%	Submit
+	
+Talbi
+MD 5.0
+45	45	45	44	43	40	217	8.7	0.2%	Submit
+	
+Smith
+DF 4.5
+65	65	65	64	61	60	315	14.0	0.2%	Submit
+	
+Ampadu
+MD 5.0
+63	63	56	60	60	64	303	12.1	0.1%	Submit
+	
+Dunk
+DF 4.5
+61	61	61	53	55	59	289	12.8	1.0%	Submit
+	
+Wilson
+FW 6.0
+34	34	32	36	33	32	167	5.6	0.1%	Submit
+	
+Ugarte
+MD 5.0
+52	52	50	49	51	53	255	10.2	0.2%	Submit
+	
+J.Arias
+MD 5.5
+36	36	45	48	43	43	215	7.8	1.1%	Submit
+	
+Udogie
+DF 4.5
+52	52	54	50	53	49	258	11.5	8.0%	Submit
+	
+Gündoğan
+MD 6.5
+42	42	36	40	36	36	190	5.8	0.2%	Submit
+	
+Richarlison
+FW 6.5
+33	33	33	32	33	35	166	5.1	1.0%	Submit
+	
+O.Dango
+MD 6.0
+33	33	33	35	36	37	174	5.8	0.3%	Submit
+	
+Bijol
+DF 4.0
+0	0	76	70	67	78	291	14.6	0.2%	Submit
+	
+Nketiah
+FW 5.5
+32	32	32	34	35	35	168	6.1	1.6%	Submit
+	
+Merino
+MD 6.0
+36	36	37	37	33	32	175	5.8	0.9%	Submit
+	
+Matheus N.
+DF 5.5
+40	40	39	35	34	40	188	6.8	0.6%	Submit
+	
+Doku
+MD 6.5
+33	33	30	35	29	32	159	4.9	1.2%	Submit
+	
+Hughes
+MD 5.0
+46	46	45	47	47	46	231	9.2	0.1%	Submit
+	
+Spence
+DF 4.5
+46	46	45	47	52	49	239	10.6	0.6%	Submit
+	
+C.Jones
+MD 5.5
+46	46	29	33	30	34	172	6.3	0.1%	Submit
+	
+J.Timber
+DF 5.5
+30	30	36	42	51	58	217	7.9	2.3%	Submit
+	
+Hinshelwood
+MD 5.5
+46	46	43	45	45	46	225	8.2	0.2%	Submit
+	
+Darwin
+FW 6.5
+29	29	29	25	27	27	137	4.2	1.4%	Submit
+	
+Ayari
+MD 5.0
+41	41	42	41	38	37	199	8.0	0.3%	Submit
+	
+Cook
+MD 5.0
+0	0	0	78	71	76	225	9.0	0.0%	Submit
+	
+Guedes
+MD 5.5
+26	26	27	31	31	33	148	5.4	0.1%	Submit
+	
+Hoever
+DF 4.0
+44	44	46	50	45	44	229	11.4	2.5%	Submit
+	
+F.Kadıoğlu
+DF 4.5
+44	44	46	42	43	41	216	9.6	0.3%	Submit
+	
+Amdouni
+FW 5.0
+40	40	44	35	32	33	184	7.4	0.4%	Submit
+	
+Mosquera
+DF 4.5
+42	42	49	47	53	50	241	10.7	0.1%	Submit
+	
+J.Murphy
+MD 6.5
+30	30	35	32	36	35	168	5.2	2.9%	Submit
+	
+Sadiki
+MD 5.0
+43	43	47	42	44	43	219	8.8	0.1%	Submit
+	
+Lerma
+MD 5.0
+40	40	46	38	41	41	206	8.2	0.1%	Submit
+	
+Maguire
+DF 4.5
+44	44	44	44	46	40	218	9.7	0.6%	Submit
+	
+Adama
+MD 5.5
+29	29	31	33	36	33	162	5.9	0.4%	Submit
+	
+Nmecha
+FW 5.0
+30	30	32	30	31	29	152	6.1	0.8%	Submit
+	
+Yates
+MD 5.0
+39	39	38	37	41	41	196	7.8	0.2%	Submit
+	
+Jensen
+MD 5.0
+41	41	39	35	31	34	180	7.2	0.1%	Submit
+	
+Aaronson
+MD 5.5
+27	27	34	39	35	32	167	6.1	0.1%	Submit
+	
+S.Bueno
+DF 4.5
+47	47	47	53	49	53	249	11.1	0.1%	Submit
+	
+Patterson
+DF 4.5
+30	30	40	43	43	41	197	8.8	0.2%	Submit
+	
+Cherki
+MD 6.5
+22	22	24	26	28	25	125	3.8	9.2%	Submit
+	
+Akanji
+DF 5.5
+39	39	34	43	38	38	192	7.0	0.6%	Submit
+	
+Isidor
+FW 5.5
+31	31	36	29	28	36	160	5.8	0.4%	Submit
+	
+Lewis
+DF 5.0
+33	33	38	36	40	40	187	7.5	0.6%	Submit
+	
+Laurent
+MD 5.0
+39	39	41	39	44	43	206	8.2	0.1%	Submit
+	
+Sessegnon
+MD 5.5
+22	22	33	32	30	33	150	5.5	0.2%	Submit
+	
+L.Guilherme
+MD 5.0
+27	27	30	36	26	26	145	5.8	0.1%	Submit
+	
+Henry
+DF 4.5
+38	38	40	42	42	44	206	9.2	0.2%	Submit
+	
+Onana
+MD 5.0
+30	30	32	35	36	38	171	6.8	1.7%	Submit
+	
+Seelt
+DF 4.0
+62	62	58	53	27	10	210	10.5	0.4%	Submit
+	
+Jota
+MD 5.5
+22	22	22	28	27	29	128	4.7	0.1%	Submit
+	
+Kamada
+MD 5.0
+29	29	29	29	30	30	147	5.9	0.1%	Submit
+	
+Foster
+FW 5.0
+27	27	31	26	32	26	142	5.7	0.4%	Submit
+	
+G.Rodriguez
+MD 5.0
+36	36	34	35	35	35	175	7.0	0.1%	Submit
+	
+Ramazani
+MD 5.0
+21	21	23	25	28	24	121	4.8	0.1%	Submit
+	
+Milambo
+MD 5.5
+16	16	24	26	31	36	133	4.8	0.1%	Submit
+	
+Mount
+MD 6.0
+24	24	26	28	23	24	125	4.2	0.2%	Submit
+	
+Casemiro
+MD 5.5
+29	29	24	30	32	30	145	5.3	0.2%	Submit
+	
+Savinho
+MD 7.0
+18	18	17	22	20	23	100	2.9	1.9%	Submit
+	
+Gruda
+MD 5.5
+18	18	27	25	21	23	114	4.1	0.1%	Submit
+	
+Mings
+DF 4.5
+27	27	30	33	29	37	156	6.9	0.5%	Submit
+	
+O'Riley
+MD 5.5
+21	21	23	22	22	24	112	4.1	0.2%	Submit
+	
+Harrison
+MD 5.5
+22	22	23	25	29	23	122	4.4	0.2%	Submit
+	
+Trippier
+DF 5.0
+28	28	23	30	32	28	141	5.6	1.5%	Submit
+	
+Gusto
+DF 5.0
+25	25	29	27	27	32	140	5.6	2.2%	Submit
+	
+Robertson
+DF 6.0
+22	22	25	23	23	25	118	3.9	2.1%	Submit
+	
+P.M.Sarr
+MD 5.0
+22	22	25	29	27	30	133	5.3	1.8%	Submit
+	
+Christie
+MD 5.0
+0	0	0	22	57	56	135	5.4	0.5%	Submit
+	
+Lavia
+MD 5.0
+32	32	30	27	33	30	152	6.1	0.1%	Submit
+	
+Bradley
+DF 5.0
+19	19	18	25	24	25	111	4.4	0.7%	Submit
+	
+Bailey
+MD 5.5
+15	15	18	19	19	18	89	3.2	0.5%	Submit
+	
+Morato
+DF 4.5
+22	22	27	30	32	35	146	6.5	0.1%	Submit
+	
+Álvarez
+MD 5.0
+21	21	26	32	29	31	139	5.6	0.2%	Submit
+	
+Botman
+DF 5.0
+23	23	26	27	27	34	137	5.5	0.5%	Submit
+	
+J.Araujo
+DF 4.0
+31	31	30	31	28	34	154	7.7	1.3%	Submit
+	
+Struijk
+DF 4.5
+63	63	17	21	23	20	144	6.4	0.4%	Submit
+	
+Delap
+FW 6.5
+26	26	13	11	13	15	78	2.4	4.6%	Submit
+	
+Castagne
+DF 4.5
+24	24	29	30	31	28	142	6.3	0.2%	Submit
+	
+Coppola
+DF 4.5
+22	22	28	28	29	28	135	6.0	0.1%	Submit
+	
+Wieffer
+MD 5.0
+21	21	25	24	25	27	122	4.9	0.1%	Submit
+	
+Brooks
+MD 5.0
+20	20	24	19	16	18	97	3.9	0.2%	Submit
+	
+Aké
+DF 5.5
+22	22	23	25	26	31	127	4.6	0.5%	Submit
+	
+Shaw
+DF 4.5
+26	26	25	30	33	26	140	6.2	0.2%	Submit
+	
+Zirkzee
+FW 6.0
+11	11	14	18	17	24	84	2.8	1.1%	Submit
+	
+Iroegbunam
+MD 5.0
+19	19	25	25	25	25	119	4.8	0.1%	Submit
+	
+Calafiori
+DF 5.5
+23	23	20	21	20	19	103	3.7	0.6%	Submit
+	
+Elliott
+MD 5.5
+20	20	11	14	16	15	76	2.8	0.2%	Submit
+	
+Madueke
+MD 7.0
+7	7	10	14	18	20	69	2.0	1.7%	Submit
+	
+Gomez
+DF 5.0
+13	13	18	20	27	29	107	4.3	0.2%	Submit
+	
+A.Ramsey
+MD 4.5
+10	10	11	18	23	34	96	4.3	12.8%	Submit
+	
+Igor Jesus
+FW 6.0
+12	12	16	17	15	18	78	2.6	1.3%	Submit
+	
+Sinisterra
+MD 5.0
+14	14	16	18	14	18	80	3.2	0.2%	Submit
+	
+Hladký
+GK 4.0
+25	25	29	25	28	28	135	6.8	0.5%	Submit
+	
+Rigg
+MD 5.0
+14	14	18	20	19	20	91	3.6	0.1%	Submit
+	
+L.Miley
+MD 4.5
+17	17	22	25	20	16	100	4.4	3.3%	Submit
+	
+Danso
+DF 4.5
+15	15	24	21	24	30	114	5.1	0.1%	Submit
+	
+M.França
+MD 4.5
+9	9	11	18	18	17	73	3.2	0.1%	Submit
+	
+Bornauw
+DF 4.0
+42	42	17	20	23	23	125	6.3	0.3%	Submit
+	
+Awoniyi
+FW 5.5
+13	13	13	14	16	18	74	2.7	0.8%	Submit
+	
+Gomez
+MD 5.0
+13	13	13	17	20	21	84	3.4	0.1%	Submit
+	
+Ekdal
+DF 4.0
+20	20	22	22	24	24	112	5.6	0.3%	Submit
+	
+Chalobah
+DF 5.0
+15	15	15	22	22	19	93	3.7	0.6%	Submit
+	
+Estêvão
+MD 6.5
+15	15	10	12	12	13	62	1.9	0.5%	Submit
+	
+Lamptey
+DF 4.5
+19	19	14	16	20	22	91	4.0	0.4%	Submit
+	
+Philip
+MD 5.0
+23	23	28	9	5	7	72	2.9	0.1%	Submit
+	
+Veltman
+DF 4.5
+20	20	22	29	20	17	108	4.8	0.3%	Submit
+	
+M.Bizot
+GK 4.5
+93	93	3	2	2	4	104	4.6	0.3%	Submit
+	
+Scarles
+DF 4.5
+13	13	19	20	18	20	90	4.0	0.1%	Submit
+	
+Osula
+FW 5.5
+7	7	9	11	16	12	55	2.0	0.2%	Submit
+	
+Ekwah
+MD 4.5
+20	20	21	24	17	12	94	4.2	0.1%	Submit
+	
+Esse
+MD 5.0
+8	8	12	14	13	14	61	2.4	0.3%	Submit
+	
+Hee Chan
+MD 6.0
+5	5	10	11	14	15	55	1.8	0.2%	Submit
+	
+Khusanov
+DF 5.5
+18	18	16	16	20	21	91	3.3	0.3%	Submit
+	
+Koleosho
+MD 5.0
+14	14	13	13	14	16	70	2.8	0.1%	Submit
+	
+N.Gonzalez
+MD 6.0
+12	12	14	17	15	17	75	2.5	0.1%	Submit
+	
+Cairney
+MD 5.0
+9	9	11	12	15	21	68	2.7	0.1%	Submit
+	
+Kroupi.Jr
+FW 4.5
+11	11	16	9	9	11	56	2.5	1.5%	Submit
+	
+Sosa
+DF 5.0
+11	11	13	14	15	18	71	2.8	0.1%	Submit
+	
+Clyne
+DF 4.0
+11	11	15	19	20	19	84	4.2	0.7%	Submit
+	
+Barkley
+MD 5.0
+8	8	9	13	11	16	57	2.3	0.3%	Submit
+	
+Nunes
+MD 5.0
+9	9	9	14	9	12	53	2.1	0.1%	Submit
+	
+King
+MD 4.5
+8	8	13	12	12	19	64	2.8	0.3%	Submit
+	
+Tchaouna
+MD 5.0
+8	8	12	12	11	13	56	2.2	0.1%	Submit
+	
+O'Nien
+DF 4.0
+0	0	0	0	36	78	114	5.7	0.0%	Submit
+	
+Summerville
+MD 5.5
+0	0	0	0	21	45	66	2.4	0.0%	Submit
+	
+Stones
+DF 5.5
+11	11	16	17	12	19	75	2.7	0.5%	Submit
+	
+Aznou
+DF 4.5
+10	10	16	17	20	22	85	3.8	0.1%	Submit
+	
+Chiesa
+MD 6.5
+7	7	7	7	8	9	38	1.2	0.1%	Submit
+	
+Hato
+DF 5.0
+10	10	13	14	18	19	74	3.0	0.1%	Submit
+	
+Byram
+DF 4.0
+15	15	13	17	16	23	84	4.2	0.4%	Submit
+	
+Dewsbury-Hall
+MD 5.0
+7	7	9	16	11	12	55	2.2	0.4%	Submit
+	
+Hickey
+DF 4.0
+5	5	11	17	21	32	86	4.3	0.8%	Submit
+	
+Nørgaard
+MD 5.5
+12	12	11	13	12	15	63	2.3	0.7%	Submit
+	
+Benson
+MD 5.5
+10	10	8	10	11	12	51	1.9	0.0%	Submit
+	
+Pinnock
+DF 4.5
+6	6	10	20	18	17	71	3.2	0.3%	Submit
+	
+Neil
+MD 5.0
+10	10	16	18	16	18	78	3.1	0.1%	Submit
+	
+Humphreys
+DF 4.0
+11	11	16	18	16	19	80	4.0	0.4%	Submit
+	
+Pedro Lima
+DF 4.0
+11	11	12	15	16	17	71	3.5	1.4%	Submit
+	
+Kiwior
+DF 5.5
+11	11	10	14	15	17	67	2.4	0.1%	Submit
+	
+Grealish
+MD 6.5
+6	6	7	8	8	9	38	1.2	0.1%	Submit
+	
+Nwaneri
+MD 5.5
+6	6	7	10	6	9	38	1.4	0.4%	Submit
+	
+Lesley Ugochukwu
+MD 99.9
+11	11	8	11	15	13	58	0.1	0.0%	
+	
+Nkunku
+MD 6.0
+7	7	5	6	7	7	32	1.1	0.3%	Submit
+	
+Bissouma
+MD 5.5
+10	10	9	14	12	13	58	2.1	0.1%	Submit
+	
+Mepham
+DF 4.0
+9	9	14	14	16	18	71	3.5	0.3%	Submit
+	
+Gruev
+MD 5.0
+8	8	10	11	15	19	63	2.5	0.1%	Submit
+	
+Endo
+MD 5.0
+23	23	4	6	6	7	46	1.8	0.1%	Submit
+	
+Janelt
+MD 5.0
+0	0	0	11	26	22	59	2.4	0.2%	Submit
+	
+Devenny
+MD 4.5
+5	5	8	8	10	10	41	1.8	1.7%	Submit
+	
+March
+MD 6.0
+0	0	0	5	17	19	41	1.4	0.1%	Submit
+	
+Lucas Pires
+DF 4.0
+9	9	12	17	18	17	73	3.6	0.3%	Submit
+	
+Tzimas
+FW 5.5
+4	4	7	5	5	7	28	1.0	0.1%	Submit
+	
+Barnes
+FW 4.5
+6	6	4	9	7	10	36	1.6	5.0%	Submit
+	
+Gray
+MD 5.0
+8	8	11	12	13	18	62	2.5	0.2%	Submit
+	
+Igor
+DF 4.5
+9	9	13	15	17	15	69	3.1	0.1%	Submit
+	
+Mundle
+MD 5.0
+0	0	0	8	17	19	44	1.8	0.1%	Submit
+	
+Diop
+DF 4.5
+7	7	13	16	15	16	67	3.0	0.1%	Submit
+	
+A.García
+DF 4.0
+8	8	8	10	10	13	49	2.5	1.0%	Submit
+	
+Buonanotte
+MD 5.0
+4	4	7	8	7	5	31	1.2	0.3%	Submit
+	
+Willock
+MD 5.0
+0	0	0	0	13	30	43	1.7	0.2%	Submit
+	
+H.Bueno
+DF 4.5
+10	10	9	13	11	7	50	2.2	0.1%	Submit
+	
+Ajer
+DF 4.5
+7	7	12	15	12	11	57	2.5	0.2%	Submit
+	
+Y.Chermiti
+FW 5.0
+4	4	5	6	7	7	29	1.2	0.2%	Submit
+	
+Doucouré
+MD 5.0
+4	2	7	14	10	10	43	1.7	0.0%	Submit
+	
+Bayindir
+GK 5.0
+49	49	5	2	1	2	59	2.4	0.5%	Submit
+	
+Josh Bowler
+FW 99.9
+4	4	7	6	5	8	30	0.1	0.0%	
+	
+Da Silva Moreira
+MD 4.5
+3	3	6	8	5	8	30	1.3	0.2%	Submit
+	
+Bobb
+MD 5.5
+2	2	5	6	5	8	26	0.9	0.1%	Submit
+	
+Poveda
+MD 5.0
+5	5	7	6	5	6	29	1.2	0.1%	Submit
+	
+Emerson
+DF 4.5
+5	5	8	9	10	6	38	1.7	0.2%	Submit
+	
+Huggins
+DF 4.0
+12	12	15	16	7	3	53	2.6	0.3%	Submit
+	
+Stamenic
+MD 4.5
+4	4	5	7	11	12	39	1.7	0.1%	Submit
+	
+McAtee
+MD 5.5
+2	2	2	4	7	8	23	0.8	0.1%	Submit
+	
+Keane
+DF 4.5
+6	6	5	10	12	16	49	2.2	0.3%	Submit
+	
+Tsimikas
+DF 5.0
+4	4	4	6	6	9	29	1.2	0.1%	Submit
+	
+Pembele
+DF 4.0
+8	8	7	13	11	8	47	2.4	0.3%	Submit
+	
+O.Richards
+DF 4.5
+3	3	8	9	10	13	43	1.9	0.1%	Submit
+	
+Bryan
+MD 5.0
+1	1	5	5	6	4	21	0.8	0.1%	Submit
+	
+Heaven
+DF 4.0
+5	5	5	10	10	10	40	2.0	2.1%	Submit
+	
+Roberts
+DF 4.5
+8	8	10	9	7	12	46	2.0	0.1%	Submit
+	
+Sima
+MD 5.5
+2	2	4	3	3	5	17	0.6	0.0%	Submit
+	
+Coleman
+DF 4.5
+3	3	8	7	10	10	38	1.7	0.1%	Submit
+	
+Tosin
+DF 4.5
+5	5	4	9	10	13	41	1.8	0.3%	Submit
+	
+Patterson
+GK 4.5
+4	4	7	9	13	13	46	2.0	0.5%	Submit
+	
+David Møller Wolfe
+DF 99.9
+9	9	8	9	8	9	43	0.1	0.0%	
+	
+Obi
+FW 4.5
+2	2	4	4	5	3	18	0.8	4.9%	Submit
+	
+Cornet
+MD 5.0
+2	2	3	5	3	4	17	0.7	0.1%	Submit
+	
+Hill
+DF 4.0
+3	3	7	7	10	10	37	1.9	0.7%	Submit
+	
+Mamardashvili
+GK 4.5
+1	1	5	7	9	10	32	1.4	0.7%	Submit
+	
+Roerslev
+DF 4.5
+7	7	8	8	7	5	35	1.6	0.1%	Submit
+	
+Obafemi
+FW 4.5
+3	3	3	4	2	4	16	0.7	0.8%	Submit
+	
+Benitez
+GK 4.0
+4	4	5	7	8	11	35	1.8	0.5%	Submit
+	
+Solomon
+MD 5.5
+1	1	1	2	5	7	16	0.6	0.1%	Submit
+	
+Armstrong
+MD 4.5
+3	3	4	6	9	10	32	1.4	0.4%	Submit
+	
+Bamford
+FW 5.0
+2	2	3	3	4	2	14	0.6	3.1%	Submit
+	
+Alex Moreno
+DF 4.0
+3	3	4	6	8	7	28	1.4	11.6%	Submit
+	
+Hayden
+MD 4.5
+1	1	2	7	5	3	18	0.8	0.1%	Submit
+	
+Soler
+DF 4.0
+3	3	7	6	8	7	31	1.6	0.4%	Submit
+	
+George
+MD 5.0
+3	3	3	3	1	1	11	0.4	0.1%	Submit
+	
+Raheem Sterling
+FW 99.9
+3	3	1	3	2	3	12	0.0	0.0%	
+	
+Krafth
+DF 4.5
+2	2	3	9	7	10	31	1.4	0.1%	Submit
+	
+Carney Chukwuemeka
+MD 99.9
+2	2	2	2	2	4	12	0.0	0.0%	
+	
+Kalajdžić
+FW 5.0
+1	1	1	4	2	4	12	0.5	0.2%	Submit
+	
+Malacia
+DF 4.0
+3	3	4	6	5	5	23	1.1	0.4%	Submit
+	
+Kovačić
+MD 6.0
+0	0	0	0	9	16	25	0.8	0.0%	Submit
+	
+Davies
+DF 4.5
+2	2	4	7	9	5	27	1.2	0.1%	Submit
+	
+Irving
+MD 4.5
+1	1	2	4	3	2	12	0.5	0.3%	Submit
+	
+Martinez
+DF 5.0
+0	0	0	0	3	25	28	1.1	0.6%	Submit
+	
+Zinchenko
+DF 5.0
+1	1	2	5	5	3	16	0.6	0.3%	Submit
+	
+Fer López
+MD 5.5
+0	0	2	2	4	3	11	0.4	0.1%	Submit
+	
+Faivre
+MD 4.5
+1	1	2	1	3	2	9	0.4	0.3%	Submit
+	
+Amass
+DF 4.0
+3	3	5	4	7	5	24	1.2	0.3%	Submit
+	
+Greenwood
+MD 5.0
+0	0	2	2	2	4	10	0.4	0.1%	Submit
+	
+Neto
+GK 4.5
+2	2	5	6	4	7	24	1.1	1.2%	Submit
+	
+Bogarde
+DF 4.0
+1	1	3	6	7	6	23	1.1	0.3%	Submit
+	
+Browne
+MD 4.5
+1	1	3	2	3	5	14	0.6	0.1%	Submit
+	
+Fábio Silva
+FW 5.0
+0	0	1	2	3	3	9	0.4	0.7%	Submit
+	
+Marshall
+FW 4.5
+1	1	0	2	2	3	8	0.4	0.9%	Submit
+	
+Triantis
+MD 4.5
+4	4	3	4	4	1	16	0.7	0.1%	Submit
+	
+Hjelde
+DF 4.0
+0	0	0	0	11	16	27	1.4	0.0%	Submit
+	
+Jordan
+DF 4.0
+1	1	2	6	9	12	30	1.5	0.2%	Submit
+	
+Reed
+MD 4.5
+0	0	2	3	3	3	11	0.5	0.3%	Submit
+	
+Collyer
+MD 4.5
+1	1	2	3	4	3	13	0.6	0.2%	Submit
+	
+Sarmiento
+MD 5.0
+0	0	1	2	2	3	8	0.3	0.1%	Submit
+	
+Alese
+DF 4.0
+0	0	0	0	16	9	25	1.3	0.0%	Submit
+	
+Schmidt
+DF 4.0
+3	3	1	5	5	5	19	0.9	0.3%	Submit
+	
+O’Reilly
+DF 5.0
+1	1	1	1	1	2	6	0.2	0.2%	Submit
+	
+Arrizabalaga
+GK 4.5
+1	1	2	4	3	5	15	0.7	1.0%	Submit
+	
+M.Sarr
+DF 4.5
+3	3	4	6	5	4	22	1.0	0.1%	Submit
+	
+Holding
+DF 4.0
+1	1	2	7	4	5	19	0.9	0.3%	Submit
+	
+Gelhardt
+MD 4.5
+0	0	1	2	1	2	6	0.3	0.3%	Submit
+	
+Jörgensen
+GK 4.5
+2	2	1	3	3	7	16	0.7	0.2%	Submit
+	
+Buendía
+MD 5.5
+0	0	1	1	1	2	5	0.2	0.1%	Submit
+	
+Rusyn
+FW 4.5
+0	0	1	1	2	2	6	0.3	0.3%	Submit
+	
+J.Cuenca
+DF 4.5
+0	0	2	4	4	6	16	0.7	0.1%	Submit
+	
+Jair Cunha
+DF 4.5
+1	1	3	2	6	6	18	0.8	0.1%	Submit
+	
+Travers
+GK 4.5
+0	0	3	3	4	5	15	0.7	0.2%	Submit
+	
+Ortega Moreno
+GK 5.0
+0	0	4	3	3	3	13	0.5	0.5%	Submit
+	
+Maghoma
+MD 4.5
+1	1	2	1	2	2	8	0.4	0.1%	Submit
+	
+Steele
+GK 4.5
+1	1	2	4	4	3	14	0.6	0.4%	Submit
+	
+Trafford
+GK 5.0
+0	0	2	4	3	3	12	0.5	3.4%	Submit
+	
+B.Badiashile
+DF 4.5
+1	1	3	2	5	3	14	0.6	0.1%	Submit
+	
+D.Essugo
+MD 4.5
+0	0	1	1	1	1	4	0.2	0.1%	Submit
+	
+Valdimarsson
+GK 4.0
+1	1	1	4	4	2	12	0.6	2.1%	Submit
+	
+Darlow
+GK 4.0
+1	1	1	4	4	2	12	0.6	7.5%	Submit
+	
+Mosquera
+DF 5.5
+1	1	2	2	2	5	12	0.4	0.1%	Submit
+	
+Axel Disasi
+DF 99.9
+0	0	2	3	2	7	14	0.0	0.0%	
+	
+H.Traorè
+MD 4.5
+0	0	1	1	1	1	4	0.2	0.3%	Submit
+	
+Bajcetic
+MD 4.5
+0	0	0	0	2	3	5	0.2	0.1%	Submit
+	
+Lecomte
+GK 4.0
+1	1	1	1	3	4	10	0.5	1.0%	Submit
+	
+Armando Broja
+FW 99.9
+2	2	1	0	0	1	4	0.0	0.0%	
+	
+Winterburn
+MD 4.5
+2	2	3	0	0	0	5	0.2	0.1%	Submit
+	
+David Datro Fofana
+FW 99.9
+1	1	0	0	1	1	3	0.0	0.0%	
+	
+Kinsky
+GK 4.0
+1	1	0	2	1	4	8	0.4	5.4%	Submit
+	
+Fábio Vieira
+MD 5.5
+0	0	1	0	1	1	3	0.1	0.1%	Submit
+	
+Foderingham
+GK 4.0
+0	0	2	3	2	1	8	0.4	1.0%	Submit
+	
+Nelson
+MD 5.0
+0	0	0	0	2	1	3	0.1	0.2%	Submit
+	
+C.Miguel
+GK 4.0
+0	0	2	3	2	1	8	0.4	0.3%	Submit
+	
+N.Aguerd
+DF 4.5
+0	0	1	4	3	3	11	0.5	0.1%	Submit
+	
+Godo
+MD 4.5
+0	0	0	0	1	1	2	0.1	0.1%	Submit
+	
+Johnstone
+GK 4.5
+0	0	0	3	2	2	7	0.3	0.2%	Submit
+	
+Ji-soo
+DF 4.0
+0	0	0	2	2	3	7	0.3	0.2%	Submit
+	
+Delcroix
+DF 4.0
+0	0	1	2	4	2	9	0.5	0.5%	Submit
+	
+Édouard
+FW 5.0
+0	0	0	0	1	1	2	0.1	1.1%	Submit
+	
+Sambi
+MD 4.5
+0	0	0	1	0	1	2	0.1	0.2%	Submit
+	
+Kuol
+MD 4.5
+0	0	0	1	1	0	2	0.1	0.1%	Submit
+	
+Redmond
+FW 4.5
+0	0	0	0	1	1	2	0.1	0.9%	Submit
+	
+R.Williams
+DF 4.0
+0	0	1	2	1	1	5	0.3	0.3%	Submit
+	
+Abbott
+DF 4.0
+1	1	0	2	1	0	4	0.2	0.3%	Submit
+	
+Renato Veiga
+DF 99.9
+0	0	0	1	1	2	4	0.0	0.0%	
+	
+Konak
+MD 4.5
+0	0	1	1	0	0	2	0.1	0.2%	Submit
+	
+Sonne
+DF 4.0
+0	0	1	0	0	1	2	0.1	0.2%	Submit
+	
+Anderson
+DF 4.0
+0	0	1	2	1	0	4	0.2	0.6%	Submit
+	
+Edozie
+MD 4.5
+0	0	0	0	0	1	1	0.0	0.4%	Submit
+	
+Pond
+DF 4.0
+0	0	0	0	1	2	3	0.1	2.2%	Submit
+	
+Targett
+DF 4.0
+0	0	0	0	1	1	2	0.1	0.5%	Submit
+	
+Boly
+DF 4.0
+0	0	0	1	0	1	2	0.1	0.6%	Submit
+	
+Scarlett
+FW 4.5
+0	0	0	0	1	0	1	0.0	0.9%	Submit
+	
+Potts
+MD 4.5
+0	0	0	0	1	1	2	0.1	0.7%	Submit
+	
+Casey
+DF 4.0
+0	0	0	1	1	1	3	0.1	0.8%	Submit
+	
+Watson
+MD 5.0
+0	0	0	1	0	0	1	0.0	0.1%	Submit
+	
+Ben Chilwell
+DF 99.9
+0	0	0	0	1	0	1	0.0	0.0%	
+	
+Aleksić
+MD 5.0
+0	0	1	0	0	0	1	0.0	0.1%	Submit
+	
+Kone
+MD 4.5
+0	0	0	0	1	0	1	0.0	0.1%	Submit
+	
+Gauci
+GK 4.0
+1	1	0	0	0	0	1	0.1	1.1%	Submit
+	
+Akinmboni
+DF 4.0
+0	0	0	1	1	0	2	0.1	0.4%	Submit
+	
+Cox
+GK 4.0
+0	0	0	0	0	1	1	0.1	0.2%	Submit
+	
+Iling Jr
+MD 5.5
+0	0	0	0	0	1	1	0.0	0.0%	Submit
+	
+Bentley
+GK 4.0
+0	0	0	0	0	1	1	0.1	1.3%	Submit
+	
+Andrey Santos
+MD 4.5
+0	0	0	0	1	0	1	0.0	0.4%	Submit
+	
+A.Murphy
+DF 4.0
+0	0	0	0	0	1	1	0.1	0.8%	Submit
+	
+Welch
+DF 4.0
+0	0	0	0	0	1	1	0.1	0.2%	Submit
+	
+Meslier
+GK 4.5
+0	0	0	0	0	1	1	0.0	1.1%	Submit
+	
+Lascelles
+DF 4.5
+0	0	0	0	0	1	1	0.0	0.1%	Submit
+	
+Hein
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.6%	Submit
+	
+Setford
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Clarke
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.6%	Submit
+	
+Kacurri
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Nichols
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Kabia
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+G.Jesus
+FW 6.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Marschall
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Sousa
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Yasin
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Barrenechea
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Dobbin
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Broggio
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Dendoncker
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Jimoh-Aloba
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Young
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.6%	Submit
+	
+Dennis
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.7%	Submit
+	
+McKenna
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Paulsen
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Bevan
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Sadi
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Silcott-Duberry
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Enes Ünal
+FW 5.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Adu-Adjei
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Balcombe
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Eyestone
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Arthur
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Fredrick
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Meghoma
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Onyeka
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Donovan
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Peart-Harris
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Trevitt
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Morgan
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.6%	Submit
+	
+McGill
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Rushworth
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Scherpen
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Estupiñan
+DF 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Webster
+DF 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Cashin
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Slater
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Tasker
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Enciso
+MD 5.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Milner
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Yalcouye
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Knight
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Mazilu
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Moran
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Ferguson
+FW 5.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Kostoulas
+FW 5.0
+0	0	0	0	0	0	0	0.0	0.7%	Submit
+	
+Green
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.5%	Submit
+	
+Dodgson
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Sambo
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Worrall
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Boateng
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Churlinov
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Adewumi
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Banel
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Trésor
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Penders
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Slonina
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Acheampong
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Anselmino
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Mudryk
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Paez
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Marc Guiu
+FW 4.5
+0	0	0	0	0	0	0	0.0	5.2%	Submit
+	
+Matthews
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Chadi Riad
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Kporha
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Agbinone
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Ahamada
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Ebiowei
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+J.Rak-Sakyi
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Ozoh
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Rodney
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Umeh
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Marsh
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Tyrer
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Dixon
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Bates
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Ebere
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Heath
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Metcalfe
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Sherif
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Benda
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Amissah
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Harris
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Cairns
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Crew
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Gyabi
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Mateo Joseph
+FW 5.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Pécsi
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Woodman
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Nallo
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Ramsay
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Luis Díaz
+MD 8.0
+0	0	0	0	0	0	0	0.0	1.0%	Submit
+	
+Doak
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+McConnell
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Morton
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Nyoni
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Danns
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Bettinelli
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Vitor Reis
+DF 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Echeverri
+MD 5.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Nypan
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Phillips
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Harrison
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Heaton
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Mee
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+D.Leon
+DF 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Fredricson
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Rashford
+MD 7.0
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Garnacho
+MD 6.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Antony
+MD 6.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Sancho
+MD 6.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Fitzgerald
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+J.Fletcher
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Moorhouse
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Wheatley
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Dúbravka
+GK 4.0
+0	0	0	0	0	0	0	0.0	13.3%	Submit
+	
+Gillespie
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Odysseas
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Ashby
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Pivas
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Antoñito C.
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+White
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Neave
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Turner
+GK 4.0
+0	0	0	0	0	0	0	0.0	1.4%	Submit
+	
+David Carmo
+DF 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Dominguez
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+O'Brien
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Moore
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.6%	Submit
+	
+Nna Noukeu
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Cirkin
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Johnson
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Ba
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+H.Jones
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Matete
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Abdullahi
+FW 4.5
+0	0	0	0	0	0	0	0.0	1.1%	Submit
+	
+Luís Hemir
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Austin
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Dragusin
+DF 4.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Phillips
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Takai
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Vuskovic
+DF 4.0
+0	0	0	0	0	0	0	0.0	2.3%	Submit
+	
+Son
+MD 8.5
+0	0	0	0	0	0	0	0.0	2.2%	Submit
+	
+Maddison
+MD 7.0
+0	0	0	0	0	0	0	0.0	2.8%	Submit
+	
+Kulusevski
+MD 6.5
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Moore
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Min-hyeok
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Olusesi
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Lankshear
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Hegyi
+GK 4.0
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Earthy
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+Orford
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.2%	Submit
+	
+King
+GK 4.0
+0	0	0	0	0	0	0	0.0	2.9%	Submit
+	
+Meupiyou
+DF 4.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+B.Traore
+MD 5.0
+0	0	0	0	0	0	0	0.0	0.0%	Submit
+	
+Chirewa
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.3%	Submit
+	
+Gonzalez
+MD 4.5
+0	0	0	0	0	0	0	0.0	1.3%	Submit
+	
+Hodge
+MD 4.5
+0	0	0	0	0	0	0	0.0	0.4%	Submit
+	
+Chiwome
+FW 4.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Fraser
+FW 4.5
+0	0	0	0	0	0	0	0.0	2.7%	Submit
+	
+J.Palhinha
+MD 5.5
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Ramsdale
+GK 5.0
+0	0	0	0	0	0	0	0.0	0.1%	Submit
+	
+Josh Wilson-Esbrand
+DF 99.9
+0	0	0	0	0	0	0	0.0	0.0%	
+	
+Issa Kaboré
+DF 99.9
+0	0	0	0	0	0	0	0.0	0.0%	
+	
+Alfie Gilchrist
+DF 99.9
+0	0	0	0	0	0	0	0.0	0.0%	
+	
+Alfie Devine
+MD 99.9
+0	0	0	0	0	0	0	0.0	0.0%	
+	
+Emmanuel Dennis
+FW 99.9
+0	0	0	0	0	0	0	0.0	0.0%	
+	
+Max Dowman
+MD 99.9
+0	0	0	0	0	0	0	0.0	0.0%	
+	
+Hindolo Mustapha
+MD 99.9
+0	0	0	0	0	0	0	0.0	0.0%	
+	
+Omari Kellyman
+MD 99.9
+0	0	0	0	0	0	0	0.0	0.0%	

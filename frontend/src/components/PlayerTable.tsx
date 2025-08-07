@@ -33,7 +33,8 @@ const columns = [
   { id: 'selected_by_percent', label: 'Selected %', minWidth: 80, align: 'right' },
   { id: 'predicted_points_next5', label: 'Predicted Points (next 5)', minWidth: 80, align: 'right' },
   { id: 'pp_next5_per_m', label: 'PP (next 5) per £M', minWidth: 80, align: 'right' },
-  { id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
+  { id: 'predicted_xmins_next5', label: 'Predicted xMins (next 5)', minWidth: 80, align: 'right' },
+  { id: 'pxm_next5_per_m', label: 'xMins (next 5) per £M', minWidth: 80, align: 'right' },{ id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
   { id: 'form', label: 'Form', minWidth: 50, align: 'right' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, align: 'right' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, align: 'right' },
@@ -69,6 +70,16 @@ async function fetchCsvSummary(playerName: string) {
   return {
     predicted_points_next5: data.total ?? '-',
     pp_next5_per_m: data.points_per_m ?? '-',
+    elite_selected_percent: data.elite_percent ?? '-',
+  };
+}
+
+async function fetchCsvXminsSummary(playerName: string) {
+  const res = await fetch(`/api/player-csv-xmins-summary?name=${encodeURIComponent(playerName)}`);
+  const data = await res.json();
+  return {
+    predicted_xmins_next5: data.total ?? '-',
+    pxm_next5_per_m: data.xmins_per_m ?? '-',
     elite_selected_percent: data.elite_percent ?? '-',
   };
 }
@@ -151,11 +162,15 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       for (const player of players) {
         // eslint-disable-next-line no-await-in-loop
         const csvSummary = await fetchCsvSummary(player.web_name);
+        // eslint-disable-next-line no-await-in-loop
+        const xminsSummary = await fetchCsvXminsSummary(player.web_name);
         enriched.push({
           ...player,
           predicted_points_next5: csvSummary.predicted_points_next5,
           pp_next5_per_m: csvSummary.pp_next5_per_m,
           elite_selected_percent: csvSummary.elite_selected_percent,
+          predicted_xmins_next5: xminsSummary.predicted_xmins_next5,
+          pxm_next5_per_m: xminsSummary.pxm_next5_per_m,
         });
       }
       setEnrichedPlayers(enriched);
@@ -290,9 +305,11 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                     if (column.id === 'elite_selected_percent') {
                       value = player.elite_selected_percent ?? '-';
                     }
-
-                    if (column.id === 'selected_by_percent') {
-                      value = value !== undefined && value !== null ? `${value}%` : '-';
+                    if (column.id === 'predicted_xmins_next5') {
+                      value = player.predicted_xmins_next5 ?? '-';
+                    }
+                    if (column.id === 'pxm_next5_per_m') {
+                      value = player.pxm_next5_per_m ?? '-';
                     }
 
                     if (column.id === 'team') {
