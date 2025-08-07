@@ -91,6 +91,26 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                   );
                 }
 
+                if (col.key === 'strength') {
+                  const strengthValue = team[col.key as keyof Team];
+                  const bgColor = getDifficultyColor(Number(strengthValue));
+                  return (
+                    <TableCell
+                      key={col.key}
+                      style={{
+                        backgroundColor: bgColor,
+                        height: 40,
+                        padding: '8px',
+                        color: '#222',
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {strengthValue}
+                    </TableCell>
+                  );
+                }
+
                 if (col.key.startsWith('gw_')) {
                   const gwNum = Number(col.key.replace('gw_', ''));
                   const fixture = teamFixturesMap[team.id][gwNum];
