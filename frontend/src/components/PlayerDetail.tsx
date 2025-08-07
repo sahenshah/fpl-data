@@ -194,9 +194,9 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         <p className="player-name"><strong></strong> {player.first_name}{' '}{player.second_name}</p>
       </div>
       <p><strong></strong> <span className="player-detail-value">{positionMap[player.element_type] || player.element_type}</span></p>
-      <p><strong>Elite Selected: </strong> <span className="player-detail-value">{player.elite_selected_percent}</span></p>
       <p><strong>Cost: </strong> <span className="player-detail-value">{(player.now_cost / 10).toFixed(1)}</span></p>
       <p><strong>Total Points: </strong> <span className="player-detail-value">{player.total_points}</span></p>
+      <p><strong>Elite Selected: </strong> <span className="player-detail-value">{player.elite_selected_percent}</span></p>
       <p><strong>xPoints (next 5): </strong> <span className="player-detail-value">{player.predicted_points_next5}</span></p>
       <p><strong>xPoints (next 5) /£M: </strong> <span className="player-detail-value">{player.pp_next5_per_m}</span></p>
       <p><strong>xMinutes (next 5): </strong> <span className="player-detail-value">{player.predicted_xmins_next5}</span></p>
