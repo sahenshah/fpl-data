@@ -357,6 +357,25 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                         </TableCell>
                       );
                     }
+                    if (column.id === 'status') {
+                      return (
+                        <TableCell
+                          key={column.id}
+                          align={column.align as any}
+                          style={{
+                            minWidth: column.minWidth,
+                            backgroundColor:
+                              value === 'a' ? '#4caf50' : value === 'u' ? '#f44336' : undefined,
+                            color: value === 'a' || value === 'u' ? '#fff' : undefined,
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {/* Optionally, you can show nothing or a label */}
+                          {value === 'a' ? '' : value === 'u' ? '' : value}
+                        </TableCell>
+                      );
+                    }
                     return (
                       <TableCell
                         key={column.id}
