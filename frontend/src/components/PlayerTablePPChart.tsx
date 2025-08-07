@@ -23,7 +23,7 @@ export default function PlayerTablePPChart({
 
   return (
     <div className="player-table-ppchart">
-      <h3 style={{ color: '#fff', marginTop: 0 }}>Predicted Points (Next 5 GWs)</h3>
+      <h3 style={{ color: '#fff', marginTop: 0 }}>xPoints (Next 5 GWs)</h3>
       <LineChart
         height={300}
         series={series}

@@ -19,16 +19,17 @@ def clean_raw_file(filename):
     return cleaned_rows
 
 # Define column names
-columns = ['Name', 'xMins', 'GW1', 'GW2', 'GW3', 'GW4', 'GW5', 'Total', 'Points/£M', 'Elite%']
+xPointsColumns = ['Name', 'xMins', 'GW1', 'GW2', 'GW3', 'GW4', 'GW5', 'Total', 'Points/£M', 'Elite%']
+xMinsColumns = ['Name', 'xMins', 'GW1', 'GW2', 'GW3', 'GW4', 'GW5', 'Total', 'xMins/£M', 'Elite%']
 
 # Clean raw_data.txt
 cleaned_rows_main = clean_raw_file('raw_data.txt')
-df_main = pd.DataFrame(cleaned_rows_main, columns=columns)
+df_main = pd.DataFrame(cleaned_rows_main, columns=xPointsColumns)
 df_main.to_csv('cleaned_fpl_data.csv', index=False)
 print("Cleaned data saved to cleaned_fpl_data.csv")
 
 # Clean raw_data_xmins.txt
 cleaned_rows_xmins = clean_raw_file('raw_data_xmins.txt')
-df_xmins = pd.DataFrame(cleaned_rows_xmins, columns=columns)
+df_xmins = pd.DataFrame(cleaned_rows_xmins, columns=xMinsColumns)
 df_xmins.to_csv('cleaned_fpl_data_xmins.csv', index=False)
 print("Cleaned data saved to cleaned_fpl_data_xmins.csv")
