@@ -47,7 +47,16 @@ function App() {
     <div style={{ padding: '24px', boxSizing: 'border-box' }}>
       {fplData && (
         <div>
-          <h1>FPL Data</h1>
+          <div style={{
+            display: 'flex',
+            alignItems: 'left',
+            gap: '16px',
+            marginBottom: '8px',
+            justifyContent: 'left'
+          }}>
+            <img src="/fpl_data_logo.png" alt="FPL Data Logo" style={{ width: '48px', height: '48px' }} />
+            <h1 style={{ margin: 0 }}>FPL Data</h1>
+          </div>
           <p>Total FPL Players: {fplData.total_players}</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <input
