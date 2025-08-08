@@ -49,10 +49,10 @@ function App() {
         <div>
           <div style={{
             display: 'flex',
-            alignItems: 'left',
+            alignItems: 'center', // <-- change from 'left' to 'center'
             gap: '16px',
             marginBottom: '8px',
-            justifyContent: 'left'
+            justifyContent: 'center'
           }}>
             <img src="/fpl_data_logo.png" alt="FPL Data Logo" style={{ width: '48px', height: '48px' }} />
             <h1 style={{ margin: 0 }}>FPL Data</h1>

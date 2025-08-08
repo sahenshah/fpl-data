@@ -2,7 +2,7 @@
   width: 100%;
   margin-bottom: 16px;
   display: block;
-  text-align: center;
+  text-align: left;
 }
 
 .team-summary-header .css-1f9xtph-MuiTypography-root {
@@ -12,7 +12,7 @@
 .team-summary-container {
   margin-bottom: 16px;
   padding: 8px;
-  background: #41054b;
+  background: #2b1f47;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
