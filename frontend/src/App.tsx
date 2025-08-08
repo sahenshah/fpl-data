@@ -54,7 +54,7 @@ function App() {
             marginBottom: '8px',
             justifyContent: 'center'
           }}>
-            <img src="/fpl_data_logo.png" alt="FPL Data Logo" style={{ width: '48px', height: '48px' }} />
+            <img src="/fpl_data_logo_nb.png" alt="FPL Data Logo" style={{ width: '48px', height: '48px' }} />
             <h1 style={{ margin: 0 }}>FPL Data</h1>
           </div>
           <p>Total FPL Players: {fplData.total_players}</p>
