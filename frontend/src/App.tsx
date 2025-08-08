@@ -37,7 +37,7 @@ function App() {
         setTeamId(inputTeamId);
         setTeamIdError('');
       } else {
-        setTeamIdError('Please enter a valid team ID (positive number).');
+        setTeamIdError('Please enter a valid team ID');
         setTeamId('');
       }
     }
