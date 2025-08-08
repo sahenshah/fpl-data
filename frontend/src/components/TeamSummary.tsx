@@ -57,8 +57,8 @@ const TeamSummary: React.FC<TeamSummaryProps> = ({ teamId }) => {
 
   // Map API data to table rows (example fields, adjust as needed)
   const rows = [
-    { label: 'Player First Name', value: teamData.player_first_name },
-    { label: 'Player Last Name', value: teamData.player_last_name },
+    { label: 'First Name', value: teamData.player_first_name },
+    { label: 'Last Name', value: teamData.player_last_name },
     { label: 'Region', value: teamData.player_region_name },
     { label: 'Started', value: teamData.started },
     { label: 'Last Updated', value: teamData.last_updated },

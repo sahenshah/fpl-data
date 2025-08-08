@@ -49,8 +49,8 @@ const TeamSummaryLeaguesTable: React.FC<TeamSummaryLeaguesTableProps> = ({ teamI
         <TableHead>
           <TableRow>
             <TableCell>League Name</TableCell>
-            <TableCell align="right">Your Rank</TableCell>
-            <TableCell align="right">Your Points</TableCell>
+            <TableCell align="right">Rank</TableCell>
+            <TableCell align="right">Points</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
