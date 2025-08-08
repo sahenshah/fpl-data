@@ -7,10 +7,14 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TeamSummary from './components/TeamSummary';
 
 function App() {
   const [fplData, setFplData] = useState<FPLBootstrapResponse | null>(null);
-  const [fixtures, setFixtures] = useState<any[]>([]); // Update type if you have a Fixture type
+  const [fixtures, setFixtures] = useState<any[]>([]);
+  const [inputTeamId, setInputTeamId] = useState<string>(''); // For input box
+  const [teamId, setTeamId] = useState<string>(''); // Set only on Enter
+  const [teamIdError, setTeamIdError] = useState<string>(''); // Error state
 
   useEffect(() => {
     fetch('/api/bootstrap-static')
@@ -24,12 +28,63 @@ function App() {
       .catch(console.error);
   }, []);
 
+  const isValidTeamId = teamId && /^\d+$/.test(teamId) && Number(teamId) > 0;
+
+  // Handler for Enter key
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      if (/^\d+$/.test(inputTeamId) && Number(inputTeamId) > 0) {
+        setTeamId(inputTeamId);
+        setTeamIdError('');
+      } else {
+        setTeamIdError('Please enter a valid team ID (positive number).');
+        setTeamId('');
+      }
+    }
+  };
+
   return (
     <div style={{ padding: '24px', boxSizing: 'border-box' }}>
       {fplData && (
         <div>
           <h1>FPL Data</h1>
           <p>Total FPL Players: {fplData.total_players}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              placeholder="Team ID..."
+              value={inputTeamId}
+              onChange={e => setInputTeamId(e.target.value)}
+              onKeyDown={handleInputKeyDown}
+              style={{ padding: '8px', width: '100%', maxWidth: 400 }}
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setInputTeamId('');
+                setTeamId('');
+                setTeamIdError('');
+              }}
+              style={{
+                padding: '8px 12px',
+                background: '#7a7a7aff',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Clear
+            </button>
+          </div>
+          {teamIdError && (
+            <p style={{ color: 'red', marginBottom: '8px' }}>{teamIdError}</p>
+          )}
+          {isValidTeamId && (
+            <TeamSummary teamId={teamId} />
+          )}
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <h2>Players</h2>
@@ -43,7 +98,6 @@ function App() {
               <h2>Fixtures</h2>
             </AccordionSummary>
             <AccordionDetails>
-              {/* <pre>{JSON.stringify(fixtures, null, 2)}</pre> */}
               <FixtureTable teams={fplData.teams} fixtures={fixtures} /> 
             </AccordionDetails>
           </Accordion>

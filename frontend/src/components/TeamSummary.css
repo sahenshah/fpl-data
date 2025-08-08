@@ -1,0 +1,56 @@
+.team-summary-header {
+  width: 100%;
+  margin-bottom: 16px;
+  display: block;
+  text-align: center;
+}
+
+.team-summary-header .css-1f9xtph-MuiTypography-root {
+  font-size: 2rem !important; /* Adjust this value as needed */
+}
+
+.team-summary-container {
+  margin-bottom: 16px;
+  padding: 8px;
+  background: #41054b;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.team-summary-data {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #fff;
+}
+
+.team-summary-error {
+  color: #ff4d4d;
+  background: #330000;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.team-summary-tables-row {
+  display: flex;
+  gap: 32px;
+  width: 100%;
+}
+
+.team-summary-table-container {
+  width: 40%;
+}
+
+.team-summary-leagues-table-container {
+  margin-top: 56px;
+}
+.team-summary-history-table-container {
+  width: 50%;
+}
+
+.css-y2ff7i-MuiPaper-root-MuiTableContainer-root {
+  background-color: unset !important;
+  color: unset !important;
+}

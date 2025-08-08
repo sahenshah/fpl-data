@@ -128,5 +128,29 @@ def player_csv_xmins_summary():
         'elite_percent': str(r['Elite%']) if pd.notnull(r['Elite%']) else None
     })
 
+@app.route('/api/entry/<int:team_id>')
+def entry(team_id):
+    """Fetch FPL entry (team) data from the official API and return as JSON."""
+    url = f'https://fantasy.premierleague.com/api/entry/{team_id}/'
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        data = response.json()
+        return jsonify(data)
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/entry/<int:team_id>/history')
+def entry_history(team_id):
+    """Fetch FPL entry (team) history data from the official API and return as JSON."""
+    url = f'https://fantasy.premierleague.com/api/entry/{team_id}/history/'
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        data = response.json()
+        return jsonify(data)
+    except requests.RequestException as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)

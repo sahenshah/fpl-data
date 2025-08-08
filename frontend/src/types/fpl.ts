@@ -166,3 +166,26 @@ export interface PlayerFixture {
   difficulty: number;
   predicted_points: number | null;
 }
+
+export interface TeamSummary {
+  id: number;
+  favourite_team: number | null;
+  player_first_name: string;
+  player_last_name: string;
+  player_region_id: number; // Assuming this is a region ID
+  player_region_name: string;
+  player_region_iso_code_short: string;
+  player_region_iso_code_long: string;
+  years_active: number;
+  summary_overall_points: number;
+  summary_overall_rank: number;
+  summary_event_points: number;
+  summary_event_rank: number;
+  current_event: number;
+  name: string;
+  name_change_blocked: boolean;
+  entered_events: number;
+  last_deadline_bank: number;
+  last_deadline_value: number;
+  last_deadline_total_transfers: number;
+}
