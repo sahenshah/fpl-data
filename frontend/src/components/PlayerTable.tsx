@@ -219,9 +219,31 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
     }
   }, [page, maxPage, rowsPerPage, totalRows]);
 
+  // Chart refresh handler
+  const handleRefreshChart = async () => {
+    const gwKeys = ['GW1', 'GW2', 'GW3', 'GW4', 'GW5'];
+    const results: { web_name: string; predicted_points_gw: number[] }[] = [];
+    const pagePlayers = sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    for (const player of pagePlayers) {
+      const predicted_points_gw: number[] = [];
+      for (const gw of gwKeys) {
+        const res = await fetch(
+          `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}`
+        );
+        const data = await res.json();
+        predicted_points_gw.push(Number(data.predicted_points) || 0);
+      }
+      results.push({
+        web_name: player.web_name,
+        predicted_points_gw,
+      });
+    }
+    setChartPlayers(results);
+  };
+
   return (
     <Paper sx={{ width: '100%', maxWidth: '95vw' }}>
-      <div className="filter-bar">
+      <div className="filter-bar" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <select value={positionFilter} onChange={e => setPositionFilter(e.target.value)}>
           <option value="">All Positions</option>
           <option value="GK">GK</option>
@@ -259,7 +281,10 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           style={{ width: 180 }}
         />
       </div>
-      <PlayerTablePPChart players={chartPlayers} />
+      <PlayerTablePPChart 
+        players={chartPlayers} 
+        onRefresh={handleRefreshChart}
+      />
       <TableContainer sx={{ maxHeight: 800, maxWidth: '100vw', overflow: 'auto' }}>
         <Table stickyHeader aria-label="players table">
           <TableHead>
