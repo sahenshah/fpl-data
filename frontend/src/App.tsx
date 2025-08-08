@@ -47,15 +47,12 @@ function App() {
     <div style={{ padding: '24px', boxSizing: 'border-box' }}>
       {fplData && (
         <div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center', // <-- change from 'left' to 'center'
-            gap: '16px',
-            marginBottom: '8px',
-            justifyContent: 'center'
-          }}>
-            <img src="/fpl_data_logo_nb.png" alt="FPL Data Logo" style={{ width: '48px', height: '48px' }} />
-            <h1 style={{ margin: 0 }}>FPL Data</h1>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '8px' }}>
+            <img
+              src="/fpl_iq_logo_nb.png"
+              alt="FPL IQ Logo"
+              style={{ width: '300px', height: '300px', marginBottom: '12px' }}
+            />
           </div>
           <p>Total FPL Players: {fplData.total_players}</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
