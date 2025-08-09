@@ -22,6 +22,8 @@ export default function PlayerTablePPChart({
   const series = players.map(player => ({
     data: player.predicted_points_gw,
     label: player.web_name,
+    showMark: true,
+    markSize: 2, // Reduce this value for smaller dots (default is 8)
   }));
 
   return (

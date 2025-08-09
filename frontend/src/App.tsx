@@ -54,8 +54,17 @@ function App() {
               style={{ width: '300px', height: '300px', marginBottom: '12px' }}
             />
           </div>
-          <p>Total FPL Players: {fplData.total_players}</p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+          <p style={{ textAlign: 'center', width: '100%' }}>
+            Total FPL Players: {fplData.total_players}
+          </p>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            marginBottom: '16px',
+            width: '100%'
+          }}>
             <input
               type="text"
               inputMode="numeric"
@@ -86,7 +95,7 @@ function App() {
             </button>
           </div>
           {teamIdError && (
-            <p style={{ color: 'red', marginBottom: '8px' }}>{teamIdError}</p>
+            <p style={{ color: 'red', marginBottom: '8px', textAlign: 'center' }}>{teamIdError}</p>
           )}
           {isValidTeamId && (
             <TeamSummary teamId={teamId} />
