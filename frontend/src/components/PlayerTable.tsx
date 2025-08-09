@@ -143,10 +143,16 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
 
   const sortedPlayers = React.useMemo(() => {
     return [...filteredPlayers].sort((a, b) => {
-      const aValue = a[sortBy as keyof Element];
-      const bValue = b[sortBy as keyof Element];
+      let aValue = a[sortBy as keyof Element];
+      let bValue = b[sortBy as keyof Element];
+
+      // Try to convert to number if possible
+      if (typeof aValue === 'string' && !isNaN(Number(aValue))) aValue = Number(aValue);
+      if (typeof bValue === 'string' && !isNaN(Number(bValue))) bValue = Number(bValue);
+
       if (aValue == null) return 1;
       if (bValue == null) return -1;
+
       if (typeof aValue === 'number' && typeof bValue === 'number') {
         return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
       }
