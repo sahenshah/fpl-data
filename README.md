@@ -90,10 +90,14 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
     ```sh
     pip install flask pandas
     ```
-2. Place `cleaned_fpl_data.csv` in the `backend` folder.
+2. Run script to populate expected data
+    ```sh
+    python3 ./expected_data/ut_update_expected_data.py
+    ```
+
 3. Run the Flask server:
     ```sh
-    python app.py
+    python3 app.py
     ```
 
 ### Frontend
