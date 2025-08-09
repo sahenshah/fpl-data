@@ -26,3 +26,9 @@ td.sticky-name {
   z-index: 3 !important;
   overflow: hidden !important;
 }
+@media (max-width: 600px) {
+  th.sticky-name,
+  td.sticky-name {
+    left: 50px !important; /* Reduce gap between badge and name */
+  }
+}

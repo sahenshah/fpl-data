@@ -3,7 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import './PlayerTablePPChart.css';
 
-const margin = { right: 24 };
+const margin = { left: 12, right: 24, top: 20, bottom: 20 };
 
 interface PlayerTablePPChartProps {
   players: {
@@ -26,8 +26,8 @@ export default function PlayerTablePPChart({
 
   return (
     <div className="player-table-ppchart">
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-        <h3 style={{ color: '#fff', marginTop: 0, marginBottom: 0 }}>xPoints (Next 5 GWs)</h3>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+        <h3 className="player-table-ppchart-header" style={{ marginRight: '4px' }}>xPoints (Next 5 GWs)</h3>
         {onRefresh && (
           <IconButton color="primary" onClick={onRefresh} aria-label="refresh chart" size="small">
             <RefreshIcon />

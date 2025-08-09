@@ -39,7 +39,8 @@ const TeamSummaryHistory: React.FC<TeamSummaryHistoryProps> = ({ teamId }) => {
 
   // Prepare data for the line chart
   const yData = history.past.map((season: any) => season.rank);
-  const xLabels = history.past.map((season: any) => season.season_name);
+  // Format xLabels to show only last 5 characters (e.g. "16/17" instead of "2016/17")
+  const xLabels = history.past.map((season: any) => season.season_name.slice(-5));
   const points = history.past.map((season: any) => season.total_points);
 
   return (

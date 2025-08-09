@@ -37,20 +37,37 @@
   display: flex;
   gap: 32px;
   width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-.team-summary-table-container {
+.team-summary-table-container,
+.team-summary-history-table-container {
   width: 40%;
 }
 
 .team-summary-leagues-table-container {
   margin-top: 56px;
 }
-.team-summary-history-table-container {
-  width: 50%;
-}
 
 .css-y2ff7i-MuiPaper-root-MuiTableContainer-root {
   background-color: unset !important;
   color: unset !important;
+}
+
+@media (max-width: 800px) {
+  .team-summary-tables-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+    align-items: stretch !important;
+  }
+  .team-summary-table-container,
+  .team-summary-history-table-container {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .team-summary-leagues-table-container {
+    margin-top: 24px !important;
+  }
 }

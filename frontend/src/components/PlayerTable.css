@@ -34,18 +34,25 @@ th.sticky-web-name{
 
 /* filepath: /home/sahen/fpl-data/frontend/src/components/PlayerTable.css */
 .filter-bar {
-  background: #444;
-  padding: 12px 16px;
   display: flex;
-  gap: 1rem; /* Adds spacing between filter elements */
+  flex-wrap: wrap;
   align-items: center;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+  background: #444;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .filter-bar select,
 .filter-bar input {
-  font-size: 1.1rem;
-  padding: 8px 12px;
-  height: 40px; /* Ensure all filter boxes have the same height */
+  min-width: 80px;
+  max-width: 160px;
+  flex: 1 1 120px;
+  font-size: 1rem;
+  padding: 4px 8px;
+  box-sizing: border-box;
 }
 
 .filter-bar label,
@@ -63,4 +70,49 @@ td.sticky-badge {
 
 .player-detail-modal {
   padding: 32px 24px;
+}
+
+@media (max-width: 600px) {
+  .player-table-ppchart {
+    padding: 0.5rem !important;
+  }
+  .filter-bar {
+    gap: 6px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    margin-bottom: 0px !important;
+  }
+  .filter-bar select,
+  .filter-bar input {
+    max-width: 80px !important;
+    min-width: 60px !important;
+    font-size: 0.9rem !important;
+    padding: 2px 4px !important;
+    height: 28px !important;
+  }
+  .MuiTable-root,
+  .MuiTableContainer-root,
+  table {
+    font-size: 0.85rem !important;
+  }
+  .MuiTableCell-root,
+  th,
+  td {
+    padding: 4px 6px !important;
+    min-width: 40px !important;
+  }
+  .MuiTableRow-root {
+    height: 28px !important;
+  }
+  .MuiTablePagination-root {
+    font-size: 0.85rem !important;
+    padding: 4px !important;
+  }
+
+  /* Reduce gap between badge and name columns on small screens */
+  th.sticky-web-name,
+  .sticky-web-name,
+  td.sticky-web-name {
+    left: 40px !important; /* Match reduced badge column width */
+  }
 }

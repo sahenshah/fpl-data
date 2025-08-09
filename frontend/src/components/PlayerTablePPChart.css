@@ -5,4 +5,18 @@
 .player-table-ppchart {
   background: #333;
   padding: 1rem;
+  justify-content: 'center' !important;
+}
+
+.player-table-ppchart-header {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 600px) {
+  .player-table-ppchart-header {
+    font-size: 1rem !important;
+  }
 }
