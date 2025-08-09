@@ -1,6 +1,6 @@
 # FPL Data Dashboard
 
-This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes player statistics and predicted points for upcoming gameweeks using predicted data from onilne sources.
+This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask) that visualizes both historical player statistics and predicted metrics for upcoming gameweeks, with projected points aggregated and evaluated from reputable online sources.
 
 ## Features
 
@@ -14,7 +14,7 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
 
 - **Frontend:** React, TypeScript, MUI (Material UI), MUI X Charts
 - **Backend:** Python, Flask, Pandas
-- **Data:** `cleaned_fpl_data.csv` (player stats and predictions)
+- **Data:** `scout_table.csv, scout_table_xmins.csv` (player stats and predictions)
 
 ## Setup
 
@@ -24,7 +24,12 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
     ```sh
     pip install flask pandas
     ```
-2. Place `cleaned_fpl_data.csv` in the `backend` folder.
+2. Run ut_update_expected_data.py
+    ```sh
+    cd expected_data
+    python ut_update_expected_data.py
+    ```
+
 3. Run the Flask server:
     ```sh
     python app.py
