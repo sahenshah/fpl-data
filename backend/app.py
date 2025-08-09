@@ -70,8 +70,8 @@ def event_live(gw):
         return jsonify({'error': str(e)}), 500
 
 # Load CSV once at startup
-fpl_data = pd.read_csv('cleaned_fpl_data.csv')
-fpl_data_xmins = pd.read_csv('cleaned_fpl_data_xmins.csv')
+fpl_data = pd.read_csv('./expected_data/scout_table.csv')
+fpl_data_xmins = pd.read_csv('./expected_data/scout_table_xmins.csv')
 
 @app.route('/api/csv-predicted-points')
 def csv_predicted_points():

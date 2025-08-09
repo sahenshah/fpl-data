@@ -1,0 +1,192 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import Select
+import time
+import re
+import random
+
+# TEAM_ID = str(random.randint(1, 1000000))
+TEAM_ID = 1
+
+options = Options()
+# options.add_argument("--headless")  # Comment this out for debugging
+driver = webdriver.Chrome(options=options)
+driver.get("https://fplreview.com/free-planner/#")
+
+# Dismiss cookie popup if present
+try:
+    accept_btn = WebDriverWait(driver, 5).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Accept All')]"))
+    )
+    accept_btn.click()
+except Exception:
+    pass
+
+# Enter Team ID
+WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.ID, "liveTeamID"))
+)
+team_input = driver.find_element(By.ID, "liveTeamID")
+team_input.clear()
+team_input.send_keys(TEAM_ID)
+
+# Submit the form (or click the button via JS)
+try:
+    form = driver.find_element(By.XPATH, "//form[@action='#teamProjections']")
+    form.submit()
+except Exception:
+    load_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Load Page')]")
+    driver.execute_script("arguments[0].click();", load_button)
+
+# Wait for results to load
+WebDriverWait(driver, 20).until(
+    EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Projected Points Table')]"))
+)
+
+# Select "All Players" in the group dropdown
+group_dropdown = Select(driver.find_element(By.ID, "myGroup"))
+group_dropdown.select_by_visible_text("All Players")
+
+# Wait for the table to reload with new data
+WebDriverWait(driver, 40).until(
+    EC.presence_of_element_located((By.XPATH, "//table[@id='scout_table']//tbody//td"))
+)
+
+# Wait for at least one row in the scout_table's tbody
+def tbody_has_rows(driver):
+    try:
+        table = driver.find_element(By.ID, "scout_table")
+        driver.execute_script("arguments[0].scrollIntoView(true);", table)
+        tbody = table.find_element(By.TAG_NAME, "tbody")
+        rows = tbody.find_elements(By.TAG_NAME, "tr")
+        return len(rows) > 0
+    except Exception:
+        return False
+
+try:
+    WebDriverWait(driver, 40).until(
+        EC.presence_of_element_located((By.XPATH, "//table[@id='scout_table']//tbody//td"))
+    )
+except TimeoutException as e:
+    print("Timeout waiting for scout_table cells:", e)
+    driver.quit()
+    exit(1)
+
+# Scrape the data
+html = driver.page_source
+soup = BeautifulSoup(html, "html.parser")
+scout_table = soup.find("table", {"id": "scout_table"})
+with open("scout_table.txt", "w", encoding="utf-8") as txt_file:
+    # Scrape header row
+    thead = scout_table.find("thead")
+    if thead:
+        header_row = thead.find("tr")
+        header_cells = header_row.find_all(["th", "td"])
+        header_texts = [cell.get_text(strip=True) for cell in header_cells]
+        txt_file.write("\t".join(header_texts) + "\n")
+    # Scrape data rows
+    rows = scout_table.find("tbody").find_all("tr")
+    for row in rows:
+        cells = row.find_all(["th", "td"])
+        cell_texts = [cell.get_text(strip=True) for cell in cells]
+        txt_file.write("\t".join(cell_texts) + "\n")
+
+# Click the "xMins" button to change the view
+xmins_button = driver.find_element(By.ID, "XMINopt")
+driver.execute_script("arguments[0].click();", xmins_button)
+
+# Wait for the scout table to reload (wait for any <td> to appear)
+WebDriverWait(driver, 40).until(
+    EC.presence_of_element_located((By.XPATH, "//table[@id='scout_table']//tbody//td"))
+)
+
+# Scrape the scout table again
+html_xmins = driver.page_source
+soup_xmins = BeautifulSoup(html_xmins, "html.parser")
+scout_table_xmins = soup_xmins.find("table", {"id": "scout_table"})
+
+if scout_table_xmins:
+    with open("scout_table_xmins.txt", "w", encoding="utf-8") as txt_file:
+        # Scrape header row
+        thead_xmins = scout_table_xmins.find("thead")
+        if thead_xmins:
+            header_row_xmins = thead_xmins.find("tr")
+            header_cells_xmins = header_row_xmins.find_all(["th", "td"])
+            header_texts_xmins = [cell.get_text(strip=True) for cell in header_cells_xmins]
+            txt_file.write("\t".join(header_texts_xmins) + "\n")
+        # Scrape data rows
+        rows = scout_table_xmins.find("tbody").find_all("tr")
+        for row in rows:
+            cells = row.find_all(["th", "td"])
+            cell_texts = [cell.get_text(strip=True) for cell in cells]
+            txt_file.write("\t".join(cell_texts) + "\n")
+else:
+    with open("scout_table_xmins.txt", "w", encoding="utf-8") as txt_file:
+        txt_file.write("Table not found after xMins click.")
+
+header_points = "Name,xMins,GW1,GW2,GW3,GW4,GW5,Total,Points/£M,Elite%\n"
+header_xmins = "Name,xMins,GW1,GW2,GW3,GW4,GW5,Total,xMins/£M,Elite%\n"
+
+def clean_row(cells):
+    # Remove leading empty cell if present
+    if cells and cells[0] == '':
+        cells = cells[1:]
+    if not cells or len(cells) < 11 or not cells[0].strip():
+        return None
+    first = cells[0]
+    # Match Unicode names before position suffix (MD, FW, DF, GK) and price
+    match = re.match(r"([^\d,]+?)(MD|FW|DF|GK)\s*[\d\.]+", first, re.UNICODE)
+    if match:
+        name = match.group(1).strip()
+    else:
+        # fallback: remove trailing numbers and position manually
+        name = re.sub(r"(MD|FW|DF|GK)\s*[\d\.]+", "", first).strip()
+    # The rest of the columns (skip position and price)
+    data = cells[1:10] + [cells[10]]
+    # Remove trailing % from Elite% column
+    if len(data) == 10:
+        data[-1] = data[-1].rstrip('%')
+    return [name] + data
+
+# Scrape and clean the first table
+if scout_table:
+    rows_added = 0
+    with open("scout_table.txt", "w", encoding="utf-8") as txt_file, \
+         open("scout_table.csv", "w", encoding="utf-8") as csv_file:
+        txt_file.write(header_points)
+        csv_file.write(header_points)
+        rows = scout_table.find("tbody").find_all("tr")
+        for row in rows:
+            cells = [cell.get_text(strip=True) for cell in row.find_all(["th", "td"])]
+            cleaned = clean_row(cells)
+            if cleaned:
+                line = ",".join(cleaned).rstrip(",") + "\n"
+                txt_file.write(line)
+                csv_file.write(line)
+                rows_added += 1
+    print(f"Added {rows_added} rows to scout_table.txt and scout_table.csv")
+
+# Scrape and clean the xMins table
+if scout_table_xmins:
+    rows_added_xmins = 0
+    with open("scout_table_xmins.txt", "w", encoding="utf-8") as txt_file, \
+         open("scout_table_xmins.csv", "w", encoding="utf-8") as csv_file:
+        txt_file.write(header_xmins)
+        csv_file.write(header_xmins)
+        rows = scout_table_xmins.find("tbody").find_all("tr")
+        for row in rows:
+            cells = [cell.get_text(strip=True) for cell in row.find_all(["th", "td"])]
+            cleaned = clean_row(cells)
+            if cleaned:
+                line = ",".join(cleaned).rstrip(",") + "\n"
+                txt_file.write(line)
+                csv_file.write(line)
+                rows_added_xmins += 1
+    print(f"Added {rows_added_xmins} rows to scout_table_xmins.txt and scout_table_xmins.csv")
+
+driver.quit()
