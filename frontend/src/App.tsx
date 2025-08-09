@@ -44,7 +44,7 @@ function App() {
   };
 
   return (
-    <div className="app-main-container" style={{ padding: '8px' }}>
+    <div className="app-main-container" style={{ padding: '8px', width: '100%' }}>
       {fplData && (
         <div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '8px' }}>
@@ -62,7 +62,8 @@ function App() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
-            marginBottom: '16px',
+            marginBottom: '8px',
+            paddingBottom: '20px',
             width: '100%'
           }}>
             <input
