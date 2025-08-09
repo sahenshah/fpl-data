@@ -72,6 +72,11 @@ td.sticky-badge {
   padding: 32px 24px;
 }
 
+.css-7mt0f-MuiTablePagination-root {
+  color: #fff !important;
+  background: #242424 !important;
+}
+
 @media (max-width: 600px) {
   .player-table-ppchart {
     padding: 0.5rem !important;
