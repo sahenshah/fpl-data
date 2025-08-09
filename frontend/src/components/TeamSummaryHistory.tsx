@@ -46,7 +46,7 @@ const TeamSummaryHistory: React.FC<TeamSummaryHistoryProps> = ({ teamId }) => {
   return (
     <div style={{ width: '100%', textAlign: 'center' }}>
       <Typography variant="h6" gutterBottom style={{ textAlign: 'center', marginBottom: 0, color: '#8d8d8dff' }}>
-        Past History
+        Manager History
       </Typography>
       <LineChart
         height={300}
