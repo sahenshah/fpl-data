@@ -77,6 +77,9 @@ td.sticky-badge {
   background: #242424 !important;
 }
 
+.css-ug7h84-MuiSvgIcon-root-MuiNativeSelect-root-MuiSelect-icon {
+  color: #fff !important;
+}
 @media (max-width: 600px) {
   .player-table-ppchart {
     padding: 0.5rem !important;
