@@ -119,6 +119,10 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
     ```sh
     npm start
     ```
+3. Run in dev mode (optional)
+    ```sh
+    npm run dev
+    ```
 
 ## Usage
 
