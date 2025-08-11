@@ -129,8 +129,8 @@ else:
     with open("scout_table_xmins.txt", "w", encoding="utf-8") as txt_file:
         txt_file.write("Table not found after xMins click.")
 
-header_points = "Name,xMins,GW1,GW2,GW3,GW4,GW5,Total,Points/£M,Elite%\n"
-header_xmins = "Name,xMins,GW1,GW2,GW3,GW4,GW5,Total,xMins/£M,Elite%\n"
+header_points = "Name,Position,Price,xMins,GW1,GW2,GW3,GW4,GW5,Total,Points/£M,Elite%\n"
+header_xmins = "Name,Position,Price,xMins,GW1,GW2,GW3,GW4,GW5,Total,xMins/£M,Elite%\n"
 
 def clean_row(cells):
     # Remove leading empty cell if present
@@ -139,19 +139,29 @@ def clean_row(cells):
     if not cells or len(cells) < 11 or not cells[0].strip():
         return None
     first = cells[0]
-    # Match Unicode names before position suffix (MD, FW, DF, GK) and price
-    match = re.match(r"([^\d,]+?)(MD|FW|DF|GK)\s*[\d\.]+", first, re.UNICODE)
+    # Match Unicode names, position, and price
+    match = re.match(r"([^\d,]+?)(MD|FW|DF|GK)\s*([\d\.]+)", first, re.UNICODE)
+    position_map = {
+        "GK": "GK",
+        "DF": "DEF",
+        "MD": "MID",
+        "FW": "FWD"
+    }
     if match:
         name = match.group(1).strip()
+        position = position_map.get(match.group(2), match.group(2))
+        price = match.group(3)
     else:
-        # fallback: remove trailing numbers and position manually
-        name = re.sub(r"(MD|FW|DF|GK)\s*[\d\.]+", "", first).strip()
-    # The rest of the columns (skip position and price)
+        # fallback: try to split manually
+        name = first.strip()
+        position = ""
+        price = ""
+    # The rest of the columns
     data = cells[1:10] + [cells[10]]
     # Remove trailing % from Elite% column
     if len(data) == 10:
         data[-1] = data[-1].rstrip('%')
-    return [name] + data
+    return [name, position, price] + data
 
 # Scrape and clean the first table
 if scout_table:

@@ -77,9 +77,15 @@ fpl_data_xmins = pd.read_csv('./expected_data/scout_table_xmins.csv')
 def csv_predicted_points():
     player_name = request.args.get('name')
     gw = request.args.get('gw')  # e.g. 'GW1', 'GW2', etc.
-    if not player_name or not gw:
-        return jsonify({'error': 'Missing name or gw'}), 400
-    row = fpl_data[fpl_data['Name'].str.lower() == player_name.lower()]
+    position = request.args.get('position')
+    price = request.args.get('price')
+    if not player_name or not gw or not position or not price:
+        return jsonify({'error': 'Missing name, gw, position or price'}), 400
+    row = fpl_data[
+        (fpl_data['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
+        (fpl_data['Position'].str.upper() == position.upper()) &
+        (fpl_data['Price'].astype(str) == str(price))
+    ]
     if row.empty or gw not in fpl_data.columns:
         return jsonify({'predicted_points': None})
     predicted = float(row.iloc[0][gw])
@@ -89,9 +95,15 @@ def csv_predicted_points():
 def csv_predicted_xmins():
     player_name = request.args.get('name')
     gw = request.args.get('gw')  # e.g. 'GW1', 'GW2', etc.
-    if not player_name or not gw:
-        return jsonify({'error': 'Missing name or gw'}), 400
-    row = fpl_data_xmins[fpl_data_xmins['Name'].str.lower() == player_name.lower()]
+    position = request.args.get('position')
+    price = request.args.get('price')
+    if not player_name or not gw or not position or not price:
+        return jsonify({'error': 'Missing name, gw, position or price'}), 400
+    row = fpl_data_xmins[
+        (fpl_data_xmins['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
+        (fpl_data_xmins['Position'].str.upper() == position.upper()) &
+        (fpl_data_xmins['Price'].astype(str) == str(price))
+    ]
     if row.empty or gw not in fpl_data_xmins.columns:
         return jsonify({'predicted_xmins': None})
     predicted = float(row.iloc[0][gw])
@@ -100,10 +112,16 @@ def csv_predicted_xmins():
 @app.route('/api/player-csv-summary')
 def player_csv_summary():
     player_name = request.args.get('name')
-    if not player_name:
-        return jsonify({'error': 'Missing name'}), 400
+    position = request.args.get('position')
+    price = request.args.get('price')
+    if not player_name or not position or not price:
+        return jsonify({'error': 'Missing name, position or price'}), 400
     # Normalize names for matching
-    row = fpl_data[fpl_data['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')]
+    row = fpl_data[
+        (fpl_data['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
+        (fpl_data['Position'].str.upper() == position.upper()) &
+        (fpl_data['Price'].astype(str) == str(price))
+    ]
     if row.empty:
         return jsonify({'total': None, 'points_per_m': None, 'elite_percent': None})
     r = row.iloc[0]
@@ -116,9 +134,15 @@ def player_csv_summary():
 @app.route('/api/player-csv-xmins-summary')
 def player_csv_xmins_summary():
     player_name = request.args.get('name')
-    if not player_name:
+    position = request.args.get('position')
+    price = request.args.get('price')
+    if not player_name or not position or not price:
         return jsonify({'error': 'Missing name'}), 400
-    row = fpl_data_xmins[fpl_data_xmins['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')]
+    row = fpl_data_xmins[
+        (fpl_data_xmins['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
+        (fpl_data_xmins['Position'].str.upper() == position.upper()) &
+        (fpl_data_xmins['Price'].astype(str) == str(price))
+    ]
     if row.empty:
         return jsonify({'total': None, 'xmins_per_m': None, 'elite_percent': None})
     r = row.iloc[0]

@@ -22,7 +22,6 @@ interface PlayerDetailProps {
   onClose: () => void;
   teams?: Team[]; // Add teams prop
 }
-
 function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; predicted_xmins?: number }; teams?: Team[] }) {
   const { row, teams } = props;
   const [open, setOpen] = React.useState(false);
@@ -118,6 +117,13 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
   const [csvPredictedPoints, setCsvPredictedPoints] = React.useState<{ [gw: string]: number }>({});
   const [csvPredictedMinutes, setCsvPredictedMinutes] = React.useState<{ [gw: string]: number }>({});
 
+  const positionMap: Record<number, string> = {
+    1: 'GK',
+    2: 'DEF',
+    3: 'MID',
+    4: 'FWD',
+  };
+  
   React.useEffect(() => {
     setLoading(true);
     fetch(`/api/element-summary/${player.id}`)
@@ -133,9 +139,11 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
   React.useEffect(() => {
     async function fetchCsvPoints() {
       const points: { [gw: string]: number } = {};
+      const position = positionMap[player.element_type];
+      const price = (player.now_cost / 10).toFixed(1);
       for (const fix of fixtures) {
         const gwKey = `GW${fix.event}`;
-        const res = await fetch(`/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}`);
+        const res = await fetch(`/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
         const data = await res.json();
         points[gwKey] = data.predicted_points;
       }
@@ -147,9 +155,11 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
   React.useEffect(() => {
     async function fetchCsvMinutes() {
       const minutes: { [gw: string]: number } = {};
+      const position = positionMap[player.element_type];
+      const price = (player.now_cost / 10).toFixed(1);
       for (const fix of fixtures) {
         const gwKey = `GW${fix.event}`;
-        const res = await fetch(`/api/csv-predicted-xmins?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}`);
+        const res = await fetch(`/api/csv-predicted-xmins?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
         const data = await res.json();
         minutes[gwKey] = data.predicted_xmins;
       }
@@ -158,12 +168,6 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
     if (fixtures.length > 0) fetchCsvMinutes();
   }, [player.web_name, fixtures]);
 
-  const positionMap: Record<number, string> = {
-    1: 'GK',
-    2: 'DEF',
-    3: 'MID',
-    4: 'FWD',
-  };
 
   // Prepare predicted points array for next 5 gameweeks from csvPredictedPoints
   const next5Fixtures = fixtures.slice(0, 5);

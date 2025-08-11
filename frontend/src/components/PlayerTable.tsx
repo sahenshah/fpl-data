@@ -63,27 +63,6 @@ const positionMap: Record<number, string> = {
   4: 'FWD',
 };
 
-// Example: Add to your player loading logic
-async function fetchCsvSummary(playerName: string) {
-  const res = await fetch(`/api/player-csv-summary?name=${encodeURIComponent(playerName)}`);
-  const data = await res.json();
-  return {
-    predicted_points_next5: data.total ?? '-',
-    pp_next5_per_m: data.points_per_m ?? '-',
-    elite_selected_percent: data.elite_percent ?? '-',
-  };
-}
-
-async function fetchCsvXminsSummary(playerName: string) {
-  const res = await fetch(`/api/player-csv-xmins-summary?name=${encodeURIComponent(playerName)}`);
-  const data = await res.json();
-  return {
-    predicted_xmins_next5: data.total ?? '-',
-    pxm_next5_per_m: data.xmins_per_m ?? '-',
-    elite_selected_percent: data.elite_percent ?? '-',
-  };
-}
-
 // When building your player rows:
 // (Remove the invalid for-loop. Data enrichment should be handled outside or inside a useEffect if needed.)
 
@@ -100,11 +79,43 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
+  const [csvCache, setCsvCache] = React.useState<{[key: string]: any}>({});
+  const [csvXminsCache, setCsvXminsCache] = React.useState<{[key: string]: any}>({});
 
   // Chart data state
   const [chartPlayers, setChartPlayers] = React.useState<
     { web_name: string; predicted_points_gw: number[] }[]
   >([]);
+
+  async function fetchCsvSummary(playerName: string, position: string, price: string) {
+    const cacheKey = `${playerName}_${position}_${price}`;
+    if (csvCache[cacheKey]) {
+      return csvCache[cacheKey];
+    }
+    const res = await fetch(`/api/player-csv-summary?name=${encodeURIComponent(playerName)}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
+    const data = await res.json();
+    setCsvCache(prev => ({ ...prev, [cacheKey]: data }));
+    return {
+      predicted_points_next5: data.total ?? '-',
+      pp_next5_per_m: data.points_per_m ?? '-',
+      elite_selected_percent: data.elite_percent ?? '-',
+    };
+  }
+
+  async function fetchCsvXminsSummary(playerName: string, position: string, price: string) {
+    const cacheKey = `${playerName}_${position}_${price}`;
+    if (csvXminsCache[cacheKey]) {
+      return csvXminsCache[cacheKey];
+    }
+    const res = await fetch(`/api/player-csv-xmins-summary?name=${encodeURIComponent(playerName)}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
+    const data = await res.json();
+    setCsvXminsCache(prev => ({ ...prev, [cacheKey]: data }));
+    return {
+      predicted_xmins_next5: data.total ?? '-',
+      pxm_next5_per_m: data.xmins_per_m ?? '-',
+      elite_selected_percent: data.elite_percent ?? '-',
+    };
+  }
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -166,10 +177,11 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
     async function enrichPlayers() {
       const enriched: Element[] = [];
       for (const player of players) {
+        const position = positionMap[player.element_type];
+        const price = (player.now_cost / 10).toFixed(1);
         // eslint-disable-next-line no-await-in-loop
-        const csvSummary = await fetchCsvSummary(player.web_name);
-        // eslint-disable-next-line no-await-in-loop
-        const xminsSummary = await fetchCsvXminsSummary(player.web_name);
+        const csvSummary = await fetchCsvSummary(player.web_name, position, price);
+        const xminsSummary = await fetchCsvXminsSummary(player.web_name, position, price);
         enriched.push({
           ...player,
           predicted_points_next5: csvSummary.predicted_points_next5,
@@ -195,7 +207,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         const predicted_points_gw: number[] = [];
         for (const gw of gwKeys) {
           const res = await fetch(
-            `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}`
+            `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}&position=${encodeURIComponent(positionMap[player.element_type])}&price=${encodeURIComponent((player.now_cost / 10).toFixed(1))}`
           );
           const data = await res.json();
           predicted_points_gw.push(Number(data.predicted_points) || 0);
@@ -234,7 +246,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       const predicted_points_gw: number[] = [];
       for (const gw of gwKeys) {
         const res = await fetch(
-          `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}`
+          `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}&position=${encodeURIComponent(positionMap[player.element_type])}&price=${encodeURIComponent((player.now_cost / 10).toFixed(1))}`
         );
         const data = await res.json();
         predicted_points_gw.push(Number(data.predicted_points) || 0);
