@@ -12,6 +12,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
 import './PlayerDetail.css';
 import PlayerDetailPPChart from './PlayerDetailPPChart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
@@ -183,39 +184,61 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
 
   return (
     <div className="player-detail-modal">
-      <button onClick={onClose} style={{ float: 'right' }}>Close</button>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center' }}>
-        {team && (
-          <img
-            src={`http://localhost:5000/backend/team-badges/${team.short_name}.svg`}
-            alt={team.short_name}
-            style={{ width: 40, height: 40 }}
-          />
-        )}
-        <h2 style={{ margin: 0, textAlign: 'center' }}>{player.web_name}</h2>
+      <button onClick={onClose} className="player-detail-close-btn" aria-label="Close">
+        <CloseIcon style={{ color: '#fff', fontSize: 20 }} />
+      </button>
+      {/* Top section */}
+      <div className="player-detail-top-section">
+        <div className="player-detail-header-row player-detail-header-row-fullheight">
+          {team && (
+            <img
+              src={`http://localhost:5000/backend/team-badges/${team.short_name}.svg`}
+              alt={team.short_name}
+              className="player-detail-team-badge-fullheight"
+            />
+          )}
+          <div className="player-detail-header-text">
+            <h2 className="player-detail-web-name">{player.web_name}</h2>
+            <div className="player-names-row">
+              <span className="player-detail-name">{player.first_name} {player.second_name}</span>
+            </div>
+            <span className="player-detail-position">
+              <strong>{positionMap[player.element_type] || player.element_type}</strong>
+              <span className="player-detail-separator"> | </span>
+              <span className="player-detail-value" style={{ fontWeight: 400 }}>
+                <strong>£{(player.now_cost / 10).toFixed(1)}</strong>
+              </span>
+            </span>
+          </div>
+        </div>
       </div>
-      <div className="player-names-row">
-        <p className="player-name"><strong></strong> {player.first_name}{' '}{player.second_name}</p>
-      </div>
-      <p>
-        <span className="player-detail-value">{positionMap[player.element_type] || player.element_type}</span>
-      </p>
-      <p><strong>Cost:</strong> <span className="player-detail-value">{(player.now_cost / 10).toFixed(1)}</span></p>
-      <p><strong>Total Points:</strong> <span className="player-detail-value">{player.total_points}</span></p>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '24px',
-          justifyContent: 'left',
-          margin: '16px 0'
-        }}
-      >
-        <div><strong>Elite Selected:</strong> <span className="player-detail-value">{player.elite_selected_percent}</span></div>
-        <div><strong>xPoints (next 5):</strong> <span className="player-detail-value">{player.predicted_points_next5}</span></div>
-        <div><strong>xPoints (next 5) /£M:</strong> <span className="player-detail-value">{player.pp_next5_per_m}</span></div>
-        <div><strong>xMinutes (next 5):</strong> <span className="player-detail-value">{player.predicted_xmins_next5}</span></div>
-        <div><strong>xMinutes (next 5) /£M:</strong> <span className="player-detail-value">{player.pxm_next5_per_m}</span></div>
+
+      {/* Six data boxes row */}
+      <div className="player-detail-data-row">
+        <div className="player-detail-data-box">
+          <span className="player-detail-data-label">Total Points</span>
+          <span className="player-detail-data-value">{player.total_points}</span>
+        </div>
+        <div className="player-detail-data-box">
+          <span className="player-detail-data-label">Elite Selected %</span>
+          <span className="player-detail-data-value">{player.elite_selected_percent}</span>
+        </div>
+        <div className="player-detail-data-box">
+          <span className="player-detail-data-label">xPoints (next 5)</span>
+          <span className="player-detail-data-value">{player.predicted_points_next5}</span>
+        </div>
+        <div className="player-detail-data-box">
+          <span className="player-detail-data-label">xPoints/£M</span>
+          <span className="player-detail-data-value">{player.pp_next5_per_m}</span>
+        </div>
+        <div className="player-detail-data-box">
+          <span className="player-detail-data-label">xMins (next 5)</span>
+          <span className="player-detail-data-value">{player.predicted_xmins_next5}</span>
+        </div>
+        <div className="player-detail-data-box">
+          <span className="player-detail-data-label">xMins/£M</span>
+          <span className="player-detail-data-value">{player.pxm_next5_per_m}</span>
+        </div>
       </div>
 
       <PlayerDetailPPChart
