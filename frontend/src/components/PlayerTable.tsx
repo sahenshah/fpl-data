@@ -21,7 +21,7 @@ interface PlayerTableProps {
 }
 
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
+  // { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
   { id: 'badge', label: '', minWidth: 40, align: 'center' },
   { id: 'web_name', label: 'Name', minWidth: 100, align: 'left' },
   { id: 'first_name', label: 'First Name', minWidth: 100, align: 'left' },

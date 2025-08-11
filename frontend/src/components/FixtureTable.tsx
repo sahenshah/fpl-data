@@ -20,7 +20,7 @@ const gwColumns = Array.from({ length: 38 }, (_, i) => ({
 }));
 
 const columns = [
-  { label: 'ID', key: 'id' },
+  // { label: 'ID', key: 'id' },
   { label: '', key: 'badge' },
   { label: 'Name', key: 'name' },
   { label: 'Played', key: 'played' },

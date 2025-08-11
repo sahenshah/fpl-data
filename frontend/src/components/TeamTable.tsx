@@ -17,7 +17,7 @@ type TeamTableProps = {
 };
 
 const columns = [
-  { label: 'ID', key: 'id' },
+  // { label: 'ID', key: 'id' },
   { label: '', key: 'badge' }, 
   { label: 'Name', key: 'name' },
   { label: 'Played', key: 'played' },
