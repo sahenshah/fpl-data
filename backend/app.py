@@ -176,5 +176,14 @@ def entry_history(team_id):
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/scout-table-header')
+def scout_table_header():
+    try:
+        with open('./expected_data/scout_table.csv', 'r') as f:
+            header_line = f.readline().strip()
+        return header_line
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)

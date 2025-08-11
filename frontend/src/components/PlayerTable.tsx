@@ -35,7 +35,6 @@ const columns = [
   { id: 'pp_next5_per_m', label: 'xPoints (next 5) per £M', minWidth: 80, align: 'right' },
   { id: 'predicted_xmins_next5', label: 'xMins (next 5)', minWidth: 80, align: 'right' },
   { id: 'pxm_next5_per_m', label: 'xMins (next 5) per £M', minWidth: 80, align: 'right' },
-  { id: 'next5', label: 'Next 5', minWidth: 150, align: 'center' },
   { id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
   { id: 'form', label: 'Form', minWidth: 50, align: 'right' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, align: 'right' },
@@ -88,6 +87,8 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [chartPlayers, setChartPlayers] = React.useState<
     { web_name: string; predicted_points_gw: number[] }[]
   >([]);
+
+  const [gwKeys, setGwKeys] = React.useState<string[]>([]);
 
   async function fetchCsvSummary(playerName: string, position: string, price: string) {
     const cacheKey = `${playerName}_${position}_${price}`;
@@ -201,9 +202,8 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   // Fetch predicted points for chart when filteredPlayers changes
   React.useEffect(() => {
     async function fetchChartData() {
-      const gwKeys = ['GW1', 'GW2', 'GW3', 'GW4', 'GW5'];
+      if (gwKeys.length === 0) return;
       const results: { web_name: string; predicted_points_gw: number[] }[] = [];
-      // Only use players on the current page
       const pagePlayers = sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
       for (const player of pagePlayers) {
         const predicted_points_gw: number[] = [];
@@ -221,12 +221,23 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       }
       setChartPlayers(results);
     }
-    if (sortedPlayers.length > 0) {
+    if (sortedPlayers.length > 0 && gwKeys.length > 0) {
       fetchChartData();
     } else {
       setChartPlayers([]);
     }
-  }, [sortedPlayers, page, rowsPerPage]);
+  }, [sortedPlayers, page, rowsPerPage, gwKeys]);
+
+  React.useEffect(() => {
+    async function fetchGwKeys() {
+      const res = await fetch('/api/scout-table-header'); // This endpoint should return the first line of the CSV
+      const headerText = await res.text();
+      const headers = headerText.replace('\n', '').split(',');
+      const gwColumns = headers.filter(h => /^GW\d+$/.test(h));
+      setGwKeys(gwColumns);
+    }
+    fetchGwKeys();
+  }, []);
 
   // Use sortedPlayers for pagination and count
   const totalRows = sortedPlayers.length;
@@ -241,7 +252,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
 
   // Chart refresh handler
   const handleRefreshChart = async () => {
-    const gwKeys = ['GW1', 'GW2', 'GW3', 'GW4', 'GW5'];
     const results: { web_name: string; predicted_points_gw: number[] }[] = [];
     const pagePlayers = sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     for (const player of pagePlayers) {
