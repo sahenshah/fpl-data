@@ -29,7 +29,7 @@ export default function PlayerTablePPChart({
   return (
     <div className="player-table-ppchart">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-        <h3 className="player-table-ppchart-header" style={{ marginRight: '4px' }}>xPoints (Next 5 GWs)</h3>
+        <h3 className="player-table-ppchart-header" style={{ marginRight: '4px' }}>Predicted Points (Next 5 GWs)</h3>
         {onRefresh && (
           <IconButton color="primary" onClick={onRefresh} aria-label="refresh chart" size="small">
             <RefreshIcon />
