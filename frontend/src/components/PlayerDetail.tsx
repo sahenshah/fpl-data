@@ -11,7 +11,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import './PlayerDetail.css';
 import PlayerDetailPPChart from './PlayerDetailPPChart';
@@ -37,8 +36,8 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
+      <TableRow>
+        <TableCell align="center">
           <IconButton
             aria-label="expand row"
             size="small"
@@ -47,8 +46,8 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell>{row.event_name}</TableCell>
-        <TableCell align="right">
+        <TableCell align="center">{row.event}</TableCell>
+        <TableCell align="center">
           {getTeamBadge(row.team_h) ? (
             <img
               src={getTeamBadge(row.team_h)}
@@ -57,7 +56,7 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
             />
           ) : row.team_h}
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="center">
           {getTeamBadge(row.team_a) ? (
             <img
               src={getTeamBadge(row.team_a)}
@@ -66,17 +65,17 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
             />
           ) : row.team_a}
         </TableCell>
-        <TableCell align="right">{row.team_h_score !== null ? row.team_h_score : '-'}</TableCell>
-        <TableCell align="right">{row.team_a_score !== null ? row.team_a_score : '-'}</TableCell>
+        <TableCell align="center">{row.team_h_score !== null ? row.team_h_score : '-'}</TableCell>
+        <TableCell align="center">{row.team_a_score !== null ? row.team_a_score : '-'}</TableCell>
         <TableCell
-          align="right"
+          align="center"
           sx={{
             backgroundColor:
-              row.difficulty === 1 ? '#00831fff' : // green
-              row.difficulty === 2 ? '#54c96fe5' : // yellow
-              row.difficulty === 3 ? '#f3be4de3' : // yellow
-              row.difficulty === 4 ? '#e75f5fff' : // yellow
-              row.difficulty === 5 ? '#a7242fff' : // red
+              row.difficulty === 1 ? '#00831fff' :
+              row.difficulty === 2 ? '#54c96fe5' :
+              row.difficulty === 3 ? '#f3be4de3' :
+              row.difficulty === 4 ? '#e75f5fff' :
+              row.difficulty === 5 ? '#a7242fff' :
               undefined,
             color: row.difficulty === 3 ? '#000' : '#fff',
             fontWeight: 'bold',
@@ -85,10 +84,10 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
         >
           {row.difficulty}
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="center">
           {row.predicted_points !== undefined && row.predicted_points !== null ? row.predicted_points : '-'}
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="center">
           {row.predicted_xmins !== undefined && row.predicted_xmins !== null ? row.predicted_xmins : '-'}
         </TableCell>
       </TableRow>
@@ -96,12 +95,9 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="subtitle1" gutterBottom component="div">
-                Fixture Details
-              </Typography>
               <div>
-                <strong>Minutes played:</strong> {row.minutes}<br />
                 <strong>Kickoff time:</strong> {row.kickoff_time ? new Date(row.kickoff_time).toLocaleString() : '-'}<br />
+                <strong>Minutes played:</strong> {row.minutes}<br />
               </div>
             </Box>
           </Collapse>
@@ -259,14 +255,14 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell>GW</TableCell>
-                <TableCell align="right">Home</TableCell>
-                <TableCell align="right">Away</TableCell>
-                <TableCell align="right">Home Score</TableCell>
-                <TableCell align="right">Away Score</TableCell>
-                <TableCell align="right">Difficulty</TableCell>
-                <TableCell align="right">xPoints</TableCell>
-                <TableCell align="right">xMinutes</TableCell> 
+                <TableCell align="center" sx={{ minWidth: 5, maxWidth: 10, width: 10 }}>GW</TableCell>
+                <TableCell align="center">Home</TableCell>
+                <TableCell align="center">Away</TableCell>
+                <TableCell align="center">Home Score</TableCell>
+                <TableCell align="center">Away Score</TableCell>
+                <TableCell align="center">Difficulty</TableCell>
+                <TableCell align="center">xPoints</TableCell>
+                <TableCell align="center">xMinutes</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
