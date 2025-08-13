@@ -31,12 +31,16 @@ def serve_react(path):
         return send_from_directory(FRONTEND_BUILD_DIR, 'index.html')
 
 # FPL API endpoints
+FPL_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+}
+
 @app.route('/api/bootstrap-static')
 def bootstrap_static():
     """Fetch FPL bootstrap data from the official API and return as JSON."""
     url = 'https://fantasy.premierleague.com/api/bootstrap-static/'
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, headers=FPL_HEADERS, timeout=15)
         response.raise_for_status()
         data = response.json()
         return jsonify(data)
@@ -48,7 +52,7 @@ def api_fixtures():
     """Fetch FPL fixtures data from the official API and return as JSON."""
     url = 'https://fantasy.premierleague.com/api/fixtures/'
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, headers=FPL_HEADERS, timeout=15)
         response.raise_for_status()
         data = response.json()
         return jsonify(data)
@@ -60,7 +64,7 @@ def element_summary(player_id):
     """Fetch FPL player summary data from the official API and return as JSON."""
     url = f'https://fantasy.premierleague.com/api/element-summary/{player_id}/'
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, headers=FPL_HEADERS, timeout=15)
         response.raise_for_status()
         data = response.json()
         return jsonify(data)
@@ -72,7 +76,7 @@ def event_live(gw):
     """Fetch FPL live event data for a gameweek from the official API and return as JSON."""
     url = f'https://fantasy.premierleague.com/api/event/{gw}/live/'
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, headers=FPL_HEADERS, timeout=15)
         response.raise_for_status()
         data = response.json()
         return jsonify(data)
@@ -84,7 +88,7 @@ def entry(team_id):
     """Fetch FPL entry (team) data from the official API and return as JSON."""
     url = f'https://fantasy.premierleague.com/api/entry/{team_id}/'
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, headers=FPL_HEADERS, timeout=15)
         response.raise_for_status()
         data = response.json()
         return jsonify(data)
@@ -96,7 +100,7 @@ def entry_history(team_id):
     """Fetch FPL entry (team) history data from the official API and return as JSON."""
     url = f'https://fantasy.premierleague.com/api/entry/{team_id}/history/'
     try:
-        response = requests.get(url, timeout=15)
+        response = requests.get(url, headers=FPL_HEADERS, timeout=15)
         response.raise_for_status()
         data = response.json()
         return jsonify(data)
