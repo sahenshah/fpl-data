@@ -14,6 +14,10 @@ import PlayerDetail from './PlayerDetail';
 import type { Element, Team } from '../types/fpl';
 import './PlayerTable.css';
 import PlayerTablePPChart from './PlayerTablePPChart';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Checkbox from '@mui/material/Checkbox';
+import ListItemText from '@mui/material/ListItemText';
 
 interface PlayerTableProps {
   players: Element[];
@@ -65,13 +69,20 @@ const positionMap: Record<number, string> = {
   4: 'FWD',
 };
 
+const positionOptions = [
+  { value: 'GK', label: 'GK' },
+  { value: 'DEF', label: 'DEF' },
+  { value: 'MID', label: 'MID' },
+  { value: 'FWD', label: 'FWD' },
+];
+
 export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [sortBy, setSortBy] = React.useState<string>('predicted_points_next5');
   const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc');
-  const [positionFilter, setPositionFilter] = React.useState<string>('');
-  const [teamFilter, setTeamFilter] = React.useState<string>('');
+  const [positionFilter, setPositionFilter] = React.useState<string[]>([]);
+  const [teamFilter, setTeamFilter] = React.useState<string[]>([]);
   const [minutesFilter, setMinutesFilter] = React.useState<string>('');
   const [costFilter, setCostFilter] = React.useState<string>('');
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -80,8 +91,13 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
 
   const filteredPlayers = React.useMemo(() => {
     return players.filter(player => {
-      const positionMatch = positionFilter ? positionMap[player.element_type] === positionFilter : true;
-      const teamMatch = teamFilter ? teams.find(t => t.id === player.team)?.name === teamFilter : true;
+      const playerPosition = positionMap[player.element_type];
+      const positionMatch = positionFilter.length > 0 ? positionFilter.includes(playerPosition) : true;
+      const playerTeamName = teams.find(t => t.id === player.team)?.name;
+      const teamMatch =
+        teamFilter.length > 0
+          ? playerTeamName !== undefined && teamFilter.includes(playerTeamName)
+          : true;
       const minutesMatch = minutesFilter ? player.minutes > Number(minutesFilter) : true;
       const costMatch = costFilter ? (player.now_cost / 10) <= Number(costFilter) : true;
       const nameMatch = searchTerm
@@ -173,19 +189,102 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   return (
     <Paper sx={{ width: '100%', maxWidth: '95vw' }}>
       <div className="filter-bar" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <select value={positionFilter} onChange={e => setPositionFilter(e.target.value)}>
-          <option value="">All Positions</option>
-          <option value="GK">GK</option>
-          <option value="DEF">DEF</option>
-          <option value="MID">MID</option>
-          <option value="FWD">FWD</option>
-        </select>
-        <select value={teamFilter} onChange={e => setTeamFilter(e.target.value)}>
-          <option value="">All Teams</option>
-          {teams.map(team => (
-            <option key={team.id} value={team.name}>{team.name}</option>
+        {/* Position filter (already multi-select) */}
+        <Select
+          multiple
+          displayEmpty
+          value={positionFilter}
+          onChange={e => setPositionFilter(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+          renderValue={selected => selected.length === 0 ? 'All Positions' : (selected as string[]).join(', ')}
+          style={{ minWidth: 140, height: 30, padding: 0 }}
+          size="small"
+          sx={{ 
+            color: '#ffffffc9',
+            height: 30,
+            '.MuiOutlinedInput-notchedOutline': { borderColor: '#ffffffc9' },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#ffffffc9' },
+            '.MuiSvgIcon-root': { color: '#ffffffc9' },
+            '.MuiSelect-select': { paddingTop: '8px', paddingBottom: '8px' }
+          }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                backgroundColor: '#23232b', // dark background
+                color: '#fff'
+              }
+            }
+          }}
+        >
+          {positionOptions.map(option => (
+            <MenuItem key={option.value} value={option.value}>
+              <Checkbox
+                checked={positionFilter.indexOf(option.value) > -1}
+                sx={{ color: "#ffffff8a", '&.Mui-checked': { color: "#ffffff8a" } }}
+              />
+              <ListItemText primary={option.label} />
+            </MenuItem>
           ))}
-        </select>
+        </Select>
+        {/* Team filter (now multi-select) */}
+        <Select
+          multiple
+          displayEmpty
+          value={teamFilter}
+          onChange={e => setTeamFilter(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+          renderValue={selected => {
+            if ((selected as string[]).length === 0) return 'All Teams';
+            return (
+              <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                {(selected as string[]).map(teamName => {
+                  const team = teams.find(t => t.name === teamName);
+                  return team ? (
+                    <img
+                      key={team.id}
+                      src={`http://localhost:5000/backend/team-badges/${team.short_name}.svg`}
+                      alt={team.short_name}
+                      style={{ width: 22, height: 22, maxWidth: 22, marginRight: 2, verticalAlign: 'middle' }}
+                    />
+                  ) : null;
+                })}
+              </span>
+            );
+          }}
+          style={{ minWidth: 160, maxWidth: 400, height: 30, padding: 0 }}
+          size="small"
+          sx={{
+            color: '#ffffffc9',
+            height: 30,
+            maxWidth: 180,
+            '.MuiOutlinedInput-notchedOutline': { borderColor: '#ffffffc9' },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#ffffffc9' },
+            '.MuiSvgIcon-root': { color: '#ffffffc9' },
+            '.MuiSelect-select': { paddingTop: '8px', paddingBottom: '8px' }
+          }} 
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                backgroundColor: '#23232b', // dark background
+                color: '#fff'
+              }
+            }
+          }}
+        >
+          {teams.map(team => (
+            <MenuItem key={team.id} value={team.name}>
+              <Checkbox
+                checked={teamFilter.indexOf(team.name) > -1}
+                sx={{ color: "#ffffff8a", '&.Mui-checked': { color: "#ffffff8a" } }}
+              />
+              <img
+                src={`http://localhost:5000/backend/team-badges/${team.short_name}.svg`}
+                alt={team.short_name}
+                style={{ width: 22, height: 22, marginRight: 8, verticalAlign: 'middle' }}
+              />
+              <ListItemText primary={team.name} />
+            </MenuItem>
+          ))}
+        </Select>
+        {/* Filter inputs */}
         <input
           type="number"
           min={0}
