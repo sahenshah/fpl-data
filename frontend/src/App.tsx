@@ -29,6 +29,7 @@ function App() {
   const [inputTeamId, setInputTeamId] = useState<string>(''); // For input box
   const [teamId, setTeamId] = useState<string>(''); // Set only on Enter
   const [teamIdError, setTeamIdError] = useState<string>(''); // Error state
+  const [realTotalPlayers, setRealTotalPlayers] = useState<number | null>(null);
 
   useEffect(() => {
     // Fetch from local API/database endpoints
@@ -40,6 +41,13 @@ function App() {
         setFplData(bootstrapData);
         setFixtures(fixturesData);
       })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/bootstrap-static')
+      .then(res => res.json())
+      .then(data => setRealTotalPlayers(data.total_players))
       .catch(console.error);
   }, []);
 
@@ -70,7 +78,7 @@ function App() {
             />
           </div>
           <p style={{ textAlign: 'center', width: '100%' }}>
-            Total FPL Players: {fplData.total_players}
+            Total FPL Players: {realTotalPlayers ?? '...'}
           </p>
           <div style={{
             display: 'flex',
