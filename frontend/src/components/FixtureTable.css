@@ -39,16 +39,19 @@ td.sticky-name {
 }
 
 .fixture-controls {
-  width: 500px;
+  width: 100%;
+  max-width: 700px;
   margin: 16px auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 40px;
 }
 
 .fixture-slider {
   flex: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .fixture-sort-btn {
@@ -88,4 +91,8 @@ td.sticky-name {
 .MuiTableCell-body {
   text-align: center !important;
   vertical-align: middle !important;
+}
+.MuiSlider-markLabel[data-index="0"],
+.MuiSlider-markLabel[data-index="1"] {
+  font-weight: bold !important;
 }
