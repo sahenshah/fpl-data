@@ -81,3 +81,10 @@ td.sticky-name {
   border-right: 3px solid #ffffff !important;
   border-left: 3px solid #ffffff !important;
 }
+
+.MuiTableCell-root,
+.MuiTableCell-head,
+.MuiTableCell-body {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
