@@ -85,6 +85,9 @@ All endpoints read from the pre-populated `fpl_data.db` database.
 - The app **only reads** from the database at runtime.  
 - To update data, re-run the population scripts to rebuild `fpl_data.db`.
 
+## Live Site
+https://fpl-iq.onrender.com/
+
 ## License
 
 MIT
