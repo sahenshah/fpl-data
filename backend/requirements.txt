@@ -11,4 +11,5 @@ flask
 flask-cors
 pandas
 sqlalchemy
-numpy
+numpyi
+gunicorn
