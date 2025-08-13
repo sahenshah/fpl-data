@@ -27,7 +27,8 @@ td.sticky-name {
   overflow: hidden !important;
 }
 .css-swtyag-MuiSlider-markLabel ,
-.css-1qb795b-MuiSlider-markLabel {
+.css-1qb795b-MuiSlider-markLabel,
+.MuiSlider-markLabel {
   color: #fff !important;
 }
 @media (max-width: 600px) {
