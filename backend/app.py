@@ -20,7 +20,7 @@ def team_badge(filename):
     return response
 
 # Serve React static files
-FRONTEND_BUILD_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'dist')
+FRONTEND_BUILD_DIR = os.path.join(os.path.dirname(__file__), '.', 'dist')
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
