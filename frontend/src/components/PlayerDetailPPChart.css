@@ -1,7 +1,8 @@
 .css-18dsvps-MuiChartsLegend-root,
 .css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-tickLabel,
 .css-1yscjcf-MuiChartsAxis-root-MuiChartsXAxis-root .MuiChartsAxis-tickLabel,
-.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-label { 
+.css-ra8wgq-MuiChartsAxis-root-MuiChartsYAxis-root .MuiChartsAxis-label,
+.MuiChartsAxis-tickLabel{ 
   fill: #fff !important;
   color: #fff !important;
 }
