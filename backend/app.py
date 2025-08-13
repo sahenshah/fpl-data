@@ -19,6 +19,17 @@ def team_badge(filename):
     response.headers['Cache-Control'] = 'public, max-age=31536000'
     return response
 
+# Serve React static files
+FRONTEND_BUILD_DIR = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'build')
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    if path != "" and os.path.exists(os.path.join(FRONTEND_BUILD_DIR, path)):
+        return send_from_directory(FRONTEND_BUILD_DIR, path)
+    else:
+        return send_from_directory(FRONTEND_BUILD_DIR, 'index.html')
+
 # FPL API endpoints
 @app.route('/api/bootstrap-static')
 def bootstrap_static():
