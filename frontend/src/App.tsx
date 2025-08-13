@@ -30,6 +30,7 @@ function App() {
   const [teamId, setTeamId] = useState<string>(''); // Set only on Enter
   const [teamIdError, setTeamIdError] = useState<string>(''); // Error state
   const [realTotalPlayers, setRealTotalPlayers] = useState<number | null>(null);
+  const [showTotalPlayersAndTeamInput, setShowTotalPlayersAndTeamInput] = useState<boolean>(true);
 
   useEffect(() => {
     // Fetch from local API/database endpoints
@@ -46,9 +47,22 @@ function App() {
 
   useEffect(() => {
     fetch('/api/bootstrap-static')
-      .then(res => res.json())
-      .then(data => setRealTotalPlayers(data.total_players))
-      .catch(console.error);
+      .then(res => {
+        if (!res.ok) {
+          setShowTotalPlayersAndTeamInput(false);
+          return null;
+        }
+        setShowTotalPlayersAndTeamInput(true);
+        return res.json();
+      })
+      .then(data => {
+        if (data && typeof data.total_players === 'number') {
+          setRealTotalPlayers(data.total_players);
+        }
+      })
+      .catch(() => {
+        setShowTotalPlayersAndTeamInput(false);
+      });
   }, []);
 
   const isValidTeamId = teamId && /^\d+$/.test(teamId) && Number(teamId) > 0;
@@ -77,52 +91,56 @@ function App() {
               style={{ width: '300px', height: '300px', marginBottom: '12px' }}
             />
           </div>
-          <p style={{ textAlign: 'center', width: '100%' }}>
-            Total FPL Players: {realTotalPlayers ?? '...'}
-          </p>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            marginBottom: '8px',
-            paddingBottom: '20px',
-            width: '100%'
-          }}>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder="Team ID..."
-              value={inputTeamId}
-              onChange={e => setInputTeamId(e.target.value)}
-              onKeyDown={handleInputKeyDown}
-              style={{ padding: '8px', width: '100%', maxWidth: 400 }}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                setInputTeamId('');
-                setTeamId('');
-                setTeamIdError('');
-              }}
-              style={{
-                padding: '8px 12px',
-                background: '#7a7a7aff',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Clear
-            </button>
-          </div>
-          {teamIdError && (
-            <p style={{ color: 'red', marginBottom: '8px', textAlign: 'center' }}>{teamIdError}</p>
-          )}
-          {isValidTeamId && (
-            <TeamSummary teamId={teamId} />
+          {showTotalPlayersAndTeamInput && (
+            <>
+              <p style={{ textAlign: 'center', width: '100%' }}>
+                Total FPL Players: {realTotalPlayers ?? '...'}
+              </p>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                marginBottom: '8px',
+                paddingBottom: '20px',
+                width: '100%'
+              }}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="Team ID..."
+                  value={inputTeamId}
+                  onChange={e => setInputTeamId(e.target.value)}
+                  onKeyDown={handleInputKeyDown}
+                  style={{ padding: '8px', width: '100%', maxWidth: 400 }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInputTeamId('');
+                    setTeamId('');
+                    setTeamIdError('');
+                  }}
+                  style={{
+                    padding: '8px 12px',
+                    background: '#7a7a7aff',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Clear
+                </button>
+              </div>
+              {teamIdError && (
+                <p style={{ color: 'red', marginBottom: '8px', textAlign: 'center' }}>{teamIdError}</p>
+              )}
+              {isValidTeamId && (
+                <TeamSummary teamId={teamId} />
+              )}
+            </>
           )}
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
