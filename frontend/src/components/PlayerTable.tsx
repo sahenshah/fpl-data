@@ -21,7 +21,7 @@ interface PlayerTableProps {
 }
 
 const columns = [
-  // { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
+  { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
   { id: 'badge', label: '', minWidth: 40, align: 'center' },
   { id: 'web_name', label: 'Name', minWidth: 100, align: 'left' },
   { id: 'first_name', label: 'First Name', minWidth: 100, align: 'left' },
@@ -31,11 +31,11 @@ const columns = [
   { id: 'now_cost', label: 'Cost', minWidth: 50, align: 'right', format: (value: number) => (value / 10).toFixed(1) },
   { id: 'total_points', label: 'Total Points', minWidth: 80, align: 'right' },
   { id: 'selected_by_percent', label: 'Selected %', minWidth: 80, align: 'right' },
+  { id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
   { id: 'predicted_points_next5', label: 'xPoints (next 5)', minWidth: 80, align: 'right' },
   { id: 'pp_next5_per_m', label: 'xPoints (next 5) per £M', minWidth: 80, align: 'right' },
   { id: 'predicted_xmins_next5', label: 'xMins (next 5)', minWidth: 80, align: 'right' },
   { id: 'pxm_next5_per_m', label: 'xMins (next 5) per £M', minWidth: 80, align: 'right' },
-  { id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
   { id: 'form', label: 'Form', minWidth: 50, align: 'right' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, align: 'right' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, align: 'right' },
@@ -48,6 +48,7 @@ const columns = [
   { id: 'expected_assists_per_90', label: 'Expected Assists/90', minWidth: 80, align: 'right' },
   { id: 'expected_goal_involvements_per_90', label: 'Expected GI/90', minWidth: 80, align: 'right' },
   { id: 'defensive_contribution', label: 'Defensive Contribution', minWidth: 80, align: 'right' },
+  { id: 'defensive_contribution_per_90', label: 'Defensive Contribution/90', minWidth: 80, align: 'right' },
   { id: 'influence', label: 'Influence', minWidth: 80, align: 'right' },
   { id: 'creativity', label: 'Creativity', minWidth: 80, align: 'right' },
   { id: 'threat', label: 'Threat', minWidth: 80, align: 'right' },
@@ -64,61 +65,81 @@ const positionMap: Record<number, string> = {
   4: 'FWD',
 };
 
-// When building your player rows:
-// (Remove the invalid for-loop. Data enrichment should be handled outside or inside a useEffect if needed.)
-
 export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [sortBy, setSortBy] = React.useState<string>('predicted_points_next5'); // Default sort by predicted points
-  const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc'); // Descending by default
-  const [positionFilter, setPositionFilter] = React.useState<string>(''); // e.g. 'GK', 'DEF', etc.
-  const [teamFilter, setTeamFilter] = React.useState<string>(''); // e.g. team name
-  const [minutesFilter, setMinutesFilter] = React.useState<string>(''); // new filter for minutes
-  const [costFilter, setCostFilter] = React.useState<string>(''); // new filter for cost
-  const [searchTerm, setSearchTerm] = React.useState(''); // new state for search
+  const [sortBy, setSortBy] = React.useState<string>('predicted_points_next5');
+  const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc');
+  const [positionFilter, setPositionFilter] = React.useState<string>('');
+  const [teamFilter, setTeamFilter] = React.useState<string>('');
+  const [minutesFilter, setMinutesFilter] = React.useState<string>('');
+  const [costFilter, setCostFilter] = React.useState<string>('');
+  const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [enrichedPlayers, setEnrichedPlayers] = React.useState<Element[]>([]);
-  const [csvCache, setCsvCache] = React.useState<{[key: string]: any}>({});
-  const [csvXminsCache, setCsvXminsCache] = React.useState<{[key: string]: any}>({});
 
-  // Chart data state
-  const [chartPlayers, setChartPlayers] = React.useState<
-    { web_name: string; predicted_points_gw: number[] }[]
-  >([]);
+  const filteredPlayers = React.useMemo(() => {
+    return players.filter(player => {
+      const positionMatch = positionFilter ? positionMap[player.element_type] === positionFilter : true;
+      const teamMatch = teamFilter ? teams.find(t => t.id === player.team)?.name === teamFilter : true;
+      const minutesMatch = minutesFilter ? player.minutes > Number(minutesFilter) : true;
+      const costMatch = costFilter ? (player.now_cost / 10) <= Number(costFilter) : true;
+      const nameMatch = searchTerm
+        ? (
+            player.web_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            player.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            player.second_name?.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        : true;
+      return positionMatch && teamMatch && minutesMatch && costMatch && nameMatch;
+    });
+  }, [players, positionFilter, teamFilter, teams, minutesFilter, costFilter, searchTerm]);
 
-  const [gwKeys, setGwKeys] = React.useState<string[]>([]);
+  const percentageColumns = [
+    'selected_by_percent',
+    'elite_selected_percent',
+  ];
 
-  async function fetchCsvSummary(playerName: string, position: string, price: string) {
-    const cacheKey = `${playerName}_${position}_${price}`;
-    if (csvCache[cacheKey]) {
-      return csvCache[cacheKey];
-    }
-    const res = await fetch(`/api/player-csv-summary?name=${encodeURIComponent(playerName)}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
-    const data = await res.json();
-    setCsvCache(prev => ({ ...prev, [cacheKey]: data }));
-    return {
-      predicted_points_next5: data.total ?? '-',
-      pp_next5_per_m: data.points_per_m ?? '-',
-      elite_selected_percent: data.elite_percent ?? '-',
-    };
-  }
+  const sortedPlayers = React.useMemo(() => {
+    return [...filteredPlayers].sort((a, b) => {
+      let aValue = a[sortBy as keyof Element];
+      let bValue = b[sortBy as keyof Element];
 
-  async function fetchCsvXminsSummary(playerName: string, position: string, price: string) {
-    const cacheKey = `${playerName}_${position}_${price}`;
-    if (csvXminsCache[cacheKey]) {
-      return csvXminsCache[cacheKey];
-    }
-    const res = await fetch(`/api/player-csv-xmins-summary?name=${encodeURIComponent(playerName)}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
-    const data = await res.json();
-    setCsvXminsCache(prev => ({ ...prev, [cacheKey]: data }));
-    return {
-      predicted_xmins_next5: data.total ?? '-',
-      pxm_next5_per_m: data.xmins_per_m ?? '-',
-      elite_selected_percent: data.elite_percent ?? '-',
-    };
-  }
+      // Handle percentage columns: convert string like "9.9%" to number
+      if (percentageColumns.includes(sortBy)) {
+        aValue = typeof aValue === 'string' ? parseFloat(aValue.replace('%', '')) : aValue;
+        bValue = typeof bValue === 'string' ? parseFloat(bValue.replace('%', '')) : bValue;
+      } else {
+        // Try to convert to number if possible
+        if (typeof aValue === 'string' && !isNaN(Number(aValue))) aValue = Number(aValue);
+        if (typeof bValue === 'string' && !isNaN(Number(bValue))) bValue = Number(bValue);
+      }
+
+      if (aValue == null) return 1;
+      if (bValue == null) return -1;
+
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      return sortDirection === 'asc'
+        ? String(aValue).localeCompare(String(bValue))
+        : String(bValue).localeCompare(String(aValue));
+    });
+  }, [filteredPlayers, sortBy, sortDirection]);
+
+  // Compute chart data from only the players currently shown on the table (pagination)
+  const paginatedPlayers = React.useMemo(() => {
+    return sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [sortedPlayers, page, rowsPerPage]);
+
+  const chartPlayers = React.useMemo(() => {
+    return paginatedPlayers.map(player => ({
+      web_name: player.web_name,
+      predicted_points_gw: [
+        player.pp_gw_1, player.pp_gw_2, player.pp_gw_3, player.pp_gw_4, player.pp_gw_5
+      ].map(val => (typeof val === 'number' ? val : Number(val) || 0))
+    }));
+  }, [paginatedPlayers]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -134,110 +155,9 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortBy(columnId);
-      setSortDirection('asc');
+      setSortDirection('desc');
     }
   };
-
-  const filteredPlayers = React.useMemo(() => {
-    return enrichedPlayers.filter(player => {
-      const positionMatch = positionFilter ? positionMap[player.element_type] === positionFilter : true;
-      const teamMatch = teamFilter ? teams.find(t => t.id === player.team)?.name === teamFilter : true;
-      const minutesMatch = minutesFilter ? player.minutes > Number(minutesFilter) : true;
-      const costMatch = costFilter ? (player.now_cost / 10) <= Number(costFilter) : true;
-      const nameMatch = searchTerm
-        ? (
-            player.web_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            player.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            player.second_name?.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        : true;
-      return positionMatch && teamMatch && minutesMatch && costMatch && nameMatch;
-    });
-  }, [enrichedPlayers, positionFilter, teamFilter, teams, minutesFilter, costFilter, searchTerm]);
-
-  const sortedPlayers = React.useMemo(() => {
-    return [...filteredPlayers].sort((a, b) => {
-      let aValue = a[sortBy as keyof Element];
-      let bValue = b[sortBy as keyof Element];
-
-      // Try to convert to number if possible
-      if (typeof aValue === 'string' && !isNaN(Number(aValue))) aValue = Number(aValue);
-      if (typeof bValue === 'string' && !isNaN(Number(bValue))) bValue = Number(bValue);
-
-      if (aValue == null) return 1;
-      if (bValue == null) return -1;
-
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
-      }
-      return sortDirection === 'asc'
-        ? String(aValue).localeCompare(String(bValue))
-        : String(bValue).localeCompare(String(aValue));
-    });
-  }, [filteredPlayers, sortBy, sortDirection]);
-
-  React.useEffect(() => {
-    async function enrichPlayers() {
-      const enriched: Element[] = [];
-      for (const player of players) {
-        const position = positionMap[player.element_type];
-        const price = (player.now_cost / 10).toFixed(1);
-        // eslint-disable-next-line no-await-in-loop
-        const csvSummary = await fetchCsvSummary(player.web_name, position, price);
-        const xminsSummary = await fetchCsvXminsSummary(player.web_name, position, price);
-        enriched.push({
-          ...player,
-          predicted_points_next5: csvSummary.predicted_points_next5,
-          pp_next5_per_m: csvSummary.pp_next5_per_m,
-          elite_selected_percent: csvSummary.elite_selected_percent,
-          predicted_xmins_next5: xminsSummary.predicted_xmins_next5,
-          pxm_next5_per_m: xminsSummary.pxm_next5_per_m,
-        });
-      }
-      setEnrichedPlayers(enriched);
-    }
-    enrichPlayers();
-  }, [players]);
-
-  // Fetch predicted points for chart when filteredPlayers changes
-  React.useEffect(() => {
-    async function fetchChartData() {
-      if (gwKeys.length === 0) return;
-      const results: { web_name: string; predicted_points_gw: number[] }[] = [];
-      const pagePlayers = sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-      for (const player of pagePlayers) {
-        const predicted_points_gw: number[] = [];
-        for (const gw of gwKeys) {
-          const res = await fetch(
-            `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}&position=${encodeURIComponent(positionMap[player.element_type])}&price=${encodeURIComponent((player.now_cost / 10).toFixed(1))}`
-          );
-          const data = await res.json();
-          predicted_points_gw.push(Number(data.predicted_points) || 0);
-        }
-        results.push({
-          web_name: player.web_name,
-          predicted_points_gw,
-        });
-      }
-      setChartPlayers(results);
-    }
-    if (sortedPlayers.length > 0 && gwKeys.length > 0) {
-      fetchChartData();
-    } else {
-      setChartPlayers([]);
-    }
-  }, [sortedPlayers, page, rowsPerPage, gwKeys]);
-
-  React.useEffect(() => {
-    async function fetchGwKeys() {
-      const res = await fetch('/api/scout-table-header'); // This endpoint should return the first line of the CSV
-      const headerText = await res.text();
-      const headers = headerText.replace('\n', '').split(',');
-      const gwColumns = headers.filter(h => /^GW\d+$/.test(h));
-      setGwKeys(gwColumns);
-    }
-    fetchGwKeys();
-  }, []);
 
   // Use sortedPlayers for pagination and count
   const totalRows = sortedPlayers.length;
@@ -249,27 +169,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       setPage(maxPage);
     }
   }, [page, maxPage, rowsPerPage, totalRows]);
-
-  // Chart refresh handler
-  const handleRefreshChart = async () => {
-    const results: { web_name: string; predicted_points_gw: number[] }[] = [];
-    const pagePlayers = sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-    for (const player of pagePlayers) {
-      const predicted_points_gw: number[] = [];
-      for (const gw of gwKeys) {
-        const res = await fetch(
-          `/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gw}&position=${encodeURIComponent(positionMap[player.element_type])}&price=${encodeURIComponent((player.now_cost / 10).toFixed(1))}`
-        );
-        const data = await res.json();
-        predicted_points_gw.push(Number(data.predicted_points) || 0);
-      }
-      results.push({
-        web_name: player.web_name,
-        predicted_points_gw,
-      });
-    }
-    setChartPlayers(results);
-  };
 
   return (
     <Paper sx={{ width: '100%', maxWidth: '95vw' }}>
@@ -313,7 +212,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       </div>
       <PlayerTablePPChart 
         players={chartPlayers} 
-        onRefresh={handleRefreshChart}
       />
       <TableContainer sx={{ maxHeight: 800, maxWidth: '100vw', overflow: 'auto' }}>
         <Table stickyHeader aria-label="players table">
@@ -349,23 +247,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                 <TableRow key={player.id}>
                   {columns.map((column) => {
                     let value = player[column.id as keyof Element];
-
-                    // Custom logic for new columns
-                    if (column.id === 'predicted_points_next5') {
-                      value = player.predicted_points_next5 ?? '-';
-                    }
-                    if (column.id === 'pp_next5_per_m') {
-                      value = player.pp_next5_per_m ?? '-';
-                    }
-                    if (column.id === 'elite_selected_percent') {
-                      value = player.elite_selected_percent ?? '-';
-                    }
-                    if (column.id === 'predicted_xmins_next5') {
-                      value = player.predicted_xmins_next5 ?? '-';
-                    }
-                    if (column.id === 'pxm_next5_per_m') {
-                      value = player.pxm_next5_per_m ?? '-';
-                    }
 
                     if (column.id === 'team') {
                       const team = teams.find(t => t.id === player.team);
@@ -441,9 +322,11 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                           undefined
                         }
                       >
-                        {column.format && typeof value === 'number'
-                          ? column.format(value)
-                          : value}
+                        {(column.id === 'selected_by_percent' || column.id === 'elite_selected_percent')
+                          ? `${value}%`
+                          : column.format && typeof value === 'number'
+                            ? column.format(value)
+                            : value}
                       </TableCell>
                     );
                   })}
@@ -455,9 +338,9 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={totalRows} // Use sortedPlayers.length instead of players.length
+        count={totalRows}
         rowsPerPage={rowsPerPage}
-        page={page > maxPage ? maxPage : page} // Ensure page is valid
+        page={page > maxPage ? maxPage : page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />

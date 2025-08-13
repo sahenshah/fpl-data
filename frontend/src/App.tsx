@@ -2,12 +2,26 @@ import { useEffect, useState } from 'react';
 import type { FPLBootstrapResponse } from './types/fpl';
 import TeamTable from './components/TeamTable';
 import PlayerTable from './components/PlayerTable';
+import type { Element } from './types/fpl'; // <-- Use Element, not Player
 import FixtureTable from './components/FixtureTable'; 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TeamSummary from './components/TeamSummary';
+
+// Replace the old getCurrentGameweek function with this async version
+export async function getCurrentGameweek(): Promise<number | undefined> {
+  try {
+    const res = await fetch('/api/fpl_data/events');
+    const events = await res.json();
+    const nextEvent = events.find((ev: { is_next: boolean }) => ev.is_next === true);
+    return nextEvent ? nextEvent.id : undefined;
+  } catch (e) {
+    console.error('Failed to fetch events:', e);
+    return undefined;
+  }
+}
 
 function App() {
   const [fplData, setFplData] = useState<FPLBootstrapResponse | null>(null);
@@ -17,14 +31,15 @@ function App() {
   const [teamIdError, setTeamIdError] = useState<string>(''); // Error state
 
   useEffect(() => {
-    fetch('/api/bootstrap-static')
-      .then((res) => res.json())
-      .then((data: FPLBootstrapResponse) => setFplData(data))
-      .catch(console.error);
-
-    fetch('/api/fixtures')
-      .then((res) => res.json())
-      .then((data) => setFixtures(data))
+    // Fetch from local API/database endpoints
+    Promise.all([
+      fetch('/api/fpl_data/bootstrap-static').then(res => res.json()),
+      fetch('/api/fpl_data/fixtures').then(res => res.json())
+    ])
+      .then(([bootstrapData, fixturesData]) => {
+        setFplData(bootstrapData);
+        setFixtures(fixturesData);
+      })
       .catch(console.error);
   }, []);
 
@@ -106,7 +121,7 @@ function App() {
               <h2>Players</h2>
             </AccordionSummary>
             <AccordionDetails>
-              <PlayerTable players={fplData.elements} teams={fplData.teams} />
+              <PlayerTable players={fplData.elements as Element[]} teams={fplData.teams} />
             </AccordionDetails>
           </Accordion>
           <Accordion>

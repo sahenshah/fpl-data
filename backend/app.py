@@ -4,6 +4,8 @@ from flask_cors import CORS
 import requests
 import os
 import pandas as pd
+import sqlalchemy
+import numpy as np
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all domains on all routes
@@ -17,10 +19,7 @@ def team_badge(filename):
     response.headers['Cache-Control'] = 'public, max-age=31536000'
     return response
 
-@app.route('/api/hello')
-def hello():
-    return jsonify(message='Hello from Flask!')
-
+# FPL API endpoints
 @app.route('/api/bootstrap-static')
 def bootstrap_static():
     """Fetch FPL bootstrap data from the official API and return as JSON."""
@@ -34,7 +33,7 @@ def bootstrap_static():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/fixtures')
-def fixtures():
+def api_fixtures():
     """Fetch FPL fixtures data from the official API and return as JSON."""
     url = 'https://fantasy.premierleague.com/api/fixtures/'
     try:
@@ -69,89 +68,6 @@ def event_live(gw):
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
-# Load CSV once at startup
-fpl_data = pd.read_csv('./expected_data/scout_table.csv')
-fpl_data_xmins = pd.read_csv('./expected_data/scout_table_xmins.csv')
-
-@app.route('/api/csv-predicted-points')
-def csv_predicted_points():
-    player_name = request.args.get('name')
-    gw = request.args.get('gw')  # e.g. 'GW1', 'GW2', etc.
-    position = request.args.get('position')
-    price = request.args.get('price')
-    if not player_name or not gw or not position or not price:
-        return jsonify({'error': 'Missing name, gw, position or price'}), 400
-    row = fpl_data[
-        (fpl_data['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
-        (fpl_data['Position'].str.upper() == position.upper()) &
-        (fpl_data['Price'].astype(str) == str(price))
-    ]
-    if row.empty or gw not in fpl_data.columns:
-        return jsonify({'predicted_points': None})
-    predicted = float(row.iloc[0][gw])
-    return jsonify({'predicted_points': predicted})
-
-@app.route('/api/csv-predicted-xmins')
-def csv_predicted_xmins():
-    player_name = request.args.get('name')
-    gw = request.args.get('gw')  # e.g. 'GW1', 'GW2', etc.
-    position = request.args.get('position')
-    price = request.args.get('price')
-    if not player_name or not gw or not position or not price:
-        return jsonify({'error': 'Missing name, gw, position or price'}), 400
-    row = fpl_data_xmins[
-        (fpl_data_xmins['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
-        (fpl_data_xmins['Position'].str.upper() == position.upper()) &
-        (fpl_data_xmins['Price'].astype(str) == str(price))
-    ]
-    if row.empty or gw not in fpl_data_xmins.columns:
-        return jsonify({'predicted_xmins': None})
-    predicted = float(row.iloc[0][gw])
-    return jsonify({'predicted_xmins': predicted})
-
-@app.route('/api/player-csv-summary')
-def player_csv_summary():
-    player_name = request.args.get('name')
-    position = request.args.get('position')
-    price = request.args.get('price')
-    if not player_name or not position or not price:
-        return jsonify({'error': 'Missing name, position or price'}), 400
-    # Normalize names for matching
-    row = fpl_data[
-        (fpl_data['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
-        (fpl_data['Position'].str.upper() == position.upper()) &
-        (fpl_data['Price'].astype(str) == str(price))
-    ]
-    if row.empty:
-        return jsonify({'total': None, 'points_per_m': None, 'elite_percent': None})
-    r = row.iloc[0]
-    return jsonify({
-        'total': r['Total'],
-        'points_per_m': r['Points/£M'],
-        'elite_percent': r['Elite%']
-    })
-
-@app.route('/api/player-csv-xmins-summary')
-def player_csv_xmins_summary():
-    player_name = request.args.get('name')
-    position = request.args.get('position')
-    price = request.args.get('price')
-    if not player_name or not position or not price:
-        return jsonify({'error': 'Missing name'}), 400
-    row = fpl_data_xmins[
-        (fpl_data_xmins['Name'].str.lower().str.replace('.', '') == player_name.lower().replace('.', '')) &
-        (fpl_data_xmins['Position'].str.upper() == position.upper()) &
-        (fpl_data_xmins['Price'].astype(str) == str(price))
-    ]
-    if row.empty:
-        return jsonify({'total': None, 'xmins_per_m': None, 'elite_percent': None})
-    r = row.iloc[0]
-    return jsonify({
-        'total': float(r['Total']) if pd.notnull(r['Total']) else None,
-        'xmins_per_m': float(r['xMins/£M']) if pd.notnull(r['xMins/£M']) else None,
-        'elite_percent': str(r['Elite%']) if pd.notnull(r['Elite%']) else None
-    })
-
 @app.route('/api/entry/<int:team_id>')
 def entry(team_id):
     """Fetch FPL entry (team) data from the official API and return as JSON."""
@@ -176,12 +92,89 @@ def entry_history(team_id):
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/scout-table-header')
-def scout_table_header():
+# fpl_data.db endpoints
+engine = sqlalchemy.create_engine('sqlite:///database/fpl_data.db')
+
+@app.route('/api/fpl_data/players')
+def players():
+    """Fetch player data from the fpl_data.db SQLite database and return as JSON."""
     try:
-        with open('./expected_data/scout_table.csv', 'r') as f:
-            header_line = f.readline().strip()
-        return header_line
+        df = pd.read_sql('SELECT * FROM elements', engine)
+        data = df.to_dict(orient='records')
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/fpl_data/teams')
+def teams():
+    """Fetch team data from the fpl_data.db SQLite database and return as JSON."""
+    try:
+        df = pd.read_sql('SELECT * FROM teams', engine)
+        data = df.to_dict(orient='records')
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/fpl_data/events')
+def events():
+    """Fetch event data from the fpl_data.db SQLite database and return as JSON."""
+    try:
+        df = pd.read_sql('SELECT * FROM events', engine)
+        data = df.to_dict(orient='records')
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/fpl_data/element-summary-fixtures/<int:player_id>')
+def element_summary_fixtures(player_id):
+    """Fetch detailed player data from the fpl_data.db SQLite database and return as JSON."""
+    try:
+        df = pd.read_sql(f'SELECT * FROM element_summary_fixtures WHERE element_id = {player_id}', engine)
+        if df.empty:
+            return jsonify({'error': 'Player not found'}), 404
+        data = df.to_dict(orient='records')
+        return jsonify({'fixtures': data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/fpl_data/element-summary-history/<int:player_id>')
+def element_summary_history(player_id):
+    """Fetch detailed player history from the fpl_data.db SQLite database and return as JSON."""
+    try:
+        df = pd.read_sql(f'SELECT * FROM element_summary_history_past WHERE element_id = {player_id}', engine)
+        if df.empty:
+            return jsonify({'error': 'Player not found'}), 404
+        data = df.to_dict(orient='records')
+        return jsonify({'history_past': data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/fpl_data/fixtures')
+def db_fixtures():
+    """Fetch fixture data from the fpl_data.db SQLite database and return as JSON."""
+    try:
+        df = pd.read_sql('SELECT * FROM fixtures', engine)
+        data = df.to_dict(orient='records')
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/fpl_data/bootstrap-static')
+def db_bootstrap_static():
+    """Return bootstrap-static-like data from the local fpl_data.db database."""
+    try:
+        teams = pd.read_sql('SELECT * FROM teams', engine).replace({np.nan: None}).to_dict(orient='records')
+        elements = pd.read_sql('SELECT * FROM elements', engine).replace({np.nan: None}).to_dict(orient='records')
+        events = pd.read_sql('SELECT * FROM events', engine).replace({np.nan: None}).to_dict(orient='records')
+        phases = pd.read_sql('SELECT * FROM phases', engine).replace({np.nan: None}).to_dict(orient='records')
+        data = {
+            "teams": teams,
+            "elements": elements,
+            "events": events,
+            "phases": phases,
+            "total_players": len(elements)
+        }
+        return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

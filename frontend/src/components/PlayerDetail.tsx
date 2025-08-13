@@ -15,13 +15,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import './PlayerDetail.css';
 import PlayerDetailPPChart from './PlayerDetailPPChart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
+import { getCurrentGameweek } from '../App';
 
 interface PlayerDetailProps {
   player: Element;
   team: Team | undefined;
   onClose: () => void;
-  teams?: Team[]; // Add teams prop
+  teams?: Team[];
+  events?: { id: number; is_next: boolean }[]; // Pass events as a prop
 }
+
 function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; predicted_xmins?: number }; teams?: Team[] }) {
   const { row, teams } = props;
   const [open, setOpen] = React.useState(false);
@@ -107,75 +110,65 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
   );
 }
 
+const positionMap: Record<number, string> = {
+  1: 'GK',
+  2: 'DEF',
+  3: 'MID',
+  4: 'FWD',
+};
+
 const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, teams }) => {
   const [fixtures, setFixtures] = React.useState<PlayerFixture[]>([]);
   const [historyPast, setHistoryPast] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [csvPredictedPoints, setCsvPredictedPoints] = React.useState<{ [gw: string]: number }>({});
-  const [csvPredictedMinutes, setCsvPredictedMinutes] = React.useState<{ [gw: string]: number }>({});
+  const [currentGW, setCurrentGW] = React.useState<number>(1);
 
-  const positionMap: Record<number, string> = {
-    1: 'GK',
-    2: 'DEF',
-    3: 'MID',
-    4: 'FWD',
-  };
-  
+  // Fetch current gameweek on mount
+  React.useEffect(() => {
+    getCurrentGameweek().then(gw => {
+      if (gw) setCurrentGW(gw);
+    });
+  }, []);
+
+  // Build predicted points for next 5 gameweeks
+  const predictedPointsNext5: number[] = [];
+  for (let i = 0; i < 5; i++) {
+    const gw = currentGW + i;
+    const key = `pp_gw_${gw}` as keyof Element;
+    const val = player[key];
+    predictedPointsNext5.push(typeof val === 'number' ? val : Number(val) || 0);
+  }
+
+  // Build xMins for next 5 gameweeks
+  const xMinsNext5: number[] = [];
+  for (let i = 0; i < 5; i++) {
+    const gw = currentGW + i;
+    const key = `xmins_gw_${gw}` as keyof Element;
+    const val = player[key];
+    xMinsNext5.push(typeof val === 'number' ? val : Number(val) || 0);
+  }
+
   React.useEffect(() => {
     setLoading(true);
-    fetch(`/api/element-summary/${player.id}`)
+    fetch(`/api/fpl_data/element-summary-fixtures/${player.id}`)
       .then(res => res.json())
       .then(data => {
         setFixtures(data.fixtures || []);
-        setHistoryPast(data.history_past || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, [player.id]);
 
   React.useEffect(() => {
-    async function fetchCsvPoints() {
-      const points: { [gw: string]: number } = {};
-      const position = positionMap[player.element_type];
-      const price = (player.now_cost / 10).toFixed(1);
-      for (const fix of fixtures) {
-        const gwKey = `GW${fix.event}`;
-        const res = await fetch(`/api/csv-predicted-points?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
-        const data = await res.json();
-        points[gwKey] = data.predicted_points;
-      }
-      setCsvPredictedPoints(points);
-    }
-    if (fixtures.length > 0) fetchCsvPoints();
-  }, [player.web_name, fixtures]);
-
-  React.useEffect(() => {
-    async function fetchCsvMinutes() {
-      const minutes: { [gw: string]: number } = {};
-      const position = positionMap[player.element_type];
-      const price = (player.now_cost / 10).toFixed(1);
-      for (const fix of fixtures) {
-        const gwKey = `GW${fix.event}`;
-        const res = await fetch(`/api/csv-predicted-xmins?name=${encodeURIComponent(player.web_name)}&gw=${gwKey}&position=${encodeURIComponent(position)}&price=${encodeURIComponent(price)}`);
-        const data = await res.json();
-        minutes[gwKey] = data.predicted_xmins;
-      }
-      setCsvPredictedMinutes(minutes);
-    }
-    if (fixtures.length > 0) fetchCsvMinutes();
-  }, [player.web_name, fixtures]);
-
-
-  // Prepare predicted points array for next 5 gameweeks from csvPredictedPoints
-  const next5Fixtures = fixtures.slice(0, 5);
-  const predictedPointsArray = next5Fixtures.map(fix =>
-    csvPredictedPoints[`GW${fix.event}`] !== undefined && csvPredictedPoints[`GW${fix.event}`] !== null
-      ? csvPredictedPoints[`GW${fix.event}`]
-      : 0
-  );
-  // Always use "GW{number}" for labels
-  const gwLabels = next5Fixtures.map(fix => `GW${fix.event}`);
-
+    setLoading(true);
+    fetch(`/api/fpl_data/element-summary-history/${player.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setHistoryPast(data.history_past || []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [player.id]);
   if (!player) return null;
 
   return (
@@ -238,13 +231,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       </div>
 
       <PlayerDetailPPChart
-        predictedPoints={predictedPointsArray}
-        predictedXmins={next5Fixtures.map(fix =>
-          csvPredictedMinutes[`GW${fix.event}`] !== undefined && csvPredictedMinutes[`GW${fix.event}`] !== null
-            ? csvPredictedMinutes[`GW${fix.event}`]
-            : 0
-        )}
-        gwLabels={gwLabels}
+        predictedPoints={predictedPointsNext5}
+        predictedXmins={xMinsNext5}
       />
       <h3>Fixtures</h3>
       {loading ? (
@@ -254,8 +242,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           <Table aria-label="collapsible fixtures table" size="small">
             <TableHead>
               <TableRow>
-                <TableCell />
-                <TableCell align="center" sx={{ minWidth: 5, maxWidth: 10, width: 10 }}>GW</TableCell>
+                <TableCell sx={{ width: 5, minWidth: 5, maxWidth: 5, padding: '0 2px'}} />
+                <TableCell align="center">GW</TableCell>
                 <TableCell align="center">Home</TableCell>
                 <TableCell align="center">Away</TableCell>
                 <TableCell align="center">Home Score</TableCell>
@@ -266,21 +254,24 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
               </TableRow>
             </TableHead>
             <TableBody>
-              {fixtures.slice(0, 38).map(fix => (
-                <FixtureRow
-                  key={fix.id}
-                  row={{
-                    ...fix,
-                    predicted_points: csvPredictedPoints[`GW${fix.event}`] !== undefined
-                      ? csvPredictedPoints[`GW${fix.event}`]
-                      : 0,
-                    predicted_xmins: csvPredictedMinutes[`GW${fix.event}`] !== undefined
-                      ? csvPredictedMinutes[`GW${fix.event}`]
-                      : undefined
-                  }}
-                  teams={teams}
-                />
-              ))}
+              {fixtures.slice(0, 38).map(fix => {
+                // Get the gameweek number for this fixture
+                const gw = fix.event;
+                // Lookup xPoints and xMins from the player element table
+                const predicted_points = player[`pp_gw_${gw}` as keyof Element];
+                const predicted_xmins = player[`xmins_gw_${gw}` as keyof Element];
+                return (
+                  <FixtureRow
+                    key={fix.id}
+                    row={{
+                      ...fix,
+                      predicted_points: typeof predicted_points === 'number' ? predicted_points : Number(predicted_points) || 0,
+                      predicted_xmins: typeof predicted_xmins === 'number' ? predicted_xmins : Number(predicted_xmins) || 0,
+                    }}
+                    teams={teams}
+                  />
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -323,7 +314,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           </TableHead>
           <TableBody>
             {historyPast.map((row) => (
-              <TableRow key={row.season_name}>
+              <TableRow key={row.id}>
                 <TableCell component="th" scope="row">{row.season_name}</TableCell>
                 <TableCell align="right">{(row.start_cost / 10).toFixed(1)}</TableCell>
                 <TableCell align="right">{(row.end_cost / 10).toFixed(1)}</TableCell>
