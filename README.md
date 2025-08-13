@@ -1,51 +1,60 @@
 # FPL Data Dashboard
 
-This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask) that visualizes both historical player statistics and predicted metrics for upcoming gameweeks, with projected points aggregated and evaluated from reputable online sources.
+This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes both historical player statistics and predicted metrics for upcoming gameweeks, using a pre-populated SQLite database (`fpl_data.db`) as the data source for the backend API and frontend.
 
 ## Features
 
 - Interactive player table with sorting, filtering, and search
 - Predicted points chart for selected or filtered players
 - Player detail modal with team badge and stats
-- Data enrichment from backend CSV via API
+- Main data gathered from FPL API
+- Data enrichment from backend CSVs via scripts
 - Responsive design for desktop and mobile
 
 ## Tech Stack
 
 - **Frontend:** React, TypeScript, MUI (Material UI), MUI X Charts
 - **Backend:** Python, Flask, Pandas
-- **Data:** `scout_table.csv, scout_table_xmins.csv` (player stats and predictions)
+- **Data:** `fpl_data.db` (populated from CSVs and FPL API via scripts)
+
+## How It Works
+
+1. **Data Population:**  
+   Scripts are used to fetch and process data from the FPL API and CSV files, then populate the `fpl_data.db` SQLite database.
+2. **Backend:**  
+   The Flask backend serves API endpoints that read from `fpl_data.db`.
+3. **Frontend:**  
+   The React frontend fetches data from the backend API and displays interactive tables, charts, and player details.
 
 ## Setup
 
 ### Backend
 
-1. Install dependencies:
+1. **Install dependencies:**
     ```sh
-    pip install flask pandas
+    pip install -r requirements.txt
     ```
-2. Run ut_update_expected_data.py
+2. **Populate the database:**  
+   Run the scripts to fetch/process data and build `fpl_data.db`:
     ```sh
-    cd expected_data
-    python ut_update_expected_data.py
+    python backend/scripts/populate_fpl_database.py
     ```
-
-3. Run the Flask server:
+3. **Run the Flask server:**
     ```sh
-    python app.py
+    python backend/app.py
     ```
 
 ### Frontend
 
-1. Install dependencies:
+1. **Install dependencies:**
     ```sh
     npm install
     ```
-2. Start the React app:
+2. **Start the React app:**
     ```sh
     npm start
     ```
-3. Run in dev mode (optional)
+3. **(Optional) Run in dev mode:**
     ```sh
     npm run dev
     ```
@@ -53,94 +62,28 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
 ## Usage
 
 - Filter players by position, team, minutes, cost, or name.
-- Click a player for detailed stats.
+- Click a player for detailed stats and fixture projections.
 - View predicted points for the next 5 gameweeks in the chart above the table.
 
 ## API Endpoints
 
-- `/api/csv-predicted-points?name=<player_name>&gw=<GW>`  
-  Returns predicted points for a player for a specific gameweek.
-- `/api/player-csv-summary?name=<player_name>`  
-  Returns summary stats for a player.
+- `/api/fpl_data/events`  
+- `/api/fpl_data/element-summary-fixtures/<player_id>`  
+- `/api/fpl_data/element-summary-history/<player_id>`  
+- `/api/fpl_data/fixtures`  
+- ...and more (see backend code for full list)
+
+All endpoints read from the pre-populated `fpl_data.db` database.
 
 ## Customization
 
-- Update `cleaned_fpl_data.csv` with new player data or predictions.
+- Update or add new data to the CSVs or scripts, then re-run the population scripts to refresh the database.
 - Adjust chart and table columns in the frontend as needed.
 
-## License
+## Notes
 
-MIT
-
----
-```# FPL Data Dashboard
-
-This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes player statistics and predicted points for upcoming gameweeks using data from a cleaned CSV file.
-
-## Features
-
-- Interactive player table with sorting, filtering, and search
-- Predicted points chart for selected or filtered players
-- Player detail modal with team badge and stats
-- Data enrichment from backend CSV via API
-- Responsive design for desktop and mobile
-
-## Tech Stack
-
-- **Frontend:** React, TypeScript, MUI (Material UI), MUI X Charts
-- **Backend:** Python, Flask, Pandas
-- **Data:** `cleaned_fpl_data.csv` (player stats and predictions)
-
-## Setup
-
-### Backend
-
-1. Install dependencies:
-    ```sh
-    pip install flask pandas
-    ```
-2. Run script to populate expected data
-    ```sh
-    python3 ./expected_data/ut_update_expected_data.py
-    ```
-
-3. Run the Flask server:
-    ```sh
-    python3 app.py
-    ```
-
-### Frontend
-
-1. Install dependencies:
-    ```sh
-    npm install
-    ```
-2. Start the React app:
-    ```sh
-    npm start
-    ```
-3. Run in dev mode (optional)
-    ```sh
-    npm run dev
-    ```
-
-## Usage
-
-- Filter players by position, team, minutes, cost, or name.
-- Click a player for detailed stats.
-- View predicted points for the next 5 gameweeks in the chart above the table.
-
-## API Endpoints
-
-- `/api/csv-predicted-points?name=<player_name>&gw=<GW>`  
-  Returns predicted points for a player for a specific gameweek.
-- `/api/player-csv-summary?name=<player_name>`  
-  Returns summary stats for a player.
-
-## Customization
-
-- Update `cleaned_fpl_data.csv` with new player data or predictions.
-- Adjust chart and table columns in the frontend as needed.
+- The app **only reads** from the database at runtime.  
+- To update data, re-run the population scripts to rebuild `fpl_data.db`.
 
 ## License
 
