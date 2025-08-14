@@ -17,6 +17,8 @@ import PlayerDetailPPChart from './PlayerDetailPPChart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
 import { getCurrentGameweek } from '../App';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
 interface PlayerDetailProps {
   player: Element;
   team: Team | undefined;
@@ -33,7 +35,7 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
   const getTeamBadge = (id: number) => {
     const team = teams?.find(t => t.id === id);
     return team
-      ? `http://localhost:5000/backend/team-badges/${team.short_name}.svg`
+      ? `${BACKEND_URL}/backend/team-badges/${team.short_name}.svg`
       : undefined;
   };
 
@@ -181,7 +183,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         <div className="player-detail-header-row player-detail-header-row-fullheight">
           {team && (
             <img
-              src={`http://localhost:5000/backend/team-badges/${team.short_name}.svg`}
+              src={`${BACKEND_URL}/backend/team-badges/${team.short_name}.svg`}
               alt={team.short_name}
               className="player-detail-team-badge-fullheight"
             />

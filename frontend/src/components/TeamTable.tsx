@@ -11,6 +11,8 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import type { Team } from '../types/fpl';
 import './TeamTable.css';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
 // Define props type for TeamTable
 type TeamTableProps = {
   teams: Team[];
@@ -91,7 +93,7 @@ export default function TeamTable({ teams }: TeamTableProps) {
                   {col.key === 'badge'
                     ? (
                         <img
-                          src={`http://localhost:5000/backend/team-badges/${team.short_name}.svg`}
+                          src={`${BACKEND_URL}/backend/team-badges/${team.short_name}.svg`}
                           alt={team.short_name}
                           style={{ width: 32, height: 32 }}
                         />
