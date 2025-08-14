@@ -553,6 +553,16 @@ def main():
     subprocess.run(['python3', update_script_path], check=True)
     print("Expected data update script completed.")
 
+    # --- Move any CSV and TXT files created in this folder to ../expected_data ---
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    expected_data_dir = os.path.abspath(os.path.join(this_dir, '..', 'expected_data'))
+    for fname in os.listdir(this_dir):
+        if fname.endswith('.csv') or fname.endswith('.txt'):
+            src = os.path.join(this_dir, fname)
+            dst = os.path.join(expected_data_dir, fname)
+            shutil.move(src, dst)
+            print(f"Moved {src} to {dst}")
+
     data = fetch_bootstrap()
     fixtures = fetch_fixtures()
     

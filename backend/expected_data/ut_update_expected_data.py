@@ -3,11 +3,12 @@ import os
 from datetime import datetime
 import subprocess
 
-# Paths
-base_dir = os.path.dirname(os.path.abspath(__file__))
-csv1 = os.path.join(base_dir, "scout_table.csv")
-csv2 = os.path.join(base_dir, "scout_table_xmins.csv")
-archive_dir = os.path.join(base_dir, "../archive")
+# Always place CSV files in backend/expected_data/
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+expected_data_dir = os.path.join(project_root, "expected_data")
+csv1 = os.path.join(expected_data_dir, "scout_table.csv")
+csv2 = os.path.join(expected_data_dir, "scout_table_xmins.csv")
+archive_dir = os.path.join(project_root, "archive")
 
 # Ensure archive directory exists
 os.makedirs(archive_dir, exist_ok=True)
@@ -33,6 +34,6 @@ else:
     print(f"{csv2} not found, skipping archive.")
 
 # Run the scraper
-scraper_path = os.path.join(base_dir, "scrape_fpl_review.py")
+scraper_path = os.path.join(expected_data_dir, "scrape_fpl_review.py")
 print("Running scrape_fpl_review.py...")
 subprocess.run(["python3", scraper_path], check=True)
