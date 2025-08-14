@@ -4,11 +4,11 @@ import TeamTable from './components/TeamTable';
 import PlayerTable from './components/PlayerTable';
 import type { Element } from './types/fpl'; // <-- Use Element, not Player
 import FixtureTable from './components/FixtureTable'; 
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TeamSummary from './components/TeamSummary';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Fade from '@mui/material/Fade';
 
 // Replace the old getCurrentGameweek function with this async version
 export async function getCurrentGameweek(): Promise<number | undefined> {
@@ -31,6 +31,7 @@ function App() {
   const [teamIdError, setTeamIdError] = useState<string>(''); // Error state
   const [realTotalPlayers, setRealTotalPlayers] = useState<number | null>(null);
   const [showTotalPlayersAndTeamInput, setShowTotalPlayersAndTeamInput] = useState<boolean>(true);
+  const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     // Fetch from local API/database endpoints
@@ -81,9 +82,22 @@ function App() {
   };
 
   return (
-    <div className="app-main-container" style={{ padding: '8px', width: '100%' }}>
+    <div
+      className="app-main-container"
+      style={{
+        padding: '8px',
+        width: '100vw',
+        minHeight: '100vh',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center', // Center horizontally
+        justifyContent: 'flex-start', // Top align vertically
+        background: '#181820'
+      }}
+    >
       {fplData && (
-        <div>
+        <div style={{ width: '100%', maxWidth: 1400, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '8px' }}>
             <img
               src="/fpl_iq_logo_nb.png"
@@ -142,30 +156,48 @@ function App() {
               )}
             </>
           )}
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <h2>Players</h2>
-            </AccordionSummary>
-            <AccordionDetails>
-              <PlayerTable players={fplData.elements as Element[]} teams={fplData.teams} />
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <h2>Fixtures</h2>
-            </AccordionSummary>
-            <AccordionDetails>
-              <FixtureTable teams={fplData.teams} fixtures={fixtures} /> 
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <h2>Teams</h2>
-            </AccordionSummary>
-            <AccordionDetails>
-              <TeamTable teams={fplData.teams} />
-            </AccordionDetails>
-          </Accordion>
+          <Box sx={{ width: '100%' }}>
+            <Tabs
+              value={tabIndex}
+              onChange={(_, newValue) => setTabIndex(newValue)}
+              centered
+              textColor="inherit"
+              TabIndicatorProps={{ style: { display: 'none' } }}
+              sx={{
+                marginBottom: 2,
+                '& .MuiTab-root': {
+                  minWidth: 120,
+                  color: '#fff',
+                  background: 'transparent',
+                  borderRadius: '8px 8px 0 0',
+                  transition: 'background 0.2s',
+                },
+                '& .Mui-selected': {
+                  background: '#41054b',
+                  color: '#fff',
+                },
+              }}
+            >
+              <Tab label="Players" />
+              <Tab label="Fixtures" />
+              <Tab label="Teams" />
+            </Tabs>
+            <Fade in={tabIndex === 0} timeout={400} unmountOnExit>
+              <div>
+                <PlayerTable players={fplData.elements as Element[]} teams={fplData.teams} />
+              </div>
+            </Fade>
+            <Fade in={tabIndex === 1} timeout={400} unmountOnExit>
+              <div>
+                <FixtureTable teams={fplData.teams} fixtures={fixtures} />
+              </div>
+            </Fade>
+            <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
+              <div>
+                <TeamTable teams={fplData.teams} />
+              </div>
+            </Fade>
+          </Box>
         </div>
       )}
     </div>

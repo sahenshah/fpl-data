@@ -249,12 +249,12 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
               </span>
             );
           }}
-          style={{ minWidth: 160, maxWidth: 400, height: 30, padding: 0 }}
+          style={{ minWidth: 160, maxWidth: '90vw', height: 30, padding: 0 }}
           size="small"
           sx={{
             color: '#ffffffc9',
             height: 30,
-            maxWidth: 180,
+            maxWidth: '90vw',
             '.MuiOutlinedInput-notchedOutline': { borderColor: '#ffffffc9' },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#ffffffc9' },
             '.MuiSvgIcon-root': { color: '#ffffffc9' },
@@ -264,7 +264,10 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             PaperProps: {
               sx: {
                 backgroundColor: '#23232b', // dark background
-                color: '#fff'
+                color: '#fff',
+                maxWidth: '90vw',
+                width: '90vw',
+                overflowX: 'auto'
               }
             }
           }}

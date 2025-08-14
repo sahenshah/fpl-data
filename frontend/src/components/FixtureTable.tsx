@@ -91,7 +91,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
             valueLabelDisplay="auto"
             onChange={(_, value) => setGwRange(value as [number, number])}
             disableSwap
-            sx={{ width: 500 }} // Make the slider longer
+            sx={{ width: 600 }}
           />
         </div>
         <button
