@@ -78,6 +78,26 @@
   display: block;
 }
 
+@media (max-width: 600px) {
+  .player-detail-team-badge,
+  .player-detail-team-badge-fullheight {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    max-width: 56px;
+    max-height: 56px;
+  }
+  .compact-fixtures-table .MuiTableCell-root, 
+  .compact-fixtures-table th, 
+  .compact-fixtures-table td {
+    padding: 4px 6px !important;
+    min-width: 20px !important;
+  }
+  .player-detail-modal {
+    padding: 16px 12px !important;
+  }
+}
 .player-detail-web-name {
   margin-bottom: 2px; /* Reduce space below web name */
   text-align: left; /* <-- left align the name */

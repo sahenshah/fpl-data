@@ -59,6 +59,18 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
             />
           ) : row.team_h}
         </TableCell>
+        <TableCell
+          align="center"
+          sx={{ width: 24, minWidth: 24, maxWidth: 32, padding: '0 2px' }} // Home Score cell
+        >
+          {row.team_h_score !== null ? row.team_h_score : '-'}
+        </TableCell>
+        <TableCell
+          align="center"
+          sx={{ width: 24, minWidth: 24, maxWidth: 32, padding: '0 2px' }} // Away Score cell
+        >
+          {row.team_a_score !== null ? row.team_a_score : '-'}
+        </TableCell>
         <TableCell align="center">
           {getTeamBadge(row.team_a) ? (
             <img
@@ -68,8 +80,6 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
             />
           ) : row.team_a}
         </TableCell>
-        <TableCell align="center">{row.team_h_score !== null ? row.team_h_score : '-'}</TableCell>
-        <TableCell align="center">{row.team_a_score !== null ? row.team_a_score : '-'}</TableCell>
         <TableCell
           align="center"
           sx={{
@@ -94,18 +104,20 @@ function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; p
           {row.predicted_xmins !== undefined && row.predicted_xmins !== null ? row.predicted_xmins : '-'}
         </TableCell>
       </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <div>
-                <strong>Kickoff time:</strong> {row.kickoff_time ? new Date(row.kickoff_time).toLocaleString() : '-'}<br />
-                <strong>Minutes played:</strong> {row.minutes}<br />
-              </div>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
+      {open && (
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <div>
+                  <strong>Kickoff time:</strong> {row.kickoff_time ? new Date(row.kickoff_time).toLocaleString() : '-'}<br />
+                  <strong>Minutes played:</strong> {row.minutes}<br />
+                </div>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      )}
     </React.Fragment>
   );
 }
@@ -203,30 +215,71 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       </div>
 
       {/* Six data boxes row */}
-      <div className="player-detail-data-row">
-        <div className="player-detail-data-box">
-          <span className="player-detail-data-label">Total Points</span>
-          <span className="player-detail-data-value">{player.total_points}</span>
-        </div>
-        <div className="player-detail-data-box">
-          <span className="player-detail-data-label">Elite Selected %</span>
-          <span className="player-detail-data-value">{player.elite_selected_percent}</span>
-        </div>
-        <div className="player-detail-data-box">
-          <span className="player-detail-data-label">xPoints (next 5)</span>
-          <span className="player-detail-data-value">{player.predicted_points_next5}</span>
-        </div>
-        <div className="player-detail-data-box">
-          <span className="player-detail-data-label">xPoints/£M</span>
-          <span className="player-detail-data-value">{player.pp_next5_per_m}</span>
-        </div>
-        <div className="player-detail-data-box">
-          <span className="player-detail-data-label">xMins (next 5)</span>
-          <span className="player-detail-data-value">{player.predicted_xmins_next5}</span>
-        </div>
-        <div className="player-detail-data-box">
-          <span className="player-detail-data-label">xMins/£M</span>
-          <span className="player-detail-data-value">{player.pxm_next5_per_m}</span>
+      <div
+        style={{
+          overflowX: 'auto',
+          width: '100%',
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        <div
+          className="player-detail-data-row"
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            gap: 30,
+            minWidth: 400,
+            justifyContent: 'flex-start', // align to the left so scrolling starts at first box
+            alignItems: 'center',
+            padding: '0 8px', // optional: add a little side padding
+          }}
+        >
+          {[
+            { label: 'Total Points', value: player.total_points },
+            { label: 'Elite Selected %', value: player.elite_selected_percent },
+            { label: 'xPoints (next 5)', value: player.predicted_points_next5 },
+            { label: 'xPoints/£M', value: player.pp_next5_per_m },
+            { label: 'xMins (next 5)', value: player.predicted_xmins_next5 },
+            { label: 'xMins/£M', value: player.pxm_next5_per_m },
+            { label: 'Form', value: player.form },
+            { label: 'ICT Index', value: player.ict_index },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="player-detail-data-box"
+              style={{
+                flex: '0 0 auto',
+                minWidth: 90,
+                padding: '10px 10px',
+                borderRadius: 6,
+                textAlign: 'center',
+                fontSize: window.innerWidth < 600 ? '0.85rem' : '1rem',
+              }}
+            >
+              <span
+                className="player-detail-data-label"
+                style={{
+                  display: 'block',
+                  fontSize: window.innerWidth < 600 ? '0.72rem' : '0.92rem',
+                  color: '#333',
+                  marginBottom: 2,
+                }}
+              >
+                {item.label}
+              </span>
+              <span
+                className="player-detail-data-value"
+                style={{
+                  fontWeight: 600,
+                  fontSize: window.innerWidth < 600 ? '1rem' : '1.15rem',
+                }}
+              >
+                {item.value}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -239,15 +292,25 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         <p>Loading fixtures...</p>
       ) : (
         <TableContainer component={Paper}>
-          <Table aria-label="collapsible fixtures table" size="small">
+          <Table className="compact-fixtures-table" aria-label="collapsible fixtures table" size="small">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: 5, minWidth: 5, maxWidth: 5, padding: '0 2px'}} />
+                <TableCell sx={{ width: 2, minWidth: 2, maxWidth: 2, padding: '0'}} />
                 <TableCell align="center">GW</TableCell>
                 <TableCell align="center">Home</TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ width: 2, minWidth: 2, maxWidth: 32, padding: '0 2px' }} // Home Score column
+                >
+                  {/* Home Score */}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ width: 2, minWidth: 2, maxWidth: 32, padding: '0 2px' }} // Away Score column
+                >
+                  {/* Away Score */}
+                </TableCell>
                 <TableCell align="center">Away</TableCell>
-                <TableCell align="center">Home Score</TableCell>
-                <TableCell align="center">Away Score</TableCell>
                 <TableCell align="center">Difficulty</TableCell>
                 <TableCell align="center">xPoints</TableCell>
                 <TableCell align="center">xMinutes</TableCell>

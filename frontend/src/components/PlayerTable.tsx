@@ -25,7 +25,7 @@ interface PlayerTableProps {
 }
 
 const columns = [
-  { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
+  // { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
   { id: 'badge', label: '', minWidth: 40, align: 'center' },
   { id: 'web_name', label: 'Name', minWidth: 100, align: 'left' },
   { id: 'first_name', label: 'First Name', minWidth: 100, align: 'left' },
@@ -36,23 +36,23 @@ const columns = [
   { id: 'total_points', label: 'Total Points', minWidth: 80, align: 'right' },
   { id: 'selected_by_percent', label: 'Selected %', minWidth: 80, align: 'right' },
   { id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
-  { id: 'predicted_points_next5', label: 'xPoints (next 5)', minWidth: 80, align: 'right' },
-  { id: 'pp_next5_per_m', label: 'xPoints (next 5) per £M', minWidth: 80, align: 'right' },
-  { id: 'predicted_xmins_next5', label: 'xMins (next 5)', minWidth: 80, align: 'right' },
-  { id: 'pxm_next5_per_m', label: 'xMins (next 5) per £M', minWidth: 80, align: 'right' },
+  { id: 'predicted_points_next5', label: 'xPoints next 5', minWidth: 80, align: 'right' },
+  { id: 'pp_next5_per_m', label: 'xPoints next 5 / £M', minWidth: 80, align: 'right' },
+  { id: 'predicted_xmins_next5', label: 'xMins next 5', minWidth: 80, align: 'right' },
+  { id: 'pxm_next5_per_m', label: 'xMins next 5 / £M', minWidth: 80, align: 'right' },
   { id: 'form', label: 'Form', minWidth: 50, align: 'right' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, align: 'right' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, align: 'right' },
   { id: 'assists', label: 'Assists', minWidth: 50, align: 'right' },
   { id: 'clean_sheets', label: 'Clean Sheets', minWidth: 80, align: 'right' },
-  { id: 'expected_goals', label: 'Expected Goals', minWidth: 80, align: 'right' },
-  { id: 'expected_assists', label: 'Expected Assists', minWidth: 80, align: 'right' },
-  { id: 'expected_goal_involvements', label: 'Expected Goal Involvements', minWidth: 80, align: 'right' },
-  { id: 'expected_goals_per_90', label: 'Expected Goals/90', minWidth: 80, align: 'right' },
-  { id: 'expected_assists_per_90', label: 'Expected Assists/90', minWidth: 80, align: 'right' },
-  { id: 'expected_goal_involvements_per_90', label: 'Expected GI/90', minWidth: 80, align: 'right' },
-  { id: 'defensive_contribution', label: 'Defensive Contribution', minWidth: 80, align: 'right' },
-  { id: 'defensive_contribution_per_90', label: 'Defensive Contribution/90', minWidth: 80, align: 'right' },
+  { id: 'expected_goals', label: 'xG', minWidth: 80, align: 'right' },
+  { id: 'expected_assists', label: 'xA', minWidth: 80, align: 'right' },
+  { id: 'expected_goal_involvements', label: 'xGI', minWidth: 80, align: 'right' },
+  { id: 'expected_goals_per_90', label: 'xG / 90', minWidth: 80, align: 'right' },
+  { id: 'expected_assists_per_90', label: 'xA / 90', minWidth: 80, align: 'right' },
+  { id: 'expected_goal_involvements_per_90', label: 'xGI / 90', minWidth: 80, align: 'right' },
+  { id: 'defensive_contribution', label: 'Def Con', minWidth: 80, align: 'right' },
+  { id: 'defensive_contribution_per_90', label: 'Def Con / 90', minWidth: 80, align: 'right' },
   { id: 'influence', label: 'Influence', minWidth: 80, align: 'right' },
   { id: 'creativity', label: 'Creativity', minWidth: 80, align: 'right' },
   { id: 'threat', label: 'Threat', minWidth: 80, align: 'right' },
@@ -88,6 +88,17 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [isSmallScreen, setIsSmallScreen] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsSmallScreen(window.innerWidth < 700);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const compactFontSize = isSmallScreen ? '0.75rem' : '0.88rem';
+  const compactPadding = isSmallScreen ? '4px 4px' : '6px 8px';
 
   const filteredPlayers = React.useMemo(() => {
     return players.filter(player => {
@@ -311,8 +322,15 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       <PlayerTablePPChart 
         players={chartPlayers} 
       />
-      <TableContainer sx={{ maxHeight: 800, maxWidth: '100vw', overflow: 'auto' }}>
-        <Table stickyHeader aria-label="players table">
+      <TableContainer
+        sx={{
+          maxHeight: 800,
+          maxWidth: '100vw',
+          overflow: 'auto',
+          fontSize: compactFontSize,
+        }}
+      >
+        <Table stickyHeader aria-label="players table" size="small">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
@@ -325,7 +343,13 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                     column.id === 'web_name' ? 'sticky-web-name' :
                     undefined
                   }
-                  style={{ minWidth: column.minWidth, cursor: 'pointer' }}
+                  style={{
+                    minWidth: column.minWidth,
+                    cursor: 'pointer',
+                    fontSize: compactFontSize,
+                    padding: compactPadding,
+                    whiteSpace: 'nowrap'
+                  }}
                   onClick={() => handleSort(column.id)}
                 >
                   {column.label}
@@ -342,7 +366,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             {sortedPlayers
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((player) => (
-                <TableRow key={player.id}>
+                <TableRow key={player.id} hover>
                   {columns.map((column) => {
                     let value = player[column.id as keyof Element];
 
@@ -381,7 +405,10 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                         <TableCell
                           key={column.id}
                           className="sticky-web-name"
-                          style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                          style={{ 
+                            cursor: 'pointer', 
+                            fontWeight: 'bold',
+                          }}
                           onClick={() => {
                             setSelectedPlayer(player);
                             setDialogOpen(true);
@@ -419,6 +446,11 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                           column.id === 'web_name' ? 'sticky-web-name' :
                           undefined
                         }
+                        style={{
+                          fontSize: compactFontSize,
+                          padding: compactPadding,
+                          whiteSpace: 'nowrap',
+                        }}
                       >
                         {(column.id === 'selected_by_percent' || column.id === 'elite_selected_percent')
                           ? `${value}%`
