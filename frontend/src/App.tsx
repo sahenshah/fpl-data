@@ -162,7 +162,15 @@ function App() {
             {showTotalPlayersAndTeamInput && (
               <>
                 {/* Logo on the left */}
-                <div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    minWidth: 100,
+                    paddingRight: 24,
+                  }}
+                >
                   <img
                     src="/fpl_iq_logo_nb.png"
                     alt="FPL IQ Logo"
