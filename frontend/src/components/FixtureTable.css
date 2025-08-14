@@ -86,11 +86,35 @@ td.sticky-name {
   cursor: pointer;
   white-space: nowrap;
   margin-left: 16px;
+  font-size: 14px;
+  transition: background 0.2s;
+  min-width: 200px; /* Set a fixed minimum width */
+  width: 200px;     /* Set a fixed width so it doesn't grow/shrink with text */
+  box-sizing: border-box;
+  text-align: center;
+  overflow: hidden;           /* Hide overflow */
+  text-overflow: ellipsis;    /* Show "..." when text is too long */
+  display: inline-block;      /* Needed for ellipsis to work */
+}
+
+.fixture-sort-btn:hover {
+  background: #5a2d82; /* Slightly lighter/different purple for hover */
+  color: #fff;
   transition: background 0.2s;
 }
 
 .fixture-sort-btn.active {
   background: #8e24aa;
+}
+
+.fixture-sort-btn {
+  outline: none;
+  box-shadow: none;
+}
+
+.fixture-sort-btn:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .fixture-gw-range {
