@@ -187,7 +187,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   }, [page, maxPage, rowsPerPage, totalRows]);
 
   return (
-    <Paper sx={{ width: '100%', maxWidth: '95vw' }}>
+    <Paper sx={{ width: '100%', maxWidth: '95vw', background: '#23232b' }}>
       <div className="filter-bar" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         {/* Position filter (already multi-select) */}
         <Select
@@ -445,6 +445,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         page={page > maxPage ? maxPage : page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{ background: '#333333', color: '#fff' }}
       />
       {/* Player Detail Modal */}
       <Dialog 
