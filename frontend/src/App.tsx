@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
 import type { FPLBootstrapResponse } from './types/fpl';
 import TeamTable from './components/TeamTable';
 import PlayerTable from './components/PlayerTable';
@@ -32,6 +33,8 @@ function App() {
   const [realTotalPlayers, setRealTotalPlayers] = useState<number | null>(null);
   const [showTotalPlayersAndTeamInput, setShowTotalPlayersAndTeamInput] = useState<boolean>(true);
   const [tabIndex, setTabIndex] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
+  const [fadeSplash, setFadeSplash] = useState(false);
 
   useEffect(() => {
     // Fetch from local API/database endpoints
@@ -66,6 +69,16 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    // Start fade out before hiding splash
+    const fadeTimer = setTimeout(() => setFadeSplash(true), 1000); // Start fade after 1s
+    const hideTimer = setTimeout(() => setShowSplash(false), 1400); // Hide after fade
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(hideTimer);
+    };
+  }, []);
+
   const isValidTeamId = teamId && /^\d+$/.test(teamId) && Number(teamId) > 0;
 
   // Handler for Enter key
@@ -81,127 +94,190 @@ function App() {
     }
   };
 
+  if (showSplash) {
+    return (
+      <div
+        style={{
+          width: '100vw',
+          height: '100vh',
+          background: '#181820',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'opacity 0.4s',
+          opacity: fadeSplash ? 0 : 1,
+          flexDirection: 'column',
+        }}
+      >
+        <img
+          src="/fpl_iq_logo_nb.png"
+          alt="FPL IQ Logo"
+          style={{ width: '300px', height: '300px', marginBottom: 32 }}
+        />
+        <CircularProgress size={48} thickness={4} style={{ color: '#fff' }} />
+      </div>
+    );
+  }
+
   return (
     <div
-      className="app-main-container"
       style={{
-        padding: '8px',
+        padding: 8,
         width: '100vw',
         minHeight: '100vh',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center', // Center horizontally
-        justifyContent: 'flex-start', // Top align vertically
-        background: '#181820'
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        background: '#181820',
+        overflowX: 'hidden',
       }}
     >
       {fplData && (
-        <div style={{ width: '100%', maxWidth: 1400, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '8px' }}>
-            <img
-              src="/fpl_iq_logo_nb.png"
-              alt="FPL IQ Logo"
-              style={{ width: '300px', height: '300px', marginBottom: '12px' }}
-            />
-          </div>
-          {showTotalPlayersAndTeamInput && (
-            <>
-              <p style={{ textAlign: 'center', width: '100%' }}>
-                Total FPL Players: {realTotalPlayers ?? '...'}
-              </p>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                marginBottom: '8px',
-                paddingBottom: '20px',
-                width: '100%'
-              }}>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  placeholder="Team ID..."
-                  value={inputTeamId}
-                  onChange={e => setInputTeamId(e.target.value)}
-                  onKeyDown={handleInputKeyDown}
-                  style={{ padding: '8px', width: '100%', maxWidth: 400 }}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setInputTeamId('');
-                    setTeamId('');
-                    setTeamIdError('');
-                  }}
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+            gap: 32,
+            marginBottom: 16,
+            boxSizing: 'border-box',
+          }}
+        >
+          {/* Controls and tabs on the right */}
+          <div
+            style={{
+              flex: 1,
+              maxWidth: '95%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              boxSizing: 'border-box',
+              overflow: 'hidden',
+            }}
+          >
+            {showTotalPlayersAndTeamInput && (
+              <>
+                {/* Logo on the left */}
+                <div>
+                  <img
+                    src="/fpl_iq_logo_nb.png"
+                    alt="FPL IQ Logo"
+                    style={{
+                      width: 140,
+                      height: 140,
+                      objectFit: 'contain',
+                    }}
+                  />
+                </div>
+                <p style={{ textAlign: 'center', width: '100%', marginBlockStart: '0', marginBlockEnd: '1em' }}>
+                  Total FPL Players: {realTotalPlayers ?? '...'}
+                </p>
+                <div
                   style={{
-                    padding: '8px 12px',
-                    background: '#7a7a7aff',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    marginBottom: 8,
+                    paddingBottom: 20,
+                    width: '100%',
+                    maxWidth: 400,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
                   }}
                 >
-                  Clear
-                </button>
-              </div>
-              {teamIdError && (
-                <p style={{ color: 'red', marginBottom: '8px', textAlign: 'center' }}>{teamIdError}</p>
-              )}
-              {isValidTeamId && (
-                <TeamSummary teamId={teamId} />
-              )}
-            </>
-          )}
-          <Box sx={{ width: '100%' }}>
-            <Tabs
-              value={tabIndex}
-              onChange={(_, newValue) => setTabIndex(newValue)}
-              centered
-              textColor="inherit"
-              TabIndicatorProps={{ style: { display: 'none' } }}
-              sx={{
-                marginBottom: 2,
-                '& .MuiTab-root': {
-                  minWidth: 120,
-                  color: '#fff',
-                  background: 'transparent',
-                  borderRadius: '8px 8px 0 0',
-                  transition: 'background 0.2s',
-                  outline: 'none', // Remove focus outline
-                },
-                '& .Mui-selected': {
-                  background: '#41054b',
-                  color: '#fff',
-                },
-                '& .MuiTab-root:focus': {
-                  outline: 'none', // Remove white border on focus
-                },
-              }}
-            >
-              <Tab label="Players" />
-              <Tab label="Fixtures" />
-              <Tab label="Teams" />
-            </Tabs>
-            <Fade in={tabIndex === 0} timeout={400} unmountOnExit>
-              <div>
-                <PlayerTable players={fplData.elements as Element[]} teams={fplData.teams} />
-              </div>
-            </Fade>
-            <Fade in={tabIndex === 1} timeout={400} unmountOnExit>
-              <div>
-                <FixtureTable teams={fplData.teams} fixtures={fixtures} />
-              </div>
-            </Fade>
-            <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
-              <div>
-                <TeamTable teams={fplData.teams} />
-              </div>
-            </Fade>
-          </Box>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="Team ID..."
+                    value={inputTeamId}
+                    onChange={e => setInputTeamId(e.target.value)}
+                    onKeyDown={handleInputKeyDown}
+                    style={{
+                      padding: 8,
+                      width: '100%',
+                      maxWidth: 300,
+                      height: 20,
+                      fontSize: '1.1rem',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setInputTeamId('');
+                      setTeamId('');
+                      setTeamIdError('');
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      background: '#7a7a7aff',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: 4,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Clear
+                  </button>
+                </div>
+                {teamIdError && (
+                  <p style={{ color: 'red', marginBottom: 8, textAlign: 'center' }}>{teamIdError}</p>
+                )}
+                {isValidTeamId && <TeamSummary teamId={teamId} />}
+              </>
+            )}
+            <Box style={{ width: '100%', margin: '0 auto' }}>
+              <Tabs
+                value={tabIndex}
+                onChange={(_, newValue) => setTabIndex(newValue)}
+                centered
+                textColor="inherit"
+                TabIndicatorProps={{ style: { display: 'none' } }}
+                sx={{
+                  marginBottom: 2,
+                  '& .MuiTab-root': {
+                    minWidth: 120,
+                    color: '#fff',
+                    background: 'transparent',
+                    borderRadius: '8px 8px 0 0',
+                    transition: 'background 0.2s',
+                    outline: 'none',
+                  },
+                  '& .Mui-selected': {
+                    background: '#41054b',
+                    color: '#fff',
+                  },
+                  '& .MuiTab-root:focus': {
+                    outline: 'none',
+                  },
+                }}
+              >
+                <Tab label="Players" />
+                <Tab label="Fixtures" />
+                <Tab label="Teams" />
+              </Tabs>
+              <Fade in={tabIndex === 0} timeout={400} unmountOnExit>
+                <div>
+                  <PlayerTable players={fplData.elements as Element[]} teams={fplData.teams} />
+                </div>
+              </Fade>
+              <Fade in={tabIndex === 1} timeout={400} unmountOnExit>
+                <div>
+                  <FixtureTable teams={fplData.teams} fixtures={fixtures} />
+                </div>
+              </Fade>
+              <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
+                <div>
+                  <TeamTable teams={fplData.teams} />
+                </div>
+              </Fade>
+            </Box>
+          </div>
         </div>
       )}
     </div>
