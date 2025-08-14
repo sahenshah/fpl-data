@@ -166,7 +166,6 @@ function App() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 minWidth: 100,
-                paddingRight: 24,
               }}
             >
               <img
