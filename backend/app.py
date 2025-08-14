@@ -13,12 +13,6 @@ CORS(app)  # Enable CORS for all domains on all routes
 # Serve static files from backend/team-badges at /backend/team-badges/
 BADGES_DIR = os.path.join(os.path.dirname(__file__), 'team-badges')
 
-@app.route('/backend/team-badges/<path:filename>')
-def team_badge(filename):
-    response = make_response(send_from_directory(BADGES_DIR, filename))
-    response.headers['Cache-Control'] = 'public, max-age=31536000'
-    return response
-
 # Serve React static files
 FRONTEND_BUILD_DIR = os.path.join(os.path.dirname(__file__), '.', 'dist')
 
