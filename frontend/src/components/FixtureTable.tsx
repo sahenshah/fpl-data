@@ -78,7 +78,17 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   return (
     <>
       <div className="fixture-controls">
-        <div className="fixture-slider">
+        <div
+          className="fixture-slider"
+          style={{
+            paddingTop: 32, // Add enough space for labels/marks
+            paddingBottom: 8,
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'left',
+            width: '100%',
+          }}
+        >
           <Slider
             value={gwRange}
             min={1}
