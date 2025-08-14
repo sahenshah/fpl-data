@@ -171,10 +171,14 @@ function App() {
                   background: 'transparent',
                   borderRadius: '8px 8px 0 0',
                   transition: 'background 0.2s',
+                  outline: 'none', // Remove focus outline
                 },
                 '& .Mui-selected': {
                   background: '#41054b',
                   color: '#fff',
+                },
+                '& .MuiTab-root:focus': {
+                  outline: 'none', // Remove white border on focus
                 },
               }}
             >
