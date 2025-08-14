@@ -11,8 +11,6 @@ import type { Team, Fixture } from '../types/fpl';
 import './FixtureTable.css';
 import { getCurrentGameweek } from '../App'; // Import the function
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-
 interface FixtureTableProps {
   teams: Team[];
   fixtures: Fixture[];
@@ -136,7 +134,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                     return (
                       <TableCell key={col.key} className="sticky-badge" style={{ height: 40, padding: '8px', background: '#444' }}>
                         <img
-                          src={`${BACKEND_URL}/backend/team-badges/${team.short_name}.svg`}
+                          src={`/team-badges/${team.short_name}.svg`}
                           alt={team.short_name}
                           style={{ width: 28, height: 28 }}
                         />

@@ -19,8 +19,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
-
 interface PlayerTableProps {
   players: Element[];
   teams: Team[];
@@ -242,7 +240,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                   return team ? (
                     <img
                       key={team.id}
-                      src={`${BACKEND_URL}/backend/team-badges/${team.short_name}.svg`}
+                      src={`/team-badges/${team.short_name}.svg`}
                       alt={team.short_name}
                       style={{ width: 22, height: 22, maxWidth: 22, marginRight: 2, verticalAlign: 'middle' }}
                     />
@@ -277,7 +275,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                 sx={{ color: "#ffffff8a", '&.Mui-checked': { color: "#ffffff8a" } }}
               />
               <img
-                src={`${BACKEND_URL}/backend/team-badges/${team.short_name}.svg`}
+                src={`/team-badges/${team.short_name}.svg`}
                 alt={team.short_name}
                 style={{ width: 22, height: 22, marginRight: 8, verticalAlign: 'middle' }}
               />
@@ -367,7 +365,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                         >
                           {team ? (
                             <img
-                              src={`${BACKEND_URL}/backend/team-badges/${team.short_name}.svg`}
+                              src={`/team-badges/${team.short_name}.svg`}
                               alt={team.short_name}
                               style={{ width: 28, height: 28 }}
                             />
