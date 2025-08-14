@@ -5,6 +5,8 @@ import os
 import csv
 import time
 import subprocess
+import shutil
+from datetime import datetime
 
 def fetch_bootstrap():
     url = "https://fantasy.premierleague.com/api/bootstrap-static/"
@@ -553,20 +555,35 @@ def main():
 
     data = fetch_bootstrap()
     fixtures = fetch_fixtures()
+    
     # Ensure the database is created in backend/database
     db_dir = os.path.join(os.path.dirname(__file__), '..', 'database')
     os.makedirs(db_dir, exist_ok=True)
     db_path = os.path.join(db_dir, "fpl_data.db")
+    
+    # --- Backup existing DB if it exists ---
+    if os.path.exists(db_path):
+        today_str = datetime.now().strftime("%d_%m_%Y")
+        backup_path = os.path.join(db_dir, f"fpl_data.db.backup.{today_str}")
+        shutil.copy2(db_path, backup_path)
+        print(f"Backup created at {backup_path}")
+
     conn = sqlite3.connect(db_path)
     create_tables(conn)
+    print(f"inserting events...")
     insert_events(conn, data["events"])
+    print(f"inserting phases...")
     insert_phases(conn, data["phases"])
+    print(f"inserting teams...")
     insert_teams(conn, data["teams"])
+    print(f"inserting elements...")
     insert_elements(conn, data["elements"])
+    print(f"inserting fixtures...")
     insert_fixtures(conn, fixtures)
 
     # Populate element summary tables
     element_ids = [e["id"] for e in data["elements"]]
+    print(f"inserting element summary data for {len(element_ids)} element ids...")
     insert_element_summary_data(conn, element_ids)
 
     conn.close()
