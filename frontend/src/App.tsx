@@ -159,28 +159,28 @@ function App() {
               overflow: 'hidden',
             }}
           >
+            {/* Logo always visible */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                minWidth: 100,
+                paddingRight: 24,
+              }}
+            >
+              <img
+                src="/fpl_iq_logo_nb.png"
+                alt="FPL IQ Logo"
+                style={{
+                  width: 140,
+                  height: 140,
+                  objectFit: 'contain',
+                }}
+              />
+            </div>
             {showTotalPlayersAndTeamInput && (
               <>
-                {/* Logo on the left */}
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    minWidth: 100,
-                    paddingRight: 24,
-                  }}
-                >
-                  <img
-                    src="/fpl_iq_logo_nb.png"
-                    alt="FPL IQ Logo"
-                    style={{
-                      width: 140,
-                      height: 140,
-                      objectFit: 'contain',
-                    }}
-                  />
-                </div>
                 <p style={{ textAlign: 'center', width: '100%', marginBlockStart: '0', marginBlockEnd: '1em' }}>
                   Total FPL Players: {realTotalPlayers ?? '...'}
                 </p>
