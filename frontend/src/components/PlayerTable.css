@@ -134,12 +134,3 @@ th.sticky-web-name{
     left: 40px !important; /* Match reduced badge column width */
   }
 }
-
-.xmins-filter-input {
-  transition: background 0.2s, border 0.2s;
-}
-
-.xmins-filter-input:hover {
-  background: #ffffff;
-  border: 1px solid #7c7cff;
-}

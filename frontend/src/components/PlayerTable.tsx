@@ -358,6 +358,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           placeholder="Min Minutes"
           style={{ width: 120 }}
           className="xmins-filter-input"
+          step={10} 
         />
         <input
           type="text"
