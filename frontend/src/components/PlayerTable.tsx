@@ -18,6 +18,12 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
+import Box from '@mui/material/Box';
+import { getCurrentGameweek } from '../App';
+import { useEffect, useState } from 'react';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface PlayerTableProps {
   players: Element[];
@@ -89,12 +95,24 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isSmallScreen, setIsSmallScreen] = React.useState(false);
+  const [gwRange, setGwRange] = useState<[number, number]>([1, 5]);
+  const [chartMode, setChartMode] = React.useState<'xPoints' | 'xMins'>('xPoints');
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   React.useEffect(() => {
     const handleResize = () => setIsSmallScreen(window.innerWidth < 700);
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    getCurrentGameweek().then(gw => {
+      if (gw) {
+        setGwRange([gw, gw + 4 > 38 ? 38 : gw + 4]);
+      }
+    });
   }, []);
 
   const compactFontSize = isSmallScreen ? '0.75rem' : '0.88rem';
@@ -159,14 +177,27 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
     return sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }, [sortedPlayers, page, rowsPerPage]);
 
+  // Dynamically get the next 5 GW data for each player based on gwRange
   const chartPlayers = React.useMemo(() => {
-    return paginatedPlayers.map(player => ({
-      web_name: player.web_name,
-      predicted_points_gw: [
-        player.pp_gw_1, player.pp_gw_2, player.pp_gw_3, player.pp_gw_4, player.pp_gw_5
-      ].map(val => (typeof val === 'number' ? val : Number(val) || 0))
-    }));
-  }, [paginatedPlayers]);
+    return paginatedPlayers.map(player => {
+      // Helper to get the property name for a given GW
+      const getGWProp = (prefix: string, gw: number) => `${prefix}_gw_${gw}` as keyof Element;
+
+      const predicted_points_gw = [];
+      const predicted_xmins_gw = [];
+
+      for (let gw = gwRange[0]; gw <= gwRange[1]; gw++) {
+        predicted_points_gw.push(Number(player[getGWProp('pp', gw)]) || 0);
+        predicted_xmins_gw.push(Number(player[getGWProp('xmins', gw)]) || 0);
+      }
+
+      return {
+        web_name: player.web_name,
+        predicted_points_gw,
+        predicted_xmins_gw,
+      };
+    });
+  }, [paginatedPlayers, gwRange]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -184,6 +215,17 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       setSortBy(columnId);
       setSortDirection('desc');
     }
+  };
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleModeChange = (mode: 'xPoints' | 'xMins') => {
+    setChartMode(mode);
+    setAnchorEl(null);
   };
 
   // Use sortedPlayers for pagination and count
@@ -302,6 +344,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           onChange={e => setMinutesFilter(e.target.value)}
           placeholder="Min Minutes"
           style={{ width: 120 }}
+          className="xmins-filter-input"
         />
         <input
           type="number"
@@ -319,8 +362,90 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           style={{ width: 180 }}
         />
       </div>
-      <PlayerTablePPChart 
-        players={chartPlayers} 
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: '#333',
+          borderTopLeftRadius: 6,
+          borderTopRightRadius: 6,
+          paddingLeft: '24px',
+          paddingTop: '8px',
+          paddingBottom: '8px',
+          margin: 0,
+        }}
+      >
+        <h3
+          style={{
+            color: '#fff',
+            background: 'transparent',
+            margin: 0,
+            fontWeight: 500,
+            fontSize: '1.15rem',
+            letterSpacing: 0.5,
+            padding: 0,
+          }}
+        >
+          {chartMode === 'xPoints' ? 'Predicted Points (next 5 GWs)' : 'Predicted Minutes (next 5)'}
+        </h3>
+        <IconButton
+          size="small"
+          onClick={handleMenuClick}
+          sx={{
+            color: '#fff',
+            borderRadius: '50%',
+            width: 32,
+            height: 32,
+            marginRight: 2,
+            '&:hover': { background: '#444' },
+            '&:active': { outline: 'none', border: 'none', boxShadow: 'none', background: '#444' },
+            '&:focus': { outline: 'none', border: 'none', boxShadow: 'none' },
+          }}
+          aria-label="Select chart mode"
+        >
+          <ArrowDropDownIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleMenuClose}
+          PaperProps={{
+            sx: {
+              backgroundColor: '#23232b',
+              color: '#fff',
+              fontSize: '0.85rem',
+            }
+          }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <MenuItem
+            selected={chartMode === 'xPoints'}
+            onClick={() => handleModeChange('xPoints')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            xPoints
+          </MenuItem>
+          <MenuItem
+            selected={chartMode === 'xMins'}
+            onClick={() => handleModeChange('xMins')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            xMins
+          </MenuItem>
+        </Menu>
+      </Box>
+      <PlayerTablePPChart
+        players={chartPlayers}
+        mode={chartMode}
+        gwLabels={Array.from({ length: gwRange[1] - gwRange[0] + 1 }, (_, i) => `GW${gwRange[0] + i}`)}
       />
       <TableContainer
         sx={{

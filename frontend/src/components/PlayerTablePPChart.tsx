@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
-import IconButton from '@mui/material/IconButton';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import { getCurrentGameweek } from '../App';
 import './PlayerTablePPChart.css';
 
@@ -11,15 +9,17 @@ interface PlayerTablePPChartProps {
   players: {
     web_name: string;
     predicted_points_gw: number[];
+    predicted_xmins_gw?: number[]; // Add this field
   }[];
   gwLabels?: string[];
+  mode?: 'xPoints' | 'xMins'; // Add this prop
   onRefresh?: () => void;
 }
 
 export default function PlayerTablePPChart({
   players,
   gwLabels,
-  onRefresh,
+  mode = 'xPoints', // Default to xPoints
 }: PlayerTablePPChartProps) {
   const [gwRange, setGwRange] = useState<[number, number]>([1, 5]);
 
@@ -40,7 +40,7 @@ export default function PlayerTablePPChart({
   const labels = gwLabels ?? computedGwLabels;
 
   const series = players.map(player => ({
-    data: player.predicted_points_gw,
+    data: mode === 'xPoints' ? player.predicted_points_gw : player.predicted_xmins_gw ?? [],
     label: player.web_name,
     showMark: true,
     markSize: 2,
@@ -53,12 +53,9 @@ export default function PlayerTablePPChart({
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
-        <h3 className="player-table-ppchart-header" style={{ marginRight: '4px' }}>Predicted Points (Next 5 GWs)</h3>
-        {onRefresh && (
-          <IconButton color="primary" onClick={onRefresh} aria-label="refresh chart" size="small">
-            <RefreshIcon />
-          </IconButton>
-        )}
+        {/* <h3 className="player-table-ppchart-header" style={{ marginRight: '4px' }}>
+          {mode === 'xPoints' ? 'Predicted Points (Next 5 GWs)' : 'Predicted Minutes (Next 5 GWs)'}
+        </h3> */}
       </div>
       <div style={{ overflow: 'hidden', marginLeft: '-40px', width: 'calc(100% + 40px)' }}>
         <LineChart

@@ -4,7 +4,8 @@
 
 .player-table-ppchart {
   background: #333;
-  padding: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   justify-content: 'center' !important;
 }
 
