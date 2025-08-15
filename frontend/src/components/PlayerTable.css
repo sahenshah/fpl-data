@@ -6,16 +6,21 @@ td.sticky-id {
 }
 
 /* Sticky badge column */
-th.sticky-badge,
 .sticky-badge,
-td.sticky-badge {
+th.sticky-badge{
+  top: 0 !important;
   position: sticky !important;
   left: 0 !important;
   background: #444 !important;
   z-index: 20 !important;
 }
-th.sticky-badge{
-  top: 0 !important;
+
+/* Sticky body cells (td) */
+td.sticky-badge {
+  position: sticky !important;
+  left: 0 !important;
+  background: #444 !important;
+  z-index: 10 !important;
 }
 
 /* Sticky web name column */
@@ -30,6 +35,11 @@ td.sticky-web-name {
 th.sticky-web-name{
   top: 0 !important;
   z-index: 100 !important;
+}
+
+.MuiTable-root {
+  background-color: #555 !important;
+  color: #fff !important;
 }
 
 /* filepath: /home/sahen/fpl-data/frontend/src/components/PlayerTable.css */
@@ -60,14 +70,6 @@ th.sticky-web-name{
 .filter-bar label,
 .filter-bar option {
   font-size: 1.1rem;
-}
-
-/* Sticky body cells (td) */
-td.sticky-badge {
-  position: sticky !important;
-  left: 0 !important;
-  background: #444 !important;
-  z-index: 10 !important;
 }
 
 .player-detail-modal {

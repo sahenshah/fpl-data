@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -24,6 +25,7 @@ import { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Slider from '@mui/material/Slider';
 
 interface PlayerTableProps {
   players: Element[];
@@ -34,14 +36,14 @@ const columns = [
   // { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
   { id: 'badge', label: '', minWidth: 40, align: 'center' },
   { id: 'web_name', label: 'Name', minWidth: 100, align: 'left' },
-  { id: 'first_name', label: 'First Name', minWidth: 100, align: 'left' },
-  { id: 'second_name', label: 'Second Name', minWidth: 100, align: 'left' },
-  { id: 'team', label: 'Team', minWidth: 100, align: 'left' },
+  // { id: 'first_name', label: 'First Name', minWidth: 100, align: 'left' },
+  // { id: 'second_name', label: 'Second Name', minWidth: 100, align: 'left' },
+  // { id: 'team', label: 'Team', minWidth: 100, align: 'left' },
   { id: 'element_type', label: 'Position', minWidth: 50, align: 'right' },
-  { id: 'now_cost', label: 'Cost', minWidth: 50, align: 'right', format: (value: number) => (value / 10).toFixed(1) },
+  { id: 'now_cost', label: 'Cost (£)', minWidth: 50, align: 'right', format: (value: number) => (value / 10).toFixed(1) },
   { id: 'total_points', label: 'Total Points', minWidth: 80, align: 'right' },
-  { id: 'selected_by_percent', label: 'Selected %', minWidth: 80, align: 'right' },
-  { id: 'elite_selected_percent', label: 'Elite Selected %', minWidth: 80, align: 'right' },
+  { id: 'selected_by_percent', label: 'Selected (%)', minWidth: 80, align: 'right' },
+  { id: 'elite_selected_percent', label: 'Elite Selected (%)', minWidth: 80, align: 'right' },
   { id: 'predicted_points_next5', label: 'xPoints next 5', minWidth: 80, align: 'right' },
   { id: 'pp_next5_per_m', label: 'xPoints next 5 / £M', minWidth: 80, align: 'right' },
   { id: 'predicted_xmins_next5', label: 'xMins next 5', minWidth: 80, align: 'right' },
@@ -90,7 +92,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [positionFilter, setPositionFilter] = React.useState<string[]>([]);
   const [teamFilter, setTeamFilter] = React.useState<string[]>([]);
   const [minutesFilter, setMinutesFilter] = React.useState<string>('');
-  const [costFilter, setCostFilter] = React.useState<string>('');
+  const [costRange, setCostRange] = React.useState<number[]>([40, 150]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -128,7 +130,8 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           ? playerTeamName !== undefined && teamFilter.includes(playerTeamName)
           : true;
       const minutesMatch = minutesFilter ? player.minutes > Number(minutesFilter) : true;
-      const costMatch = costFilter ? (player.now_cost / 10) <= Number(costFilter) : true;
+      const cost = player.now_cost;
+      const costMatch = cost >= costRange[0] && cost <= costRange[1];
       const nameMatch = searchTerm
         ? (
             player.web_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -138,7 +141,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         : true;
       return positionMatch && teamMatch && minutesMatch && costMatch && nameMatch;
     });
-  }, [players, positionFilter, teamFilter, teams, minutesFilter, costFilter, searchTerm]);
+  }, [players, positionFilter, teamFilter, teams, minutesFilter, costRange, searchTerm]);
 
   const percentageColumns = [
     'selected_by_percent',
@@ -241,7 +244,17 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
 
   return (
     <Paper sx={{ width: '100%', maxWidth: '95vw', background: '#23232b' }}>
-      <div className="filter-bar" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div
+        className="filter-bar"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          flexWrap: 'wrap', // allow wrapping on small screens
+          maxWidth: '100%', // prevent overflow
+          overflow: 'visible', // allow slider to show fully
+        }}
+      >
         {/* Position filter (already multi-select) */}
         <Select
           multiple
@@ -347,20 +360,41 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           className="xmins-filter-input"
         />
         <input
-          type="number"
-          min={0}
-          value={costFilter}
-          onChange={e => setCostFilter(e.target.value)}
-          placeholder="Max Cost"
-          style={{ width: 120 }}
-        />
-        <input
           type="text"
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
           placeholder="Search by name"
           style={{ width: 180 }}
         />
+        <Box
+          sx={{
+            width: 250,
+            px: 2,
+            maxWidth: 250,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Slider
+            value={costRange}
+            onChange={(_, newValue) => setCostRange(newValue as number[])}
+            valueLabelDisplay="auto"
+            min={40}
+            max={150}
+            step={1}
+            marks={[
+              { value: 40, label: '£4.0' },
+              { value: 150, label: '£15.0' }
+            ]}
+            sx={{
+              width: 250,
+              maxWidth: '100%',
+            }}
+            getAriaLabel={() => 'Cost range'}
+            valueLabelFormat={v => (v / 10).toFixed(1)}
+          />
+        </Box>
       </div>
       <Box
         sx={{

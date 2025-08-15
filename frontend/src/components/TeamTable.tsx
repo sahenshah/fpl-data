@@ -37,7 +37,7 @@ const columns = [
 ];
 
 export default function TeamTable({ teams }: TeamTableProps) {
-  const [sortBy, setSortBy] = React.useState<string>('id');
+  const [sortBy, setSortBy] = React.useState<string>('form');
   const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('asc');
 
   const handleSort = (columnKey: string) => {

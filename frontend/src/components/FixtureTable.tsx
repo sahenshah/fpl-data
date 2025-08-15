@@ -81,7 +81,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
         <div
           className="fixture-slider"
           style={{
-            paddingTop: 32, // Add enough space for labels/marks
+            paddingTop: 32,
             paddingBottom: 8,
             display: 'flex',
             justifyContent: 'left',
@@ -95,8 +95,8 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
             max={38}
             step={1}
             marks={[
-              { value: 1, label: '1' },
-              { value: 38, label: '38' }
+              { value: 1, label: 'GW1' },
+              { value: 38, label: 'GW38' }
             ]}
             valueLabelDisplay="auto"
             onChange={(_, value) => setGwRange(value as [number, number])}
