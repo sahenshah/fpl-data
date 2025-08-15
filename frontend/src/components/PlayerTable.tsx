@@ -90,7 +90,8 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [sortBy, setSortBy] = React.useState<string>('predicted_points_next5');
   const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('desc');
   const [positionFilter, setPositionFilter] = React.useState<string[]>([]);
-  const [teamFilter, setTeamFilter] = React.useState<string[]>([]);
+  // Set all teams selected by default
+  const [teamFilter, setTeamFilter] = React.useState<string[]>(teams.map(t => t.name));
   const [minutesFilter, setMinutesFilter] = React.useState<string>('');
   const [costRange, setCostRange] = React.useState<number[]>([40, 150]);
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -126,9 +127,9 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       const positionMatch = positionFilter.length > 0 ? positionFilter.includes(playerPosition) : true;
       const playerTeamName = teams.find(t => t.id === player.team)?.name;
       const teamMatch =
-        teamFilter.length > 0
-          ? playerTeamName !== undefined && teamFilter.includes(playerTeamName)
-          : true;
+        teamFilter.length === 0
+          ? false // Show no players if no teams selected
+          : playerTeamName !== undefined && teamFilter.includes(playerTeamName);
       const minutesMatch = minutesFilter ? player.minutes > Number(minutesFilter) : true;
       const cost = player.now_cost;
       const costMatch = cost >= costRange[0] && cost <= costRange[1];
@@ -296,9 +297,22 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           multiple
           displayEmpty
           value={teamFilter}
-          onChange={e => setTeamFilter(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+          onChange={e => {
+            const value = typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value;
+            // If "ALL_TEAMS" is selected and all teams are already selected, clear all
+            if (value.includes('ALL_TEAMS')) {
+              if (teamFilter.length === teams.length) {
+                setTeamFilter([]);
+              } else {
+                setTeamFilter(teams.map(t => t.name));
+              }
+            } else {
+              setTeamFilter(value);
+            }
+          }}
           renderValue={selected => {
-            if ((selected as string[]).length === 0) return 'All Teams';
+            if ((selected as string[]).length === 0) return 'No Teams';
+            if ((selected as string[]).length === teams.length) return 'All Teams';
             return (
               <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 {(selected as string[]).map(teamName => {
@@ -334,6 +348,11 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             }
           }}
         >
+          {/* All Teams option */}
+          <MenuItem value="ALL_TEAMS" selected={teamFilter.length === teams.length}>
+            <Checkbox checked={teamFilter.length === teams.length} />
+            <ListItemText primary="All Teams" />
+          </MenuItem>
           {teams.map(team => (
             <MenuItem key={team.id} value={team.name}>
               <Checkbox
