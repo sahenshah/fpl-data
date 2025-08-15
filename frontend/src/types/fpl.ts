@@ -84,6 +84,9 @@ export interface Element {
   creativity: string;
   threat: string;
   ict_index: string;
+  clearances_blocks_interceptions: number; 
+  recoveries: number;
+  tackles: number;
   defensive_contribution: number;
   starts: number;
   expected_goals: string;

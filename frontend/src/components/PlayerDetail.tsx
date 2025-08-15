@@ -214,7 +214,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         </div>
       </div>
 
-      {/* Six data boxes row */}
+      {/* Data boxes row */}
       <div
         style={{
           overflowX: 'auto',
@@ -238,6 +238,9 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         >
           {[
             { label: 'Total Points', value: player.total_points },
+            { label: 'xGI/90', value: player.expected_goal_involvements_per_90 },
+            { label: 'xG/90', value: player.expected_goals_per_90 },
+            { label: 'xA/90', value: player.expected_assists_per_90 },
             { label: 'Elite Selected %', value: player.elite_selected_percent },
             { label: 'xPoints (next 5)', value: player.predicted_points_next5 },
             { label: 'xPoints/£M', value: player.pp_next5_per_m },
@@ -245,6 +248,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             { label: 'xMins/£M', value: player.pxm_next5_per_m },
             { label: 'Form', value: player.form },
             { label: 'ICT Index', value: player.ict_index },
+            { label: 'CBI', value: player.clearances_blocks_interceptions },
           ].map((item) => (
             <div
               key={item.label}
