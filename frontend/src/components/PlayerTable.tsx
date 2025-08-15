@@ -417,7 +417,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             background: 'transparent',
             margin: 0,
             fontWeight: 500,
-            fontSize: '1.15rem',
+            fontSize: isSmallScreen ? '0.95rem' : '1.15rem', // Responsive font size
             letterSpacing: 0.5,
             padding: 0,
           }}
@@ -633,7 +633,25 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         page={page > maxPage ? maxPage : page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{ background: '#333333', color: '#fff' }}
+        sx={{
+          background: '#333333',
+          color: '#fff',
+          fontSize: isSmallScreen ? '0.75rem' : '0.95rem',
+          maxWidth: '95vw !important',
+          width: '100% !important', 
+          '.MuiTablePagination-toolbar': {
+            minHeight: '32px',
+            paddingLeft: isSmallScreen ? '8px' : undefined,
+            paddingRight: isSmallScreen ? '8px' : undefined,
+            fontSize: isSmallScreen ? '0.65rem' : '0.95rem',
+          },
+          '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows, .MuiTablePagination-select, .MuiInputBase-root': {
+            fontSize: isSmallScreen ? '0.65rem' : '0.95rem',
+          },
+          '.MuiTablePagination-actions': {
+            fontSize: isSmallScreen ? '0.65rem' : '0.95rem',
+          },
+        }}
       />
       {/* Player Detail Modal */}
       <Dialog 
