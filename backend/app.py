@@ -162,7 +162,7 @@ def element_summary_history_past(player_id):
 def element_summary_history(player_id):
     """Fetch detailed player history from the fpl_data.db SQLite database and return as JSON."""
     try:
-        df = pd.read_sql(f'SELECT * FROM element_summary_history WHERE element_id = {player_id}', engine)
+        df = pd.read_sql(f'SELECT * FROM element_summary_history WHERE element = {player_id}', engine)
         if df.empty:
             return jsonify({'error': 'Player not found'}), 404
         data = df.replace({np.nan: None}).to_dict(orient='records')

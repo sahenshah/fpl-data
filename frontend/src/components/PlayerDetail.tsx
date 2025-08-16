@@ -13,7 +13,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import CloseIcon from '@mui/icons-material/Close';
 import './PlayerDetail.css';
-import Next5Chart from './Next5Chart';
+import AreaAndLineChart from './AreaAndLineChart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
 import { getCurrentGameweek } from '../App';
 
@@ -25,103 +25,6 @@ interface PlayerDetailProps {
   events?: { id: number; is_next: boolean }[]; // Pass events as a prop
 }
 
-function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; predicted_xmins?: number }; teams?: Team[] }) {
-  const { row, teams } = props;
-  const [open, setOpen] = React.useState(false);
-
-  // Helper to get team badge URL by id
-  const getTeamBadge = (id: number) => {
-    const team = teams?.find(t => t.id === id);
-    return team
-      ? `/team-badges/${team.short_name}.svg`
-      : undefined;
-  };
-
-  return (
-    <React.Fragment>
-      <TableRow>
-        <TableCell align="center">
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell align="center">{row.event}</TableCell>
-        <TableCell align="center">
-          {getTeamBadge(row.team_h) ? (
-            <img
-              src={getTeamBadge(row.team_h)}
-              alt={`Home team badge`}
-              style={{ width: 28, height: 28, verticalAlign: 'middle' }}
-            />
-          ) : row.team_h}
-        </TableCell>
-        <TableCell
-          align="center"
-          sx={{ width: 24, minWidth: 24, maxWidth: 32, padding: '0 2px' }} // Home Score cell
-        >
-          {row.team_h_score !== null ? row.team_h_score : '-'}
-        </TableCell>
-        <TableCell
-          align="center"
-          sx={{ width: 24, minWidth: 24, maxWidth: 32, padding: '0 2px' }} // Away Score cell
-        >
-          {row.team_a_score !== null ? row.team_a_score : '-'}
-        </TableCell>
-        <TableCell align="center">
-          {getTeamBadge(row.team_a) ? (
-            <img
-              src={getTeamBadge(row.team_a)}
-              alt={`Away team badge`}
-              style={{ width: 28, height: 28, verticalAlign: 'middle' }}
-            />
-          ) : row.team_a}
-        </TableCell>
-        <TableCell
-          align="center"
-          sx={{
-            backgroundColor:
-              row.difficulty === 1 ? '#00831fff' :
-              row.difficulty === 2 ? '#54c96fe5' :
-              row.difficulty === 3 ? '#f3be4de3' :
-              row.difficulty === 4 ? '#e75f5fff' :
-              row.difficulty === 5 ? '#a7242fff' :
-              undefined,
-            color: row.difficulty === 3 ? '#000' : '#fff',
-            fontWeight: 'bold',
-            borderRadius: '4px'
-          }}
-        >
-          {row.difficulty}
-        </TableCell>
-        <TableCell align="center">
-          {row.predicted_points !== undefined && row.predicted_points !== null ? row.predicted_points : '-'}
-        </TableCell>
-        <TableCell align="center">
-          {row.predicted_xmins !== undefined && row.predicted_xmins !== null ? row.predicted_xmins : '-'}
-        </TableCell>
-      </TableRow>
-      {open && (
-        <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                <div>
-                  <strong>Kickoff time:</strong> {row.kickoff_time ? new Date(row.kickoff_time).toLocaleString() : '-'}<br />
-                  <strong>Minutes played:</strong> {row.minutes}<br />
-                </div>
-              </Box>
-            </Collapse>
-          </TableCell>
-        </TableRow>
-      )}
-    </React.Fragment>
-  );
-}
-
 const positionMap: Record<number, string> = {
   1: 'GK',
   2: 'DEF',
@@ -131,16 +34,10 @@ const positionMap: Record<number, string> = {
 
 const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, teams }) => {
   const [fixtures, setFixtures] = React.useState<PlayerFixture[]>([]);
+  const [history, setHistory] = React.useState<any[]>([]);
   const [historyPast, setHistoryPast] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [currentGW, setCurrentGW] = React.useState<number>(1);
-
-  // Fetch current gameweek on mount
-  React.useEffect(() => {
-    getCurrentGameweek().then(gw => {
-      if (gw) setCurrentGW(gw);
-    });
-  }, []);
 
   // Build predicted points for next 5 gameweeks
   const predictedPointsNext5: number[] = [];
@@ -173,6 +70,17 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
 
   React.useEffect(() => {
     setLoading(true);
+    fetch(`/api/fpl_data/element-summary-history/${player.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setHistory(data.history || []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [player.id]);
+  
+  React.useEffect(() => {
+    setLoading(true);
     fetch(`/api/fpl_data/element-summary-history-past/${player.id}`)
       .then(res => res.json())
       .then(data => {
@@ -182,6 +90,181 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       .catch(() => setLoading(false));
   }, [player.id]);
   if (!player) return null;
+
+  // Merge history and fixtures by gameweek/event
+  const mergedRows = React.useMemo(() => {
+    // Map history by round (gameweek)
+    const historyMap = new Map<number, any>();
+    history.forEach(h => {
+      if (h.round != null) historyMap.set(h.round, h);
+    });
+
+    // Map fixtures by event (gameweek)
+    const fixturesMap = new Map<number, any>();
+    fixtures.forEach(fix => {
+      if (fix.event != null) fixturesMap.set(fix.event, fix);
+    });
+
+    // Union of all gameweeks present in either history or fixtures
+    const allGameweeks = Array.from(
+      new Set([
+        ...Array.from(historyMap.keys()),
+        ...Array.from(fixturesMap.keys()),
+      ])
+    ).sort((a, b) => a - b);
+
+    // For each gameweek, prefer history if present, else fixture
+    return allGameweeks.map(gw => {
+      const hist = historyMap.get(gw);
+      const fix = fixturesMap.get(gw);
+      const predicted_points = player[`pp_gw_${gw}` as keyof Element];
+      const predicted_xmins = player[`xmins_gw_${gw}` as keyof Element];
+
+      if (hist) {
+        // Map history fields to fixture row structure
+        // Find opponent team info
+        let opponentTeamId = hist.opponent_team;
+        let isHome = hist.was_home;
+        let team_h = isHome ? player.team : opponentTeamId;
+        let team_a = isHome ? opponentTeamId : player.team;
+
+        return {
+          ...fix, // include fixture fields if available
+          ...hist,
+          event: hist.round,
+          team_h,
+          team_a,
+          team_h_score: hist.team_h_score,
+          team_a_score: hist.team_a_score,
+          difficulty: fix?.difficulty ?? 3,
+          predicted_points,
+          predicted_xmins,
+          total_points: hist.total_points,
+          minutes: hist.minutes,
+          isHistory: true,
+        };
+      } else if (fix) {
+        return {
+          ...fix,
+          predicted_points,
+          predicted_xmins,
+          isHistory: false,
+        };
+      }
+      // Should not happen, but fallback:
+      return { event: gw, predicted_points, predicted_xmins };
+    });
+  }, [fixtures, history, player]);
+
+  // Fetch current gameweek on mount
+  React.useEffect(() => {
+    getCurrentGameweek().then(gw => {
+      if (gw) setCurrentGW(gw);
+    });
+  }, []);
+
+  function FixtureRow(props: { row: PlayerFixture & { predicted_points?: number; predicted_xmins?: number }; teams?: Team[] }) {
+    const { row, teams } = props;
+    const [open, setOpen] = React.useState(false);
+
+    // Helper to get team badge URL by id
+    const getTeamBadge = (id: number) => {
+      const team = teams?.find(t => t.id === id);
+      return team
+        ? `/team-badges/${team.short_name}.svg`
+        : undefined;
+    };
+
+    return (
+      <React.Fragment>
+        <TableRow>
+          <TableCell align="center">
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </TableCell>
+          <TableCell align="center">{row.event}</TableCell>
+          <TableCell align="center">
+            {getTeamBadge(row.team_h) ? (
+              <img
+                src={getTeamBadge(row.team_h)}
+                alt={`Home team badge`}
+                style={{ width: 28, height: 28, verticalAlign: 'middle' }}
+              />
+            ) : row.team_h}
+          </TableCell>
+          <TableCell
+            align="center"
+            sx={{ width: 24, minWidth: 24, maxWidth: 32, padding: '0 2px' }} // Home Score cell
+          >
+            {row.team_h_score !== null ? row.team_h_score : '-'}
+          </TableCell>
+          <TableCell
+            align="center"
+            sx={{ width: 24, minWidth: 24, maxWidth: 32, padding: '0 2px' }} // Away Score cell
+          >
+            {row.team_a_score !== null ? row.team_a_score : '-'}
+          </TableCell>
+          <TableCell align="center">
+            {getTeamBadge(row.team_a) ? (
+              <img
+                src={getTeamBadge(row.team_a)}
+                alt={`Away team badge`}
+                style={{ width: 28, height: 28, verticalAlign: 'middle' }}
+              />
+            ) : row.team_a}
+          </TableCell>
+          <TableCell
+            align="center"
+            sx={{
+              backgroundColor:
+                row.difficulty === 1 ? '#00831fff' :
+                row.difficulty === 2 ? '#54c96fe5' :
+                row.difficulty === 3 ? '#f3be4de3' :
+                row.difficulty === 4 ? '#e75f5fff' :
+                row.difficulty === 5 ? '#a7242fff' :
+                undefined,
+              color: row.difficulty === 3 ? '#000' : '#fff',
+              fontWeight: 'bold',
+              borderRadius: '4px'
+            }}
+          >
+            {row.difficulty}
+          </TableCell>
+          <TableCell align="center">
+            {row.predicted_points !== undefined && row.predicted_points !== null ? row.predicted_points : '-'}
+          </TableCell>
+          <TableCell align="center">
+            {row.predicted_xmins !== undefined && row.predicted_xmins !== null ? row.predicted_xmins : '-'}
+          </TableCell>
+          <TableCell align="center">
+            {row.total_points !== undefined && row.total_points !== null ? row.total_points : '-'}
+          </TableCell>
+          <TableCell align="center">
+            {row.minutes ? row.minutes : '-'}
+          </TableCell>
+        </TableRow>
+        {open && (
+          <TableRow>
+            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                <Box sx={{ margin: 1 }}>
+                  <div>
+                    <strong>Kickoff time:</strong> {row.kickoff_time ? new Date(row.kickoff_time).toLocaleString() : '-'}<br />
+                    <strong>Minutes played:</strong> {row.minutes}<br />
+                  </div>
+                </Box>
+              </Collapse>
+            </TableCell>
+          </TableRow>
+        )}
+      </React.Fragment>
+    );
+  }
 
   return (
     <div className="player-detail-modal">
@@ -287,11 +370,10 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         </div>
       </div>
 
-      <Next5Chart
-        // predictedPoints={predictedPointsNext5}
-        // predictedXmins={xMinsNext5}
+      <AreaAndLineChart
+        player={player}
       />
-      <h3>Fixtures</h3>
+      <h3>Results & Fixtures</h3>
       {loading ? (
         <p>Loading fixtures...</p>
       ) : (
@@ -318,10 +400,12 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                 <TableCell align="center">Difficulty</TableCell>
                 <TableCell align="center">xPoints</TableCell>
                 <TableCell align="center">xMinutes</TableCell>
+                <TableCell align="center">Points</TableCell>
+                <TableCell align="center">Minutes</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {fixtures.slice(0, 38).map(fix => {
+              {mergedRows.slice(0, 38).map(fix => {
                 // Get the gameweek number for this fixture
                 const gw = fix.event;
                 // Lookup xPoints and xMins from the player element table
@@ -332,8 +416,10 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                     key={fix.id}
                     row={{
                       ...fix,
-                      predicted_points: typeof predicted_points === 'number' ? predicted_points : Number(predicted_points) || 0,
-                      predicted_xmins: typeof predicted_xmins === 'number' ? predicted_xmins : Number(predicted_xmins) || 0,
+                      predicted_points: typeof predicted_points === 'number' ? predicted_points : Number(predicted_points) || '-',
+                      predicted_xmins: typeof predicted_xmins === 'number' ? predicted_xmins : Number(predicted_xmins) || '-',
+                      total_points: fix.total_points ?? '-',
+                      minutes: fix.minutes ?? '-'
                     }}
                     teams={teams}
                   />

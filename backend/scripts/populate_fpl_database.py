@@ -456,20 +456,38 @@ def insert_element_summary_data(conn, element_ids, delay=0.5):
         # Insert fixtures
         for fixture in summary.get("fixtures", []):
             fixture_row = fixture.copy()
-            fixture_row ["element_id"] = eid
+            fixture_row["element_id"] = eid
             allowed_keys = {
                 "id", "element_id", "code", "team_h", "team_h_score", "team_a", "team_a_score",
                 "event", "finished", "minutes", "provisional_start_time", "kickoff_time",
                 "event_name", "is_home", "difficulty"
             }
             fixture_row = {k: fixture_row.get(k) for k in allowed_keys}
-            placeholders = ', '.join('?' for _ in fixture_row)
-            columns = ', '.join(fixture_row.keys())
-            values = list(fixture_row.values())
+
+            # Check if a row with this element_id and event exists
             c.execute(
-                f"INSERT OR REPLACE INTO element_summary_fixtures ({columns}) VALUES ({placeholders})",
-                values
+                "SELECT pk FROM element_summary_fixtures WHERE element_id = ? AND event = ?",
+                (fixture_row["element_id"], fixture_row["event"])
             )
+            existing = c.fetchone()
+            if existing:
+                # Row exists, update it
+                set_clause = ', '.join([f"{k} = ?" for k in fixture_row.keys() if k not in ("element_id", "event")])
+                values = [fixture_row[k] for k in fixture_row.keys() if k not in ("element_id", "event")]
+                values.extend([fixture_row["element_id"], fixture_row["event"]])
+                c.execute(
+                    f"UPDATE element_summary_fixtures SET {set_clause} WHERE element_id = ? AND event = ?",
+                    values
+                )
+            else:
+                # Insert new row
+                placeholders = ', '.join('?' for _ in fixture_row)
+                columns = ', '.join(fixture_row.keys())
+                values = list(fixture_row.values())
+                c.execute(
+                    f"INSERT INTO element_summary_fixtures ({columns}) VALUES ({placeholders})",
+                    values
+                )
 
         # Insert or update history_past
         for hist in summary.get("history_past", []):
@@ -524,13 +542,31 @@ def insert_element_summary_data(conn, element_ids, delay=0.5):
                 "value", "transfers_balance", "selected", "transfers_in", "transfers_out"
             }
             hist_row = {k: hist_row.get(k) for k in allowed_keys}
-            placeholders = ', '.join('?' for _ in hist_row)
-            columns = ', '.join(hist_row.keys())
-            values = list(hist_row.values())
+
+            # Check if a row with this element and fixture exists
             c.execute(
-                f"INSERT INTO element_summary_history ({columns}) VALUES ({placeholders})",
-                values
+                "SELECT id FROM element_summary_history WHERE element = ? AND fixture = ?",
+                (hist_row["element"], hist_row["fixture"])
             )
+            existing = c.fetchone()
+            if existing:
+                # Update the existing row
+                set_clause = ', '.join([f"{k} = ?" for k in hist_row.keys() if k not in ("element", "fixture")])
+                values = [hist_row[k] for k in hist_row.keys() if k not in ("element", "fixture")]
+                values.extend([hist_row["element"], hist_row["fixture"]])
+                c.execute(
+                    f"UPDATE element_summary_history SET {set_clause} WHERE element = ? AND fixture = ?",
+                    values
+                )
+            else:
+                # Insert new row
+                placeholders = ', '.join('?' for _ in hist_row)
+                columns = ', '.join(hist_row.keys())
+                values = list(hist_row.values())
+                c.execute(
+                    f"INSERT INTO element_summary_history ({columns}) VALUES ({placeholders})",
+                    values
+                )
 
         conn.commit()
         time.sleep(delay)  # Be polite to the FPL API

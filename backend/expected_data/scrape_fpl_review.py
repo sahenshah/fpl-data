@@ -101,7 +101,7 @@ else:
 non_empty_headers = [h for h in header_texts if h.strip() != ""]
 header_points = ["Name", "Position", "Price"] + non_empty_headers
 header_points_line = ",".join(header_points) + "\n"
-header_xmins = ["Name", "Position", "Price"] + header_texts[1:]
+header_xmins = ["Name", "Position", "Price"] + non_empty_headers 
 header_xmins_line = ",".join(header_xmins) + "\n"
 
 # Now use header_points_line as the header for both txt and csv

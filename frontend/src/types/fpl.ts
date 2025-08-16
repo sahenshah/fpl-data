@@ -249,6 +249,7 @@ export interface PlayerFixture {
   is_home: boolean;
   difficulty: number;
   predicted_points: number | null;
+  total_points: number | null;
 }
 
 export interface TeamSummary {
