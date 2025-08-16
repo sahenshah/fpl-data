@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface AreaAndLineChartProps {
@@ -7,7 +7,22 @@ interface AreaAndLineChartProps {
   gwEnd?: number;
 }
 
-const AreaAndLineChart = ({ player, gwStart = 1, gwEnd = 5 }: AreaAndLineChartProps) => {
+const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
+  // Dynamically calculate gwEnd based on the last populated predicted GW column
+  const gwEnd = useMemo(() => {
+    let lastGW = 1;
+    for (let i = 1; i <= 38; i++) {
+      if (
+        player[`pp_gw_${i}`] !== undefined &&
+        player[`pp_gw_${i}`] !== null &&
+        player[`pp_gw_${i}`] !== ''
+      ) {
+        lastGW = i;
+      }
+    }
+    return lastGW;
+  }, [player]);
+
   // State for history points and minutes
   const [historyPoints, setHistoryPoints] = useState<{ [gw: number]: number }>({});
   const [historyMinutes, setHistoryMinutes] = useState<{ [gw: number]: number }>({});
@@ -68,9 +83,21 @@ const AreaAndLineChart = ({ player, gwStart = 1, gwEnd = 5 }: AreaAndLineChartPr
         <XAxis dataKey="name" />
         <YAxis yAxisId="left" />
         <YAxis yAxisId="right" orientation="right" />
-        <Tooltip />
+        <Tooltip
+          content={({ label, payload, active }) =>
+            active && payload && payload.length ? (
+              <div style={{ background: "#1c1931ec", border: "1px solid #ffffffff", borderRadius: 4, padding: 8 }}>
+                <div style={{ fontWeight: "bold" }}>{label}</div>
+                {payload.map((entry, idx) => (
+                  <div key={idx} style={{ color: entry.color }}>
+                    {entry.name}: {entry.value}
+                  </div>
+                ))}
+              </div>
+            ) : null
+          }
+        />
         <Legend verticalAlign="top" height={36} />
-        {/* Area for predicted xPoints */}
         <Area
           yAxisId="left"
           type="monotone"
@@ -79,7 +106,6 @@ const AreaAndLineChart = ({ player, gwStart = 1, gwEnd = 5 }: AreaAndLineChartPr
           fill="#8884d8"
           name="xPoints"
         />
-        {/* Area for actual Points from history */}
         <Area
           yAxisId="left"
           type="monotone"
@@ -88,7 +114,6 @@ const AreaAndLineChart = ({ player, gwStart = 1, gwEnd = 5 }: AreaAndLineChartPr
           fill="#82ca9d"
           name="Points"
         />
-        {/* Line for xMins (predicted) */}
         <Line
           yAxisId="right"
           type="monotone"
@@ -97,7 +122,6 @@ const AreaAndLineChart = ({ player, gwStart = 1, gwEnd = 5 }: AreaAndLineChartPr
           name="xMins"
           activeDot={{ r: 8 }}
         />
-        {/* Line for Minutes (actual from history) */}
         <Line
           yAxisId="right"
           type="monotone"

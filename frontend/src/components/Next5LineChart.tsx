@@ -69,7 +69,29 @@ export default function Next5LineChart({
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis dataKey="name" />
         <YAxis />
-        <Tooltip />
+        <Tooltip
+          content={({ label, payload, active }) =>
+            active && payload && payload.length ? (
+              <div
+                style={{
+                  background: "#1c1931ec",
+                  border: "1px solid #888",
+                  borderRadius: 4,
+                  padding: 8,
+                  color: "#fff",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                }}
+              >
+                <div style={{ fontWeight: "bold", marginBottom: 4 }}>{label}</div>
+                {payload.map((entry, idx) => (
+                  <div key={idx} style={{ color: entry.color }}>
+                    {entry.name}: {entry.value}
+                  </div>
+                ))}
+              </div>
+            ) : null
+          }
+        />
         {players.map((player, idx) => (
           <Line
             key={player.web_name}
