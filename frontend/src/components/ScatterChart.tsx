@@ -28,23 +28,20 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
     const point = payload[0].payload;
     const tooltipWidth = 120;
     const tooltipHeight = 70;
-    // Default positions
     let left = coordinate ? coordinate.x + 10 : 0;
-    let top = coordinate ? coordinate.y - 30 : 0;
-    // Clamp to viewport (right and bottom)
+    let top = coordinate ? coordinate.y : 0;
     if (typeof window !== 'undefined') {
       const maxLeft = window.innerWidth - tooltipWidth - 10;
+      left = Math.min(left, maxLeft);
+      left = Math.max(0, left);
       const maxTop = window.innerHeight - tooltipHeight - 10;
-      left = Math.max(0, Math.min(left, maxLeft));
-      top = Math.max(0, Math.min(top, maxTop));
+      top = Math.min(top, maxTop);
+      top = Math.max(0, top);
     }
     const style: React.CSSProperties = {
-      position: 'absolute',
-      left,
-      top,
+      // Remove position: 'fixed'
       pointerEvents: 'none',
       zIndex: 1000,
-      transition: 'none',
       width: tooltipWidth,
       minWidth: tooltipWidth,
       maxWidth: tooltipWidth,
