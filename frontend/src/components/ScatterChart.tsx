@@ -1,4 +1,4 @@
-import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import './ScatterChart.css';
 
 interface Player {
@@ -22,7 +22,7 @@ function getRandomColor() {
   return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-// Set tooltip position to follow the cursor and disable animation
+// Set tooltip position to follow the cursor and clamp to viewport (right and bottom)
 const CustomTooltip = ({ active, payload, coordinate }: any) => {
   if (active && payload && payload.length && payload[0].payload) {
     const point = payload[0].payload;
@@ -31,10 +31,11 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
     // Default positions
     let left = coordinate ? coordinate.x + 10 : 0;
     let top = coordinate ? coordinate.y - 30 : 0;
-    // Clamp to viewport
+    // Clamp to viewport (right and bottom)
     if (typeof window !== 'undefined') {
       const maxLeft = window.innerWidth - tooltipWidth - 10;
       const maxTop = window.innerHeight - tooltipHeight - 10;
+      if (left > maxLeft) left = coordinate.x - tooltipWidth - 10;
       left = Math.max(0, Math.min(left, maxLeft));
       top = Math.max(0, Math.min(top, maxTop));
     }
@@ -75,6 +76,18 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
     }))
     .filter(d => typeof d.x === 'number' && typeof d.y === 'number' && !isNaN(d.x) && !isNaN(d.y));
 
+  // Calculate min/max for axes
+  const xVals = data.map(d => d.x);
+  const yVals = data.map(d => d.y);
+  const xMin = Math.min(...xVals);
+  const xMax = Math.max(...xVals);
+  const yMin = Math.min(...yVals);
+  const yMax = Math.max(...yVals);
+
+  // Calculate ticks for a 2x2 grid (3 ticks: min, mid, max)
+  const xTicks = [xMin, (xMin + xMax) / 2, xMax];
+  const yTicks = [yMin, (yMin + yMax) / 2, yMax];
+
   return (
     <ResponsiveContainer width="100%" height={300}>
       <ScatterChart
@@ -86,14 +99,23 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
         }}
         style={{ background: '#333' }}
       >
+        <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           type="number"
           dataKey="x"
           name="Cost"
           unit=""
           tickFormatter={v => `£${v}m`}
+          domain={[xMin, xMax]}
+          ticks={xTicks}
         />
-        <YAxis type="number" dataKey="y" name={yLabel} />
+        <YAxis
+          type="number"
+          dataKey="y"
+          name={yLabel}
+          domain={[yMin, yMax]}
+          ticks={yTicks}
+        />
         <Tooltip
           content={<CustomTooltip />}
           cursor={{ strokeDasharray: '3 3' }}

@@ -471,7 +471,7 @@ def insert_element_summary_data(conn, element_ids, delay=0.5):
                 values
             )
 
-        # Insert history_past
+        # Insert or update history_past
         for hist in summary.get("history_past", []):
             hist_row = hist.copy()
             hist_row["element_id"] = eid
@@ -484,13 +484,31 @@ def insert_element_summary_data(conn, element_ids, delay=0.5):
                 "expected_assists", "expected_goal_involvements", "expected_goals_conceded"
             }
             hist_row = {k: hist_row.get(k) for k in allowed_keys}
-            placeholders = ', '.join('?' for _ in hist_row)
-            columns = ', '.join(hist_row.keys())
-            values = list(hist_row.values())
+
+            # Check if a row with this element_id and season_name exists
             c.execute(
-                f"INSERT OR REPLACE INTO element_summary_history_past ({columns}) VALUES ({placeholders})",
-                values
+                "SELECT id FROM element_summary_history_past WHERE element_id = ? AND season_name = ?",
+                (hist_row["element_id"], hist_row["season_name"])
             )
+            existing = c.fetchone()
+            if existing:
+                # Update the existing row
+                set_clause = ', '.join([f"{k} = ?" for k in hist_row.keys() if k not in ("element_id", "season_name")])
+                values = [hist_row[k] for k in hist_row.keys() if k not in ("element_id", "season_name")]
+                values.extend([hist_row["element_id"], hist_row["season_name"]])
+                c.execute(
+                    f"UPDATE element_summary_history_past SET {set_clause} WHERE element_id = ? AND season_name = ?",
+                    values
+                )
+            else:
+                # Insert new row
+                placeholders = ', '.join('?' for _ in hist_row)
+                columns = ', '.join(hist_row.keys())
+                values = list(hist_row.values())
+                c.execute(
+                    f"INSERT INTO element_summary_history_past ({columns}) VALUES ({placeholders})",
+                    values
+                )
 
         # Insert history
         for hist in summary.get("history", []):
@@ -615,7 +633,6 @@ def update_player_xmins_from_csv(conn, row):
     set_clause = ', '.join([f"{col} = ?" for col in update_fields])
     values = list(update_fields.values())
     values.append(player_id)
-    print(row.keys())
     sql = f"UPDATE elements SET {set_clause} WHERE id = ?"
     cur = conn.cursor()
     cur.execute(sql, values)

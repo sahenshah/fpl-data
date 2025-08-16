@@ -288,8 +288,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       </div>
 
       <Next5Chart
-        predictedPoints={predictedPointsNext5}
-        predictedXmins={xMinsNext5}
+        // predictedPoints={predictedPointsNext5}
+        // predictedXmins={xMinsNext5}
       />
       <h3>Fixtures</h3>
       {loading ? (
@@ -380,37 +380,43 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             </TableRow>
           </TableHead>
           <TableBody>
-            {historyPast.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row">{row.season_name}</TableCell>
-                <TableCell align="right">{(row.start_cost / 10).toFixed(1)}</TableCell>
-                <TableCell align="right">{(row.end_cost / 10).toFixed(1)}</TableCell>
-                <TableCell align="right">{row.total_points}</TableCell>
-                <TableCell align="right">{row.minutes}</TableCell>
-                <TableCell align="right">{row.goals_scored}</TableCell>
-                <TableCell align="right">{row.assists}</TableCell>
-                <TableCell align="right">{row.clean_sheets}</TableCell>
-                <TableCell align="right">{row.goals_conceded}</TableCell>
-                <TableCell align="right">{row.own_goals}</TableCell>
-                <TableCell align="right">{row.penalties_saved}</TableCell>
-                <TableCell align="right">{row.penalties_missed}</TableCell>
-                <TableCell align="right">{row.yellow_cards}</TableCell>
-                <TableCell align="right">{row.red_cards}</TableCell>
-                <TableCell align="right">{row.saves}</TableCell>
-                <TableCell align="right">{row.bonus}</TableCell>
-                <TableCell align="right">{row.bps}</TableCell>
-                <TableCell align="right">{row.influence}</TableCell>
-                <TableCell align="right">{row.creativity}</TableCell>
-                <TableCell align="right">{row.threat}</TableCell>
-                <TableCell align="right">{row.ict_index}</TableCell>
-                <TableCell align="right">{row.defensive_contribution}</TableCell>
-                <TableCell align="right">{row.starts}</TableCell>
-                <TableCell align="right">{row.expected_goals}</TableCell>
-                <TableCell align="right">{row.expected_assists}</TableCell>
-                <TableCell align="right">{row.expected_goal_involvements}</TableCell>
-                <TableCell align="right">{row.expected_goals_conceded}</TableCell>
-              </TableRow>
-            ))}
+            {historyPast
+              .filter((row, idx, arr) =>
+                arr.findIndex(
+                  r => r.season_name === row.season_name && r.id === row.id
+                ) === idx
+              )
+              .map((row, idx) => (
+                <TableRow key={`${row.id}-${row.season_name}-${idx}`}>
+                  <TableCell component="th" scope="row">{row.season_name}</TableCell>
+                  <TableCell align="right">{(row.start_cost / 10).toFixed(1)}</TableCell>
+                  <TableCell align="right">{(row.end_cost / 10).toFixed(1)}</TableCell>
+                  <TableCell align="right">{row.total_points}</TableCell>
+                  <TableCell align="right">{row.minutes}</TableCell>
+                  <TableCell align="right">{row.goals_scored}</TableCell>
+                  <TableCell align="right">{row.assists}</TableCell>
+                  <TableCell align="right">{row.clean_sheets}</TableCell>
+                  <TableCell align="right">{row.goals_conceded}</TableCell>
+                  <TableCell align="right">{row.own_goals}</TableCell>
+                  <TableCell align="right">{row.penalties_saved}</TableCell>
+                  <TableCell align="right">{row.penalties_missed}</TableCell>
+                  <TableCell align="right">{row.yellow_cards}</TableCell>
+                  <TableCell align="right">{row.red_cards}</TableCell>
+                  <TableCell align="right">{row.saves}</TableCell>
+                  <TableCell align="right">{row.bonus}</TableCell>
+                  <TableCell align="right">{row.bps}</TableCell>
+                  <TableCell align="right">{row.influence}</TableCell>
+                  <TableCell align="right">{row.creativity}</TableCell>
+                  <TableCell align="right">{row.threat}</TableCell>
+                  <TableCell align="right">{row.ict_index}</TableCell>
+                  <TableCell align="right">{row.defensive_contribution}</TableCell>
+                  <TableCell align="right">{row.starts}</TableCell>
+                  <TableCell align="right">{row.expected_goals}</TableCell>
+                  <TableCell align="right">{row.expected_assists}</TableCell>
+                  <TableCell align="right">{row.expected_goal_involvements}</TableCell>
+                  <TableCell align="right">{row.expected_goals_conceded}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
