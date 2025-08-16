@@ -553,6 +553,8 @@ def find_player_id(conn, web_name, element_type):
     return None
 
 def update_player_from_csv(conn, row):
+    # Remove empty column keys
+    row = {k: v for k, v in row.items() if k.strip() != ''}
     web_name = row['Name'].strip()
     position = row['Position'].strip()
     position_map = {'GK': 1, 'DEF': 2, 'MID': 3, 'FWD': 4}
@@ -602,7 +604,7 @@ def update_player_xmins_from_csv(conn, row):
     update_fields = {
         'predicted_xmins_next5': row['Total'],
         'pxm_next5_per_m': row['/£M'],
-        'elite_selected_percent': row['Elite%'],
+        # 'elite_selected_percent': row['Elite%'],
     }
     for i in range(1, 6):
         gw_col = f'GW{i}'
@@ -613,6 +615,7 @@ def update_player_xmins_from_csv(conn, row):
     set_clause = ', '.join([f"{col} = ?" for col in update_fields])
     values = list(update_fields.values())
     values.append(player_id)
+    print(row.keys())
     sql = f"UPDATE elements SET {set_clause} WHERE id = ?"
     cur = conn.cursor()
     cur.execute(sql, values)

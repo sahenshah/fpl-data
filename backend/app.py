@@ -109,7 +109,7 @@ def players():
     """Fetch player data from the fpl_data.db SQLite database and return as JSON."""
     try:
         df = pd.read_sql('SELECT * FROM elements', engine)
-        data = df.to_dict(orient='records')
+        data = df.replace({np.nan: None}).to_dict(orient='records')
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -119,7 +119,7 @@ def teams():
     """Fetch team data from the fpl_data.db SQLite database and return as JSON."""
     try:
         df = pd.read_sql('SELECT * FROM teams', engine)
-        data = df.to_dict(orient='records')
+        data = df.replace({np.nan: None}).to_dict(orient='records')
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -129,7 +129,7 @@ def events():
     """Fetch event data from the fpl_data.db SQLite database and return as JSON."""
     try:
         df = pd.read_sql('SELECT * FROM events', engine)
-        data = df.to_dict(orient='records')
+        data = df.replace({np.nan: None}).to_dict(orient='records')
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -141,7 +141,7 @@ def element_summary_fixtures(player_id):
         df = pd.read_sql(f'SELECT * FROM element_summary_fixtures WHERE element_id = {player_id}', engine)
         if df.empty:
             return jsonify({'error': 'Player not found'}), 404
-        data = df.to_dict(orient='records')
+        data = df.replace({np.nan: None}).to_dict(orient='records')
         return jsonify({'fixtures': data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -153,7 +153,7 @@ def element_summary_history_past(player_id):
         df = pd.read_sql(f'SELECT * FROM element_summary_history_past WHERE element_id = {player_id}', engine)
         if df.empty:
             return jsonify({'error': 'Player not found'}), 404
-        data = df.to_dict(orient='records')
+        data = df.replace({np.nan: None}).to_dict(orient='records')
         return jsonify({'history_past': data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -165,8 +165,8 @@ def element_summary_history(player_id):
         df = pd.read_sql(f'SELECT * FROM element_summary_history WHERE element_id = {player_id}', engine)
         if df.empty:
             return jsonify({'error': 'Player not found'}), 404
-        data = df.to_dict(orient='records')
-        return jsonify({'history_past': data})
+        data = df.replace({np.nan: None}).to_dict(orient='records')
+        return jsonify({'history': data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -175,7 +175,7 @@ def db_fixtures():
     """Fetch fixture data from the fpl_data.db SQLite database and return as JSON."""
     try:
         df = pd.read_sql('SELECT * FROM fixtures', engine)
-        data = df.to_dict(orient='records')
+        data = df.replace({np.nan: None}).to_dict(orient='records')
         return jsonify(data)
     except Exception as e:
         return jsonify({'error': str(e)}), 500

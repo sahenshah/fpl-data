@@ -231,9 +231,9 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             flexWrap: 'nowrap',
             gap: 30,
             minWidth: 400,
-            justifyContent: 'flex-start', // align to the left so scrolling starts at first box
+            justifyContent: 'flex-start',
             alignItems: 'center',
-            padding: '0 8px', // optional: add a little side padding
+            padding: '0 8px',
           }}
         >
           {[

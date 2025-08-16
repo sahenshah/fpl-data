@@ -13,7 +13,7 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
 
 ## Tech Stack
 
-- **Frontend:** React, TypeScript, MUI (Material UI), MUI X Charts
+- **Frontend:** React, TypeScript, MUI (Material UI), MUI X Charts, Recharts
 - **Backend:** Python, Flask, Pandas
 - **Data:** `fpl_data.db` (populated from CSVs and FPL API via scripts)
 
