@@ -35,7 +35,6 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
     if (typeof window !== 'undefined') {
       const maxLeft = window.innerWidth - tooltipWidth - 10;
       const maxTop = window.innerHeight - tooltipHeight - 10;
-      if (left > maxLeft) left = coordinate.x - tooltipWidth - 10;
       left = Math.max(0, Math.min(left, maxLeft));
       top = Math.max(0, Math.min(top, maxTop));
     }
@@ -81,7 +80,7 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
   const yVals = data.map(d => d.y);
   const xMin = Math.min(...xVals);
   const xMax = Math.max(...xVals);
-  const yMin = Math.min(...yVals);
+  const yMin = 0; // Always start at 0
   const yMax = Math.max(...yVals);
 
   // Calculate ticks for a 2x2 grid (3 ticks: min, mid, max)

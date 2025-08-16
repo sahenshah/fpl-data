@@ -115,7 +115,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
     'xG/90' |
     'xA' |
     'xA/90' |
-    'CBI' |
     'defCon' |
     'defCon90'
   >('xPoints');
@@ -246,7 +245,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const handleModeChange = (mode: 'xPoints' | 'xMins' | 'totalPoints' | 'xGI' | 'xGI/90' | 'xG' | 'xG/90' | 'xA' | 'xA/90' | 'CBI' | 'defCon' | 'defCon90') => {
+  const handleModeChange = (mode: 'xPoints' | 'xMins' | 'totalPoints' | 'xGI' | 'xGI/90' | 'xG' | 'xG/90' | 'xA' | 'xA/90' | 'defCon' | 'defCon90') => {
     setChartMode(mode);
     setAnchorEl(null);
   };
@@ -476,8 +475,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             ? 'xA'
             : chartMode === 'xA/90'
             ? 'xA/90'
-            : chartMode === 'CBI'
-            ? 'CBI'
             : chartMode === 'defCon'
             ? 'Def Con'
             : chartMode === 'defCon90'
@@ -585,13 +582,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             xA/90
           </MenuItem>
           <MenuItem
-            selected={chartMode === 'CBI'}
-            onClick={() => handleModeChange('CBI')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            CBI
-          </MenuItem>
-          <MenuItem
             selected={chartMode === 'defCon'}
             onClick={() => handleModeChange('defCon')}
             sx={{ fontSize: '0.85rem', minHeight: '32px' }}
@@ -614,7 +604,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         chartMode === 'xG/90' ||
         chartMode === 'xA' ||
         chartMode === 'xA/90' ||
-        chartMode === 'CBI' ||
         chartMode === 'defCon' ||
         chartMode === 'defCon90') ? (
         <ScatterChart
@@ -626,7 +615,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                               chartMode === 'xG/90' ? 'expected_goals_per_90' : 
                               chartMode === 'xA' ? 'expected_assists' : 
                               chartMode === 'xA/90' ? 'expected_assists_per_90' : 
-                              chartMode === 'CBI' ? 'clearances_blocks_interceptions' : 
                               chartMode === 'defCon' ? 'defensive_contribution' : 
                               chartMode === 'defCon90' ? 'defensive_contribution_per_90' : ''}
           yLabel={chartMode === 'totalPoints' ? 'Total Points' : 
@@ -636,7 +624,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                   chartMode === 'xG/90' ? 'xG/90' : 
                   chartMode === 'xA' ? 'xA' : 
                   chartMode === 'xA/90' ? 'xA/90' : 
-                  chartMode === 'CBI' ? 'CBI' : 
                   chartMode === 'defCon' ? 'Defensive Contributions' : 
                   chartMode === 'defCon90' ? 'Defensive Contributions / 90' : ''}
         />
