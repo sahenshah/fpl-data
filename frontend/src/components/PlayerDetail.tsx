@@ -180,6 +180,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         <TableRow>
           <TableCell align="center">
             <IconButton
+              className={`fixture-row-arrow${open ? ' open' : ''}`}
               aria-label="expand row"
               size="small"
               onClick={() => setOpen(!open)}
@@ -253,7 +254,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             {/* Set colSpan to the total number of columns in your table (here it's 11) */}
             <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: '#1f1f1fff' }} colSpan={11}>
               <Collapse in={open} timeout="auto" unmountOnExit>
-                <Box sx={{ margin: 1, textAlign: 'left' }}>
+                <Box sx={{ margin: 1, textAlign: 'left', paddingTop: 2, paddingBottom: 2 }}>
                   <div
                     style={{
                       display: 'grid',
@@ -307,7 +308,15 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
   }
 
   return (
-    <div className="player-detail-modal">
+    <div 
+      className="player-detail-modal"
+      style={{
+        maxHeight: '100vh',
+        overflowY: 'auto',
+        scrollbarWidth: 'auto',
+        scrollbarColor: '#888 #32043a',
+      }}
+    >
       <button onClick={onClose} className="player-detail-close-btn" aria-label="Close">
         <CloseIcon style={{ color: '#fff', fontSize: 20 }} />
       </button>
@@ -344,6 +353,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           width: '100%',
           padding: 0,
           margin: 0,
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#888 #32043a',
         }}
       >
         <div
@@ -361,17 +372,22 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         >
           {[
             { label: 'Total Points', value: player.total_points },
-            { label: 'xGI/90', value: player.expected_goal_involvements_per_90 },
-            { label: 'xG/90', value: player.expected_goals_per_90 },
-            { label: 'xA/90', value: player.expected_assists_per_90 },
+            { label: 'Minutes', value: player.minutes },
+            { label: 'Goals', value: player.goals_scored },
+            { label: 'Assists', value: player.assists },
+            { label: 'Clean Sheets', value: player.clean_sheets },
+            { label: 'Def Con', value: player.defensive_contribution },
+            { label: 'xGI /90', value: player.expected_goal_involvements_per_90 },
+            { label: 'xG /90', value: player.expected_goals_per_90 },
+            { label: 'xA /90', value: player.expected_assists_per_90 },
+            { label: 'Def Con /90', value: player.defensive_contribution_per_90 },
             { label: 'Elite Selected %', value: player.elite_selected_percent },
             { label: 'xPoints (next 5)', value: player.predicted_points_next5 },
-            { label: 'xPoints/£M', value: player.pp_next5_per_m },
+            { label: 'xPoints /£M', value: player.pp_next5_per_m },
             { label: 'xMins (next 5)', value: player.predicted_xmins_next5 },
-            { label: 'xMins/£M', value: player.pxm_next5_per_m },
+            { label: 'xMins /£M', value: player.pxm_next5_per_m },
             { label: 'Form', value: player.form },
             { label: 'ICT Index', value: player.ict_index },
-            { label: 'CBI', value: player.clearances_blocks_interceptions },
           ].map((item) => (
             <div
               key={item.label}
@@ -435,8 +451,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                 <TableCell align="center">Away</TableCell>
                 <TableCell align="center">Difficulty</TableCell>
                 <TableCell align="center">xPoints</TableCell>
-                <TableCell align="center">Points</TableCell> {/* Swapped */}
-                <TableCell align="center">xMinutes</TableCell> {/* Swapped */}
+                <TableCell align="center">Points</TableCell> 
+                <TableCell align="center">xMinutes</TableCell>
                 <TableCell align="center">Minutes</TableCell>
               </TableRow>
             </TableHead>
