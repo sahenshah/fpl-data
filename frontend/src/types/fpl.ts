@@ -250,6 +250,36 @@ export interface PlayerFixture {
   difficulty: number;
   predicted_points: number | null;
   total_points: number | null;
+  goals_conceded: number | null;
+  goals_scored: number | null;
+  assists: number | null;
+  clean_sheets: number | null;
+  own_goals: number | null;
+  penalties_saved: number | null;
+  penalties_missed: number | null;
+  yellow_cards: number | null;
+  red_cards: number | null;
+  saves: number | null;
+  bonus: number | null;
+  bps: number | null;
+  influence: number | null;
+  creativity: number | null;
+  threat: number | null;
+  ict_index: number | null;
+  clearances_blocks_interceptions: number | null;
+  recoveries: number | null;
+  tackles: number | null;
+  defensive_contribution: number | null;
+  starts: number | null;
+  expected_goals: number | null;
+  expected_assists: number | null;
+  expected_goal_involvements: number | null;
+  expected_goals_conceded: number | null;
+  value: number | null;
+  transfers_balance: number | null;
+  selected: boolean | null;
+  transfers_in: number | null;
+  transfers_out: number | null;
 }
 
 export interface TeamSummary {

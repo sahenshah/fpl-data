@@ -250,12 +250,52 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         </TableRow>
         {open && (
           <TableRow>
-            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+            {/* Set colSpan to the total number of columns in your table (here it's 11) */}
+            <TableCell style={{ paddingBottom: 0, paddingTop: 0, backgroundColor: '#1f1f1fff' }} colSpan={11}>
               <Collapse in={open} timeout="auto" unmountOnExit>
-                <Box sx={{ margin: 1 }}>
-                  <div>
-                    <strong>Kickoff time:</strong> {row.kickoff_time ? new Date(row.kickoff_time).toLocaleString() : '-'}<br />
-                    <strong>Minutes played:</strong> {row.minutes}<br />
+                <Box sx={{ margin: 1, textAlign: 'left' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                      gap: 12,
+                      alignItems: 'start',
+                    }}
+                  >
+                    {[
+                      { label: 'Kickoff time:', value: row.kickoff_time ? new Date(row.kickoff_time).toLocaleString() : null },
+                      { label: 'Minutes played:', value: row.minutes },
+                      { label: 'Goals:', value: row.goals_scored },
+                      { label: 'Assists:', value: row.assists },
+                      { label: 'Clean Sheets:', value: row.clean_sheets },
+                      { label: 'Own Goals:', value: row.own_goals },
+                      { label: 'Penalties Saved:', value: row.penalties_saved },
+                      { label: 'Penalties Missed:', value: row.penalties_missed },
+                      { label: 'Yellow Cards:', value: row.yellow_cards },
+                      { label: 'Red Cards:', value: row.red_cards },
+                      { label: 'Saves:', value: row.saves },
+                      { label: 'Bonus:', value: row.bonus },
+                      { label: 'BPS:', value: row.bps },
+                      { label: 'Influence:', value: row.influence },
+                      { label: 'Creativity:', value: row.creativity },
+                      { label: 'Threat:', value: row.threat },
+                      { label: 'ICT Index:', value: row.ict_index },
+                      { label: 'CBI:', value: row.clearances_blocks_interceptions },
+                      { label: 'Recoveries:', value: row.recoveries },
+                      { label: 'Tackles:', value: row.tackles },
+                      { label: 'Defensive Contribution:', value: row.defensive_contribution },
+                      { label: 'xG:', value: row.expected_goals },
+                      { label: 'xA:', value: row.expected_assists },
+                      { label: 'xGI:', value: row.expected_goal_involvements },
+                      { label: 'xGC:', value: row.expected_goals_conceded },
+                    ]
+                      .filter(item => item.value !== undefined && item.value !== null && item.value !== '')
+                      .map(item => (
+                        <div key={item.label} style={{ minWidth: 0, marginBottom: 6 }}>
+                          <span style={{ fontWeight: 700, color: '#fff' }}>{item.label}</span>{' '}
+                          <span style={{ color: '#fff' }}>{item.value}</span>
+                        </div>
+                      ))}
                   </div>
                 </Box>
               </Collapse>
@@ -373,7 +413,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       <AreaAndLineChart
         player={player}
       />
-      <h3>Results & Fixtures</h3>
+      <h3>Fixtures & Results</h3>
       {loading ? (
         <p>Loading fixtures...</p>
       ) : (
