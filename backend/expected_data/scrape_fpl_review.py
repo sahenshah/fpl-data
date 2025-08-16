@@ -81,20 +81,42 @@ except TimeoutException as e:
 html = driver.page_source
 soup = BeautifulSoup(html, "html.parser")
 scout_table = soup.find("table", {"id": "scout_table"})
-with open("scout_table.txt", "w", encoding="utf-8") as txt_file:
-    # Scrape header row
-    thead = scout_table.find("thead")
-    if thead:
-        header_row = thead.find("tr")
-        header_cells = header_row.find_all(["th", "td"])
+
+# Scrape header row from the table
+thead = scout_table.find("thead")
+if thead:
+    header_row = thead.find("tr")
+    header_cells = header_row.find_all(["th", "td"])
+    header_texts = [cell.get_text(strip=True) for cell in header_cells]
+else:
+    # If no thead, use the first row of tbody as header
+    rows = scout_table.find("tbody").find_all("tr")
+    if rows:
+        header_cells = rows[0].find_all(["th", "td"])
         header_texts = [cell.get_text(strip=True) for cell in header_cells]
-        txt_file.write("\t".join(header_texts) + "\n")
+    else:
+        header_texts = []
+
+# Skip all leading empty header cells
+non_empty_headers = [h for h in header_texts if h.strip() != ""]
+header_points = ["Name", "Position", "Price"] + non_empty_headers
+header_points_line = ",".join(header_points) + "\n"
+header_xmins = ["Name", "Position", "Price"] + header_texts[1:]
+header_xmins_line = ",".join(header_xmins) + "\n"
+
+# Now use header_points_line as the header for both txt and csv
+with open("scout_table.txt", "w", encoding="utf-8") as txt_file, \
+     open("scout_table.csv", "w", encoding="utf-8") as csv_file:
+    txt_file.write(header_points_line)
+    csv_file.write(header_points_line)
     # Scrape data rows
     rows = scout_table.find("tbody").find_all("tr")
     for row in rows:
         cells = row.find_all(["th", "td"])
         cell_texts = [cell.get_text(strip=True) for cell in cells]
         txt_file.write("\t".join(cell_texts) + "\n")
+        line = ",".join(cell_texts).rstrip(",") + "\n"
+        csv_file.write(line)
 
 # Click the "xMins" button to change the view
 xmins_button = driver.find_element(By.ID, "XMINopt")
@@ -129,14 +151,11 @@ else:
     with open("scout_table_xmins.txt", "w", encoding="utf-8") as txt_file:
         txt_file.write("Table not found after xMins click.")
 
-header_points = "Name,Position,Price,xMins,GW1,GW2,GW3,GW4,GW5,Total,Points/£M,Elite%\n"
-header_xmins = "Name,Position,Price,xMins,GW1,GW2,GW3,GW4,GW5,Total,xMins/£M,Elite%\n"
-
 def clean_row(cells):
     # Remove leading empty cell if present
     if cells and cells[0] == '':
         cells = cells[1:]
-    if not cells or len(cells) < 11 or not cells[0].strip():
+    if not cells or not cells[0].strip():
         return None
     first = cells[0]
     # Match Unicode names, position, and price
@@ -157,9 +176,9 @@ def clean_row(cells):
         position = ""
         price = ""
     # The rest of the columns
-    data = cells[1:10] + [cells[10]]
-    # Remove trailing % from Elite% column
-    if len(data) == 10:
+    data = cells[1:]
+    # Remove trailing % from Elite% column if present
+    if data and data[-1].endswith('%'):
         data[-1] = data[-1].rstrip('%')
     return [name, position, price] + data
 
@@ -168,8 +187,8 @@ if scout_table:
     rows_added = 0
     with open("scout_table.txt", "w", encoding="utf-8") as txt_file, \
          open("scout_table.csv", "w", encoding="utf-8") as csv_file:
-        txt_file.write(header_points)
-        csv_file.write(header_points)
+        txt_file.write(header_points_line)
+        csv_file.write(header_points_line)
         rows = scout_table.find("tbody").find_all("tr")
         for row in rows:
             cells = [cell.get_text(strip=True) for cell in row.find_all(["th", "td"])]
@@ -186,8 +205,8 @@ if scout_table_xmins:
     rows_added_xmins = 0
     with open("scout_table_xmins.txt", "w", encoding="utf-8") as txt_file, \
          open("scout_table_xmins.csv", "w", encoding="utf-8") as csv_file:
-        txt_file.write(header_xmins)
-        csv_file.write(header_xmins)
+        txt_file.write(header_xmins_line)
+        csv_file.write(header_xmins_line)
         rows = scout_table_xmins.find("tbody").find_all("tr")
         for row in rows:
             cells = [cell.get_text(strip=True) for cell in row.find_all(["th", "td"])]

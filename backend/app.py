@@ -146,11 +146,23 @@ def element_summary_fixtures(player_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/fpl_data/element-summary-history-past/<int:player_id>')
+def element_summary_history_past(player_id):
+    """Fetch detailed player past history from the fpl_data.db SQLite database and return as JSON."""
+    try:
+        df = pd.read_sql(f'SELECT * FROM element_summary_history_past WHERE element_id = {player_id}', engine)
+        if df.empty:
+            return jsonify({'error': 'Player not found'}), 404
+        data = df.to_dict(orient='records')
+        return jsonify({'history_past': data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/fpl_data/element-summary-history/<int:player_id>')
 def element_summary_history(player_id):
     """Fetch detailed player history from the fpl_data.db SQLite database and return as JSON."""
     try:
-        df = pd.read_sql(f'SELECT * FROM element_summary_history_past WHERE element_id = {player_id}', engine)
+        df = pd.read_sql(f'SELECT * FROM element_summary_history WHERE element_id = {player_id}', engine)
         if df.empty:
             return jsonify({'error': 'Player not found'}), 404
         data = df.to_dict(orient='records')

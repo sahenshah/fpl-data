@@ -173,7 +173,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
 
   React.useEffect(() => {
     setLoading(true);
-    fetch(`/api/fpl_data/element-summary-history/${player.id}`)
+    fetch(`/api/fpl_data/element-summary-history-past/${player.id}`)
       .then(res => res.json())
       .then(data => {
         setHistoryPast(data.history_past || []);

@@ -7,6 +7,7 @@ import time
 import subprocess
 import shutil
 from datetime import datetime
+import glob
 
 def fetch_bootstrap():
     url = "https://fantasy.premierleague.com/api/bootstrap-static/"
@@ -296,6 +297,53 @@ def create_tables(conn):
     )
     """)
 
+    # Add this new table for element_summary_history
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS element_summary_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        element INTEGER,
+        fixture INTEGER,
+        opponent_team INTEGER,
+        total_points INTEGER,
+        was_home BOOLEAN,
+        kickoff_time TEXT,
+        team_h_score INTEGER,
+        team_a_score INTEGER,
+        round INTEGER,
+        modified BOOLEAN,
+        minutes INTEGER,
+        goals_scored INTEGER,
+        assists INTEGER,
+        clean_sheets INTEGER,
+        goals_conceded INTEGER,
+        own_goals INTEGER,
+        penalties_saved INTEGER,
+        penalties_missed INTEGER,
+        yellow_cards INTEGER,
+        red_cards INTEGER,
+        saves INTEGER,
+        bonus INTEGER,
+        bps INTEGER,
+        influence TEXT,
+        creativity TEXT,
+        threat TEXT,
+        ict_index TEXT,
+        clearances_blocks_interceptions INTEGER,
+        recoveries INTEGER,
+        tackles INTEGER,
+        defensive_contribution INTEGER,
+        starts INTEGER,
+        expected_goals TEXT,
+        expected_assists TEXT,
+        expected_goal_involvements TEXT,
+        expected_goals_conceded TEXT,
+        value INTEGER,
+        transfers_balance INTEGER,
+        selected INTEGER,
+        transfers_in INTEGER,
+        transfers_out INTEGER
+    )
+    """)
     conn.commit()
 
 def insert_events(conn, events):
@@ -444,6 +492,28 @@ def insert_element_summary_data(conn, element_ids, delay=0.5):
                 values
             )
 
+        # Insert history
+        for hist in summary.get("history", []):
+            hist_row = hist.copy()
+            allowed_keys = {
+                "element", "fixture", "opponent_team", "total_points", "was_home", "kickoff_time",
+                "team_h_score", "team_a_score", "round", "modified", "minutes", "goals_scored",
+                "assists", "clean_sheets", "goals_conceded", "own_goals", "penalties_saved",
+                "penalties_missed", "yellow_cards", "red_cards", "saves", "bonus", "bps",
+                "influence", "creativity", "threat", "ict_index", "clearances_blocks_interceptions",
+                "recoveries", "tackles", "defensive_contribution", "starts", "expected_goals",
+                "expected_assists", "expected_goal_involvements", "expected_goals_conceded",
+                "value", "transfers_balance", "selected", "transfers_in", "transfers_out"
+            }
+            hist_row = {k: hist_row.get(k) for k in allowed_keys}
+            placeholders = ', '.join('?' for _ in hist_row)
+            columns = ', '.join(hist_row.keys())
+            values = list(hist_row.values())
+            c.execute(
+                f"INSERT INTO element_summary_history ({columns}) VALUES ({placeholders})",
+                values
+            )
+
         conn.commit()
         time.sleep(delay)  # Be polite to the FPL API
 
@@ -498,13 +568,14 @@ def update_player_from_csv(conn, row):
 
     update_fields = {
         'predicted_points_next5': row['Total'],
-        'pp_next5_per_m': row['Points/£M'],
+        'pp_next5_per_m': row['/£M'],
         'elite_selected_percent': row['Elite%'],
     }
     for i in range(1, 6):
         gw_col = f'GW{i}'
         db_col = f'pp_gw_{i}'
-        update_fields[db_col] = row[gw_col]
+        if gw_col in row:
+            update_fields[db_col] = row[gw_col]
 
     set_clause = ', '.join([f"{col} = ?" for col in update_fields])
     values = list(update_fields.values())
@@ -530,13 +601,14 @@ def update_player_xmins_from_csv(conn, row):
 
     update_fields = {
         'predicted_xmins_next5': row['Total'],
-        'pxm_next5_per_m': row['xMins/£M'],
+        'pxm_next5_per_m': row['/£M'],
         'elite_selected_percent': row['Elite%'],
     }
     for i in range(1, 6):
         gw_col = f'GW{i}'
         db_col = f'xmins_gw_{i}'
-        update_fields[db_col] = row[gw_col]
+        if gw_col in row:
+            update_fields[db_col] = row[gw_col]
 
     set_clause = ', '.join([f"{col} = ?" for col in update_fields])
     values = list(update_fields.values())
@@ -545,6 +617,48 @@ def update_player_xmins_from_csv(conn, row):
     cur = conn.cursor()
     cur.execute(sql, values)
     conn.commit()
+
+def fill_null_gw_fields_from_backup(conn, db_dir):
+    # Find the most recent backup file
+    backup_files = sorted(
+        glob.glob(os.path.join(db_dir, "fpl_data.db.backup.*")),
+        key=os.path.getmtime,
+        reverse=True
+    )
+    if not backup_files:
+        print("No backup database found.")
+        return
+    backup_path = backup_files[0]
+    print(f"Using backup DB: {backup_path}")
+
+    backup_conn = sqlite3.connect(backup_path)
+    backup_cur = backup_conn.cursor()
+    cur = conn.cursor()
+
+    for gw in range(1, 39):
+        pp_col = f"pp_gw_{gw}"
+        xmins_col = f"xmins_gw_{gw}"
+
+        # Find all players with NULL for this GW in the new DB
+        cur.execute(f"SELECT id FROM elements WHERE {pp_col} IS NULL")
+        null_ids = [row[0] for row in cur.fetchall()]
+        for pid in null_ids:
+            backup_cur.execute(f"SELECT {pp_col} FROM elements WHERE id = ?", (pid,))
+            val = backup_cur.fetchone()
+            if val and val[0] is not None:
+                cur.execute(f"UPDATE elements SET {pp_col} = ? WHERE id = ?", (val[0], pid))
+
+        cur.execute(f"SELECT id FROM elements WHERE {xmins_col} IS NULL")
+        null_ids = [row[0] for row in cur.fetchall()]
+        for pid in null_ids:
+            backup_cur.execute(f"SELECT {xmins_col} FROM elements WHERE id = ?", (pid,))
+            val = backup_cur.fetchone()
+            if val and val[0] is not None:
+                cur.execute(f"UPDATE elements SET {xmins_col} = ? WHERE id = ?", (val[0], pid))
+
+    conn.commit()
+    backup_conn.close()
+    print("Filled NULL GW fields from backup.")
 
 def main():
     # Run the expected data update script first
@@ -614,6 +728,11 @@ def main():
             update_player_xmins_from_csv(conn, row)
     conn.close()
     print("Scout table xmins data populated.")
+
+    # Fill NULL GW fields from backup if possible
+    conn = sqlite3.connect(DB_PATH)
+    fill_null_gw_fields_from_backup(conn, db_dir)
+    conn.close()
 
 if __name__ == "__main__":
     main()
