@@ -14,7 +14,7 @@ import Dialog from '@mui/material/Dialog';
 import PlayerDetail from './PlayerDetail';
 import type { Element, Team } from '../types/fpl';
 import './PlayerTable.css';
-import PlayerTablePPChart from './PlayerTablePPChart';
+import Next5LineChart from './Next5LineChart';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
@@ -26,6 +26,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Slider from '@mui/material/Slider';
+import ScatterChart from './ScatterChart';
 
 interface PlayerTableProps {
   players: Element[];
@@ -104,7 +105,17 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isSmallScreen, setIsSmallScreen] = React.useState(false);
   const [gwRange, setGwRange] = useState<[number, number]>([1, 5]);
-  const [chartMode, setChartMode] = React.useState<'xPoints' | 'xMins'>('xPoints');
+  const [chartMode, setChartMode] = React.useState<
+    'xPoints' | 
+    'xMins' | 
+    'totalPoints' | 
+    'xGI' |
+    'xGI/90' |
+    'xA' |
+    'xA/90' |
+    'defCon' |
+    'defCon90'
+  >('xPoints');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -232,7 +243,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const handleModeChange = (mode: 'xPoints' | 'xMins') => {
+  const handleModeChange = (mode: 'xPoints' | 'xMins' | 'totalPoints' | 'xGI' | 'xGI/90' | 'xA' | 'xA/90' | 'defCon' | 'defCon90') => {
     setChartMode(mode);
     setAnchorEl(null);
   };
@@ -427,8 +438,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           alignItems: 'center',
           justifyContent: 'space-between',
           background: '#333',
-          borderTopLeftRadius: 6,
-          borderTopRightRadius: 6,
           paddingLeft: '24px',
           paddingTop: '8px',
           paddingBottom: '8px',
@@ -446,7 +455,25 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             padding: 0,
           }}
         >
-          {chartMode === 'xPoints' ? 'Predicted Points (next 5 GWs)' : 'Predicted Minutes (next 5)'}
+          {chartMode === 'xPoints'
+            ? 'Predicted Points (next 5 GWs)'
+            : chartMode === 'xMins'
+            ? 'Predicted Minutes (next 5)'
+            : chartMode === 'totalPoints'
+            ? 'Total Points'
+            : chartMode === 'xGI'
+            ? 'xGI'
+            : chartMode === 'xGI/90'
+            ? 'xGI/90'
+            : chartMode === 'xA'
+            ? 'xA'
+            : chartMode === 'xA/90'
+            ? 'xA/90'
+            : chartMode === 'defCon'
+            ? 'Def Con'
+            : chartMode === 'defCon90'
+            ? 'Def Con / 90'
+            : ''}
         </h3>
         <IconButton
           size="small"
@@ -499,13 +526,88 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           >
             xMins
           </MenuItem>
+          <MenuItem
+            selected={chartMode === 'totalPoints'}
+            onClick={() => handleModeChange('totalPoints')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            Total Points
+          </MenuItem>
+          <MenuItem
+            selected={chartMode === 'xGI'}
+            onClick={() => handleModeChange('xGI')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            xGI
+          </MenuItem>
+          <MenuItem
+            selected={chartMode === 'xGI/90'}
+            onClick={() => handleModeChange('xGI/90')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            xGI/90
+          </MenuItem>
+          <MenuItem
+            selected={chartMode === 'xA'}
+            onClick={() => handleModeChange('xA')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            xA
+          </MenuItem>
+          <MenuItem
+            selected={chartMode === 'xA/90'}
+            onClick={() => handleModeChange('xA/90')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            xA/90
+          </MenuItem>
+          <MenuItem
+            selected={chartMode === 'defCon'}
+            onClick={() => handleModeChange('defCon')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            Def Con
+          </MenuItem>
+          <MenuItem
+            selected={chartMode === 'defCon90'}
+            onClick={() => handleModeChange('defCon90')}
+            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
+          >
+            Def Con / 90
+          </MenuItem>
         </Menu>
       </Box>
-      <PlayerTablePPChart
-        players={chartPlayers}
-        mode={chartMode}
-        gwLabels={Array.from({ length: gwRange[1] - gwRange[0] + 1 }, (_, i) => `GW${gwRange[0] + i}`)}
-      />
+      {(chartMode === 'totalPoints' || 
+        chartMode === 'xGI' ||
+        chartMode === 'xA' ||
+        chartMode === 'xGI/90' ||
+        chartMode === 'xA/90' ||
+        chartMode === 'defCon' ||
+        chartMode === 'defCon90') ? (
+        <ScatterChart
+          players={paginatedPlayers}
+          yKey={chartMode === 'totalPoints' ? 'total_points' : 
+                              chartMode === 'xGI' ? 'expected_goal_involvements' : 
+                              chartMode === 'xA' ? 'expected_assists' : 
+                              chartMode === 'xGI/90' ? 'expected_goal_involvements_per_90' : 
+                              chartMode === 'xA/90' ? 'expected_assists_per_90' : 
+                              chartMode === 'defCon' ? 'defensive_contribution' : 
+                              chartMode === 'defCon90' ? 'defensive_contribution_per_90' : ''}
+          yLabel={chartMode === 'totalPoints' ? 'Total Points' : 
+                  chartMode === 'xGI' ? 'xGI' : 
+                  chartMode === 'xA' ? 'xA' : 
+                  chartMode === 'xGI/90' ? 'xGI/90' : 
+                  chartMode === 'xA/90' ? 'xA/90' : 
+                  chartMode === 'defCon' ? 'Defensive Contributions' : 
+                  chartMode === 'defCon90' ? 'Defensive Contributions / 90' : ''}
+        />
+      ) : (
+        <Next5LineChart
+          players={chartPlayers}
+          mode={chartMode}
+          gwLabels={Array.from({ length: gwRange[1] - gwRange[0] + 1 }, (_, i) => `GW${gwRange[0] + i}`)}
+        />
+      )}
       <TableContainer
         sx={{
           maxHeight: 800,

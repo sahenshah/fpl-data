@@ -1,5 +1,5 @@
 import { LineChart } from '@mui/x-charts/LineChart';
-import './PlayerDetailPPChart.css';
+import './Next5Chart.css';
 import { getCurrentGameweek } from '../App';
 import { useEffect, useState } from 'react';
 

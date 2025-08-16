@@ -13,7 +13,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import CloseIcon from '@mui/icons-material/Close';
 import './PlayerDetail.css';
-import PlayerDetailPPChart from './PlayerDetailPPChart';
+import Next5Chart from './Next5Chart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
 import { getCurrentGameweek } from '../App';
 
@@ -287,7 +287,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         </div>
       </div>
 
-      <PlayerDetailPPChart
+      <Next5Chart
         predictedPoints={predictedPointsNext5}
         predictedXmins={xMinsNext5}
       />

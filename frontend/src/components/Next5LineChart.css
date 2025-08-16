@@ -21,3 +21,16 @@
     font-size: 1rem !important;
   }
 }
+
+.recharts-responsive-container {
+  overflow: visible !important;
+}
+
+.MuiTableHead-root {
+  z-index: 1 !important;
+}
+
+.recharts-tooltip-wrapper {
+  z-index: 2000 !important;
+  pointer-events: none;
+}
