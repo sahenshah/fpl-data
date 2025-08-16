@@ -778,7 +778,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 40]}
+        rowsPerPageOptions={[5, 10, 25, 40]}
         component="div"
         count={totalRows}
         rowsPerPage={rowsPerPage}
