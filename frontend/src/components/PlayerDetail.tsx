@@ -239,10 +239,10 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             {row.predicted_points !== undefined && row.predicted_points !== null ? row.predicted_points : '-'}
           </TableCell>
           <TableCell align="center">
-            {row.predicted_xmins !== undefined && row.predicted_xmins !== null ? row.predicted_xmins : '-'}
+            {row.total_points !== undefined && row.total_points !== null ? row.total_points : '-'}
           </TableCell>
           <TableCell align="center">
-            {row.total_points !== undefined && row.total_points !== null ? row.total_points : '-'}
+            {row.predicted_xmins !== undefined && row.predicted_xmins !== null ? row.predicted_xmins : '-'}
           </TableCell>
           <TableCell align="center">
             {row.minutes ? row.minutes : '-'}
@@ -386,29 +386,23 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                 <TableCell align="center">Home</TableCell>
                 <TableCell
                   align="center"
-                  sx={{ width: 2, minWidth: 2, maxWidth: 32, padding: '0 2px' }} // Home Score column
-                >
-                  {/* Home Score */}
-                </TableCell>
+                  sx={{ width: 2, minWidth: 2, maxWidth: 32, padding: '0 2px' }}
+                />
                 <TableCell
                   align="center"
-                  sx={{ width: 2, minWidth: 2, maxWidth: 32, padding: '0 2px' }} // Away Score column
-                >
-                  {/* Away Score */}
-                </TableCell>
+                  sx={{ width: 2, minWidth: 2, maxWidth: 32, padding: '0 2px' }}
+                />
                 <TableCell align="center">Away</TableCell>
                 <TableCell align="center">Difficulty</TableCell>
                 <TableCell align="center">xPoints</TableCell>
-                <TableCell align="center">xMinutes</TableCell>
-                <TableCell align="center">Points</TableCell>
+                <TableCell align="center">Points</TableCell> {/* Swapped */}
+                <TableCell align="center">xMinutes</TableCell> {/* Swapped */}
                 <TableCell align="center">Minutes</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {mergedRows.slice(0, 38).map(fix => {
-                // Get the gameweek number for this fixture
                 const gw = fix.event;
-                // Lookup xPoints and xMins from the player element table
                 const predicted_points = player[`pp_gw_${gw}` as keyof Element];
                 const predicted_xmins = player[`xmins_gw_${gw}` as keyof Element];
                 return (

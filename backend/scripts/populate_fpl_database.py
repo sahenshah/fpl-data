@@ -718,10 +718,14 @@ def fill_null_gw_fields_from_backup(conn, db_dir):
 
 def main():
     # Run the expected data update script first
-    update_script_path = os.path.join(os.path.dirname(__file__), '..', 'expected_data', 'ut_update_expected_data.py')
-    print(f"Running {update_script_path} ...")
-    subprocess.run(['python3', update_script_path], check=True)
-    print("Expected data update script completed.")
+    user_input = input(f"Do you want to run update expected data script? (y/N): ").strip().lower()
+    if user_input == "y":
+        update_script_path = os.path.join(os.path.dirname(__file__), '..', 'expected_data', 'ut_update_expected_data.py')
+        print(f"Running {update_script_path} ...")
+        subprocess.run(['python3', update_script_path], check=True)
+        print("Expected data update script completed.")
+    else:
+        print("Skipping expected data update script.")
 
     # --- Move any CSV and TXT files created in this folder to ../expected_data ---
     this_dir = os.path.dirname(os.path.abspath(__file__))
@@ -763,9 +767,12 @@ def main():
 
     # Populate element summary tables
     element_ids = [e["id"] for e in data["elements"]]
-    print(f"inserting element summary data for {len(element_ids)} element ids...")
-    insert_element_summary_data(conn, element_ids)
-
+    user_input = input(f"Do you want to populate element summary tables for {len(element_ids)} element ids? (y/N): ").strip().lower()
+    if user_input == "y":
+        print(f"inserting element summary data for {len(element_ids)} element ids...")
+        insert_element_summary_data(conn, element_ids)
+    else:
+        print("Skipping population of element summary tables.")
     conn.close()
     print(f"Database created and populated at {db_path}.")
 

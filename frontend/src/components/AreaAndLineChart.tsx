@@ -7,12 +7,6 @@ interface AreaAndLineChartProps {
   gwEnd?: number;
 }
 
-interface HistoryRow {
-  fixture: number;
-  total_points: number;
-  minutes: number;
-}
-
 const AreaAndLineChart = ({ player, gwStart = 1, gwEnd = 5 }: AreaAndLineChartProps) => {
   // State for history points and minutes
   const [historyPoints, setHistoryPoints] = useState<{ [gw: number]: number }>({});
@@ -26,12 +20,13 @@ const AreaAndLineChart = ({ player, gwStart = 1, gwEnd = 5 }: AreaAndLineChartPr
         const pointsMap: { [gw: number]: number } = {};
         const minutesMap: { [gw: number]: number } = {};
         if (data && Array.isArray(data.history)) {
-          data.history.forEach((row: HistoryRow) => {
-            if (row.fixture && typeof row.total_points === 'number') {
-              pointsMap[row.fixture] = row.total_points;
+          data.history.forEach((row: any) => {
+            const gw = row.round ?? row.fixture;
+            if (gw && typeof row.total_points === 'number') {
+              pointsMap[gw] = row.total_points;
             }
-            if (row.fixture && typeof row.minutes === 'number') {
-              minutesMap[row.fixture] = row.minutes;
+            if (gw && typeof row.minutes === 'number') {
+              minutesMap[gw] = row.minutes;
             }
           });
         }
