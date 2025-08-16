@@ -86,7 +86,7 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
         <Tooltip
           content={({ label, payload, active }) =>
             active && payload && payload.length ? (
-              <div style={{ background: "#1c1931ec", border: "1px solid #ffffffff", borderRadius: 4, padding: 8 }}>
+              <div style={{ background: "rgb(24, 24, 32, 0.9)", border: "1px solid #ffffffff", borderRadius: 4, padding: 8 }}>
                 <div style={{ fontWeight: "bold" }}>{label}</div>
                 {payload.map((entry, idx) => (
                   <div key={idx} style={{ color: entry.color }}>

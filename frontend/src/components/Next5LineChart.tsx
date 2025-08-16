@@ -74,7 +74,7 @@ export default function Next5LineChart({
             active && payload && payload.length ? (
               <div
                 style={{
-                  background: "#1c1931ec",
+                  background: "rgba(24, 24, 32, 0.9)",
                   border: "1px solid #888",
                   borderRadius: 4,
                   padding: 8,
