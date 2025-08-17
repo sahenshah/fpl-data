@@ -55,20 +55,21 @@ export default function Next5LineChart({
   });
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={400}>
       <RechartsLineChart
         data={data}
         margin={{
-          top: 5,
+          top: 8,
           right: 40,
           left: -20,
-          bottom: 5,
+          bottom: 8,
         }}
         style={{ background: '#333' }}
       >
         {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis
+        />
         <Tooltip
           content={({ label, payload, active }) =>
             active && payload && payload.length ? (

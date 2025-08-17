@@ -1,4 +1,4 @@
-import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, ReferenceArea } from 'recharts';
 import './ScatterChart.css';
 
 interface Player {
@@ -61,6 +61,21 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
 };
 
 const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChartProps) => {
+  // Always show from 4m to 14.5m
+  const xMin = 4;
+  const xMax = 14.5;
+  const yVals = players.map(player => Number(player[yKey])).filter(v => !isNaN(v));
+  const yMin = 0;
+  const yMax = Math.max(...yVals);
+
+  // Midpoints for grid split
+  const xMid = (xMin + xMax) / 2;
+  const yMid = (yMin + yMax) / 2;
+
+  // Calculate ticks for a 2x2 grid (3 ticks: min, mid, max)
+  const xTicks = [xMin, xMid, xMax];
+  const yTicks = [yMin, yMid, yMax];
+
   // Assign a random color to each point
   const data = players
     .map(player => ({
@@ -72,20 +87,8 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
     }))
     .filter(d => typeof d.x === 'number' && typeof d.y === 'number' && !isNaN(d.x) && !isNaN(d.y));
 
-  // Calculate min/max for axes
-  const xVals = data.map(d => d.x);
-  const yVals = data.map(d => d.y);
-  const xMin = Math.min(...xVals);
-  const xMax = Math.max(...xVals);
-  const yMin = 0; // Always start at 0
-  const yMax = Math.max(...yVals);
-
-  // Calculate ticks for a 2x2 grid (3 ticks: min, mid, max)
-  const xTicks = [xMin, (xMin + xMax) / 2, xMax];
-  const yTicks = [yMin, (yMin + yMax) / 2, yMax];
-
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={400}>
       <ScatterChart
         margin={{
           top: 20,
@@ -95,6 +98,25 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
         }}
         style={{ background: '#333' }}
       >
+        {/* Diagonal gradient from dark green (top left) to light green (top right) to yellow (bottom left/right) */}
+        <defs>
+          <linearGradient id="chartDiagonalGradient" x1="0" y1="-0.75" x2="1" y2="1.25">
+            <stop offset="0%" stopColor="#03ff03ff" />      {/* Dark green top left */}
+            <stop offset="40%" stopColor="#009600ff" />      {/* Light green top right */}
+            <stop offset="60%" stopColor="#ffff00" />      {/* Yellow bottom */}
+            <stop offset="80%" stopColor="#ff6600ff" />     {/* Yellow bottom right */}
+            <stop offset="100%" stopColor="#ff0000ff" />     {/* Yellow bottom right */}
+          </linearGradient>
+        </defs>
+        <ReferenceArea
+          x1={xMin}
+          x2={xMax}
+          y1={yMin}
+          y2={yMax}
+          fill="url(#chartDiagonalGradient)"
+          fillOpacity={0.23}
+          ifOverflow="extendDomain"
+        />
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           type="number"

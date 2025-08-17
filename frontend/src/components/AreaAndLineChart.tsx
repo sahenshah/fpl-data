@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useMediaQuery } from '@mui/material';
 
 interface AreaAndLineChartProps {
   player: any;
@@ -66,6 +67,8 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
     });
   }
 
+  const isSmallScreen = useMediaQuery ? useMediaQuery('(max-width:600px)') : window.innerWidth < 600;
+
   return (
     <ResponsiveContainer width="100%" height={300}>
       <AreaChart
@@ -75,7 +78,7 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
         margin={{
           top: 30,
           right: -20,
-          left: -40,
+          left: -30,
           bottom: 5,
         }}
       >
@@ -97,7 +100,13 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
             ) : null
           }
         />
-        <Legend verticalAlign="top" height={36} />
+        <Legend
+          verticalAlign="top"
+          height={36}
+          wrapperStyle={{
+            fontSize: isSmallScreen ? '0.75rem' : '1rem',
+          }}
+        />
         <Area
           yAxisId="left"
           type="monotone"
