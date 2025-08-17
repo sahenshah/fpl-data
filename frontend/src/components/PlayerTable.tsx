@@ -90,6 +90,30 @@ const positionOptions = [
   { value: 'FWD', label: 'FWD' },
 ];
 
+const chartSections = [
+  {
+    header: 'Gameweeks',
+    options: [
+      { label: 'xPoints', value: 'xPoints' },
+      { label: 'xMins', value: 'xMins' },
+    ],
+  },
+  {
+    header: 'Cost',
+    options: [
+      { label: 'Total Points', value: 'totalPoints' },
+      { label: 'xGI', value: 'xGI' },
+      { label: 'xGI/90', value: 'xGI/90' },
+      { label: 'xG', value: 'xG' },
+      { label: 'xG/90', value: 'xG/90' },
+      { label: 'xA', value: 'xA' },
+      { label: 'xA/90', value: 'xA/90' },
+      { label: 'Def Con', value: 'defCon' },
+      { label: 'Def Con / 90', value: 'defCon90' },
+    ],
+  },
+];
+
 export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -105,21 +129,9 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isSmallScreen, setIsSmallScreen] = React.useState(false);
   const [gwRange, setGwRange] = useState<[number, number]>([1, 5]);
-  const [chartMode, setChartMode] = React.useState<
-    'xPoints' | 
-    'xMins' | 
-    'totalPoints' | 
-    'xGI' |
-    'xGI/90' |
-    'xG' |
-    'xG/90' |
-    'xA' |
-    'xA/90' |
-    'defCon' |
-    'defCon90'
-  >('xPoints');
+  const [openSection, setOpenSection] = React.useState<string | null>(null);
+  const [chartMode, setChartMode] = React.useState('xPoints');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
 
   React.useEffect(() => {
     const handleResize = () => setIsSmallScreen(window.innerWidth < 700);
@@ -244,10 +256,16 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setOpenSection(null);
   };
-  const handleModeChange = (mode: 'xPoints' | 'xMins' | 'totalPoints' | 'xGI' | 'xGI/90' | 'xG' | 'xG/90' | 'xA' | 'xA/90' | 'defCon' | 'defCon90') => {
-    setChartMode(mode);
-    setAnchorEl(null);
+  const handleSectionClick = (header: string) => {
+    // Only open/close the section, do not close the menu or reload the chart
+    setOpenSection(openSection === header ? null : header);
+  };
+  const handleOptionClick = (value: string) => {
+    setChartMode(value);        // Only reload chart when an option is clicked
+    setAnchorEl(null);          // Close the menu
+    setOpenSection(null);       // Reset open section
   };
 
   // Use sortedPlayers for pagination and count
@@ -500,13 +518,16 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         </IconButton>
         <Menu
           anchorEl={anchorEl}
-          open={open}
+          open={Boolean(anchorEl)}
           onClose={handleMenuClose}
           PaperProps={{
             sx: {
               backgroundColor: '#23232b',
               color: '#fff',
               fontSize: '0.85rem',
+              minWidth: 130,
+              width: 130,
+              maxWidth: 130,
             }
           }}
           anchorOrigin={{
@@ -518,83 +539,38 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             horizontal: 'right',
           }}
         >
-          <MenuItem
-            selected={chartMode === 'xPoints'}
-            onClick={() => handleModeChange('xPoints')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xPoints
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'xMins'}
-            onClick={() => handleModeChange('xMins')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xMins
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'totalPoints'}
-            onClick={() => handleModeChange('totalPoints')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            Total Points
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'xGI'}
-            onClick={() => handleModeChange('xGI')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xGI
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'xGI/90'}
-            onClick={() => handleModeChange('xGI/90')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xGI/90
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'xG'}
-            onClick={() => handleModeChange('xG')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xG
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'xG/90'}
-            onClick={() => handleModeChange('xG/90')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xG/90
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'xA'}
-            onClick={() => handleModeChange('xA')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xA
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'xA/90'}
-            onClick={() => handleModeChange('xA/90')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            xA/90
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'defCon'}
-            onClick={() => handleModeChange('defCon')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            Def Con
-          </MenuItem>
-          <MenuItem
-            selected={chartMode === 'defCon90'}
-            onClick={() => handleModeChange('defCon90')}
-            sx={{ fontSize: '0.85rem', minHeight: '32px' }}
-          >
-            Def Con / 90
-          </MenuItem>
+          {chartSections.map(section => (
+            <React.Fragment key={section.header}>
+              <MenuItem
+                onClick={e => {
+                  // Only open/close section, do not close menu or reload chart
+                  e.stopPropagation();
+                  handleSectionClick(section.header);
+                }}
+                sx={{
+                  fontWeight: 'bold',
+                  fontSize: '0.95rem',
+                  background: openSection === section.header ? '#333' : undefined,
+                  cursor: 'pointer',
+                }}
+                // Prevents menu from closing when clicking the section header
+                tabIndex={-1}
+              >
+                {section.header}
+              </MenuItem>
+              {openSection === section.header &&
+                section.options.map(opt => (
+                  <MenuItem
+                    key={opt.value}
+                    selected={chartMode === opt.value}
+                    onClick={() => handleOptionClick(opt.value)}
+                    sx={{ pl: 4, fontSize: '0.85rem', minHeight: '32px' }}
+                  >
+                    {opt.label}
+                  </MenuItem>
+                ))}
+            </React.Fragment>
+          ))}
         </Menu>
       </Box>
       {(chartMode === 'totalPoints' || 
@@ -630,7 +606,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
       ) : (
         <Next5LineChart
           players={chartPlayers}
-          mode={chartMode}
+          mode={chartMode === 'xPoints' || chartMode === 'xMins' ? chartMode : undefined}
           gwLabels={Array.from({ length: gwRange[1] - gwRange[0] + 1 }, (_, i) => `GW${gwRange[0] + i}`)}
         />
       )}
