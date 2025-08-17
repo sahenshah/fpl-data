@@ -100,7 +100,7 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
       >
         {/* Diagonal gradient from dark green (top left) to light green (top right) to yellow (bottom left/right) */}
         <defs>
-          <linearGradient id="chartDiagonalGradient" x1="0" y1="-0.75" x2="1" y2="1.25">
+          <linearGradient id="chartDiagonalGradient" x1="0" y1="-0.75" x2="0.75" y2="1.25">
             <stop offset="0%" stopColor="#03ff03ff" />      {/* Dark green top left */}
             <stop offset="40%" stopColor="#009600ff" />      {/* Light green top right */}
             <stop offset="60%" stopColor="#ffff00" />      {/* Yellow bottom */}
