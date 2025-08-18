@@ -67,9 +67,8 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
       } else {
         rawValue = Number(p[metric.key as keyof Element]) || 0;
       }
-      // Normalise, cap at 1, and round to 2 decimal places
+      // Normalise and round to 2 decimal places (do NOT cap at 1)
       let normValue = metric.normalize(rawValue);
-      if (normValue > 1) normValue = 1;
       normValue = Number(normValue.toFixed(2));
       entry[p.web_name] = normValue;
     });
