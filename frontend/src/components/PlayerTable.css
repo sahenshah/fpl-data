@@ -1,26 +1,28 @@
+
 td.sticky-id {
   position: sticky !important;
   left: 0 !important;
   background: #444 !important;
   z-index: 3 !important;
 }
-
-/* Sticky badge column */
-.sticky-badge,
-th.sticky-badge{
+.sticky-checkbox,
+th.sticky-checkbox {
   top: 0 !important;
   position: sticky !important;
   left: 0 !important;
   background: #444 !important;
-  z-index: 20 !important;
+  z-index: 102 !important;
 }
 
-/* Sticky body cells (td) */
-td.sticky-badge {
+/* Sticky badge column */
+.sticky-badge,
+td.sticky-badge,
+th.sticky-badge {
+  top: 0 !important;
   position: sticky !important;
-  left: 0 !important;
+  left: 65px !important;
   background: #444 !important;
-  z-index: 10 !important;
+  z-index: 101 !important;
 }
 
 /* Sticky web name column */
@@ -28,13 +30,19 @@ th.sticky-web-name,
 .sticky-web-name,
 td.sticky-web-name {
   position: sticky !important;
-  left: 65px !important; /* Match badge column width */
+  left: 135px !important; /* Match badge column width */
   background: #444 !important;
   z-index: 19 !important;
 }
 th.sticky-web-name{
   top: 0 !important;
-  z-index: 100 !important;
+}
+.sticky-badge,
+th.sticky-badge {
+  position: sticky !important;
+  left: 65px !important;
+  background: #444 !important;
+  z-index: 101 !important;
 }
 
 .MuiTable-root {
@@ -127,10 +135,15 @@ th.sticky-web-name{
     padding: 4px !important;
   }
 
-  /* Reduce gap between badge and name columns on small screens */
   th.sticky-web-name,
   .sticky-web-name,
   td.sticky-web-name {
-    left: 40px !important; /* Match reduced badge column width */
+    left: 80px !important; /* Match reduced badge column width */
   }
+    .sticky-badge,
+    td.sticky-badge,
+    th.sticky-badge {
+      left: 40px !important; /* Match reduced badge column width */
+
+    }
 }

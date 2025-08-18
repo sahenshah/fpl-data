@@ -119,7 +119,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                 <TableCell
                   key={col.key}
                   className={
-                    col.key === 'badge' ? 'sticky-badge' :
+                    col.key === 'badge' ? 'sticky-badge-fixture' :
                     col.key === 'short_name' ? 'sticky-id' :
                     col.key === 'name' ? 'sticky-name' :
                     'gw' in col && col.gw === currentGW ? 'current-gw-col' : undefined
@@ -142,7 +142,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
 
                   if (col.key === 'badge') {
                     return (
-                      <TableCell key={col.key} className="sticky-badge" style={{ height: 40, padding: '8px', background: '#444' }}>
+                      <TableCell key={col.key} className="sticky-badge-fixture" style={{ height: 40, padding: '8px', background: '#444' }}>
                         <img
                           src={`/team-badges/${team.short_name}.svg`}
                           alt={team.short_name}

@@ -34,7 +34,7 @@ interface PlayerTableProps {
 }
 
 const columns = [
-  // { id: 'id', label: 'ID', minWidth: 50, align: 'right' },
+  { id: 'select', label: '', minWidth: 30, align: 'center' }, // <-- Add this line
   { id: 'badge', label: '', minWidth: 40, align: 'center' },
   { id: 'web_name', label: 'Name', minWidth: 100, align: 'left' },
   // { id: 'first_name', label: 'First Name', minWidth: 100, align: 'left' },
@@ -132,6 +132,8 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   const [openSection, setOpenSection] = React.useState<string | null>(null);
   const [chartMode, setChartMode] = React.useState('xPoints');
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  // Add state to track selected players
+  const [selectedPlayerIds, setSelectedPlayerIds] = React.useState<number[]>([]);
 
   React.useEffect(() => {
     const handleResize = () => setIsSmallScreen(window.innerWidth < 700);
@@ -211,9 +213,17 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
     return sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }, [sortedPlayers, page, rowsPerPage]);
 
+  // Use only selected players if any are selected, otherwise use all paginated players
+  const chartPlayersSource = React.useMemo(() => {
+    if (selectedPlayerIds.length > 0) {
+      return paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id));
+    }
+    return paginatedPlayers;
+  }, [paginatedPlayers, selectedPlayerIds]);
+
   // Dynamically get the next 5 GW data for each player based on gwRange
   const chartPlayers = React.useMemo(() => {
-    return paginatedPlayers.map(player => {
+    return chartPlayersSource.map(player => {
       // Helper to get the property name for a given GW
       const getGWProp = (prefix: string, gw: number) => `${prefix}_gw_${gw}` as keyof Element;
 
@@ -231,7 +241,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         predicted_xmins_gw,
       };
     });
-  }, [paginatedPlayers, gwRange]);
+  }, [chartPlayersSource, gwRange]);
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -522,7 +532,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           onClose={handleMenuClose}
           PaperProps={{
             sx: {
-              backgroundColor: '#23232b',
+              backgroundColor: '#222',
               color: '#fff',
               fontSize: '0.85rem',
               minWidth: 130,
@@ -539,38 +549,36 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             horizontal: 'right',
           }}
         >
-          {chartSections.map(section => (
-            <React.Fragment key={section.header}>
-              <MenuItem
-                onClick={e => {
-                  // Only open/close section, do not close menu or reload chart
-                  e.stopPropagation();
-                  handleSectionClick(section.header);
-                }}
-                sx={{
-                  fontWeight: 'bold',
-                  fontSize: '0.95rem',
-                  background: openSection === section.header ? '#333' : undefined,
-                  cursor: 'pointer',
-                }}
-                // Prevents menu from closing when clicking the section header
-                tabIndex={-1}
-              >
-                {section.header}
-              </MenuItem>
-              {openSection === section.header &&
-                section.options.map(opt => (
-                  <MenuItem
-                    key={opt.value}
-                    selected={chartMode === opt.value}
-                    onClick={() => handleOptionClick(opt.value)}
-                    sx={{ pl: 4, fontSize: '0.85rem', minHeight: '32px' }}
-                  >
-                    {opt.label}
-                  </MenuItem>
-                ))}
-            </React.Fragment>
-          ))}
+          {chartSections.flatMap(section => [
+  <MenuItem
+    key={section.header}
+    onClick={e => {
+      e.stopPropagation();
+      handleSectionClick(section.header);
+    }}
+    sx={{
+      fontWeight: 'bold',
+      fontSize: '0.95rem',
+      background: openSection === section.header ? '#333' : undefined,
+      cursor: 'pointer',
+    }}
+    tabIndex={-1}
+  >
+    {section.header}
+  </MenuItem>,
+  ...(openSection === section.header
+    ? section.options.map(opt => (
+        <MenuItem
+          key={opt.value}
+          selected={chartMode === opt.value}
+          onClick={() => handleOptionClick(opt.value)}
+          sx={{ pl: 4, fontSize: '0.85rem', minHeight: '32px' }}
+        >
+          {opt.label}
+        </MenuItem>
+      ))
+    : [])
+])}
         </Menu>
       </Box>
       {(chartMode === 'totalPoints' || 
@@ -583,7 +591,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         chartMode === 'defCon' ||
         chartMode === 'defCon90') ? (
         <ScatterChart
-          players={paginatedPlayers}
+          players={chartPlayersSource}
           yKey={chartMode === 'totalPoints' ? 'total_points' : 
                               chartMode === 'xGI' ? 'expected_goal_involvements' : 
                               chartMode === 'xGI/90' ? 'expected_goal_involvements_per_90' : 
@@ -626,22 +634,45 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                   key={column.id}
                   align={column.align as any}
                   className={
-                    column.id === 'badge' ? 'sticky-badge' :
-                    column.id === 'team_short_name' ? 'sticky-id' :
-                    column.id === 'web_name' ? 'sticky-web-name' :
-                    undefined
+                    column.id === 'select'
+                      ? 'sticky-checkbox'
+                      : column.id === 'badge'
+                      ? 'sticky-badge'
+                      : column.id === 'web_name'
+                      ? 'sticky-web-name'
+                      : undefined
                   }
                   style={{
                     minWidth: column.minWidth,
-                    cursor: 'pointer',
+                    cursor: column.id !== 'select' ? 'pointer' : undefined,
                     fontSize: compactFontSize,
                     padding: compactPadding,
                     whiteSpace: 'nowrap'
                   }}
-                  onClick={() => handleSort(column.id)}
+                  onClick={column.id !== 'select' ? () => handleSort(column.id) : undefined}
                 >
-                  {column.label}
-                  {sortBy === column.id ? (
+                  {column.id === 'select' ? (
+                    <Checkbox
+                      indeterminate={
+                        selectedPlayerIds.length > 0 &&
+                        selectedPlayerIds.length < paginatedPlayers.length
+                      }
+                      checked={
+                        paginatedPlayers.length > 0 &&
+                        selectedPlayerIds.length === paginatedPlayers.length
+                      }
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setSelectedPlayerIds(paginatedPlayers.map(p => p.id));
+                        } else {
+                          setSelectedPlayerIds([]);
+                        }
+                      }}
+                      color="primary"
+                      size="small"
+                    />
+                  ) : column.label}
+                  {sortBy === column.id && column.id !== 'select' ? (
                     sortDirection === 'asc'
                       ? <ArrowUpwardIcon fontSize="small" />
                       : <ArrowDownwardIcon fontSize="small" />
@@ -655,7 +686,22 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((player) => (
                 <TableRow key={player.id} hover>
-                  {columns.map((column) => {
+                  {/* Sticky selection checkbox cell */}
+                  <TableCell align="center" className="sticky-checkbox">
+                    <Checkbox
+                      checked={selectedPlayerIds.includes(player.id)}
+                      onChange={() => {
+                        setSelectedPlayerIds(ids =>
+                          ids.includes(player.id)
+                            ? ids.filter(id => id !== player.id)
+                            : [...ids, player.id]
+                        );
+                      }}
+                      color="primary"
+                      size="small"
+                    />
+                  </TableCell>
+                  {columns.slice(1).map((column) => {
                     let value = player[column.id as keyof Element];
 
                     if (column.id === 'team') {

@@ -1,6 +1,6 @@
 /* Sticky badge header and cell */
-th.sticky-badge,
-.sticky-badge {
+th.sticky-badge-fixture,
+.sticky-badge-fixture {
   position: sticky !important;
   top: 0 !important;
   left: 0 !important;
