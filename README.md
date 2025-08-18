@@ -1,12 +1,15 @@
 # FPL Data Dashboard
 
-This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes both historical player statistics and predicted metrics for upcoming gameweeks, using a pre-populated SQLite database (`fpl_data.db`) as the data source for the backend API and frontend.
+This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes both historical player statistics and predicted metrics for upcoming gameweeks, using a pre-populated SQLite database with data from the FPL API, Opta (via the FPL API) and online FPL points prediction models as the source for the backend API.
 
 ## Features
 
 - Interactive player table with sorting, filtering, and search
-- Predicted points chart for selected or filtered players
-- Player detail modal with team badge and stats
+- Responsive charts optimised for visualisation of different player statistics/metrics
+- Predicted points and xmins charts for selected or filtered players
+- Historical points, expected data etc vs cost charts
+- Radar charts for player attacking, defensive and summary stats 
+- Player detail modal with team badge, stats, detailed historical gameweek data 
 - Main data gathered from FPL API
 - Data enrichment from backend CSVs via scripts
 - Responsive design for desktop and mobile
