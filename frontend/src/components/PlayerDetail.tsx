@@ -317,7 +317,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         maxHeight: '100vh',
         overflowY: 'auto',
         scrollbarWidth: 'auto',
-        scrollbarColor: '#888 #181820',
+        scrollbarColor: '#888 #32213b',
       }}
     >
       <button onClick={onClose} className="player-detail-close-btn" aria-label="Close">
@@ -325,7 +325,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       </button>
       {/* Top section */}
       <div className="player-detail-top-section">
-        <div className="player-detail-header-row player-detail-header-row-fullheight">
+        <div className="player-detail-header-row">
           {team && (
             <img
               src={`/team-badges/${team.short_name}.svg`}
@@ -347,6 +347,11 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             </span>
           </div>
         </div>
+        {player.news && player.news.trim() !== '' && (
+          <div className="player-detail-news-row">
+            {player.news}
+          </div>
+        )}
       </div>
 
       {/* Data boxes row */}
@@ -357,7 +362,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           padding: 0,
           margin: 0,
           scrollbarWidth: 'thin',
-          scrollbarColor: '#888 #181820',
+          scrollbarColor: '#888 #32213b',
         }}
       >
         <div

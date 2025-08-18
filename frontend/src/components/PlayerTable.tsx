@@ -815,21 +815,27 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
                       );
                     }
                     if (column.id === 'status') {
+                      let bgColor: string | undefined = undefined;
+                      if (value === 'd') bgColor = '#fce690ff';
+                      else if (['i', 'n', 'u', 's'].includes(value as string)) bgColor = '#ff6b6b';
+                      else if (value === 'a') bgColor = '#4caf50';
+
                       return (
                         <TableCell
                           key={column.id}
                           align={column.align as any}
                           style={{
                             minWidth: column.minWidth,
-                            backgroundColor:
-                              value === 'a' ? '#4caf50' : value === 'u' ? '#f44336' : undefined,
-                            color: value === 'a' || value === 'u' ? '#fff' : undefined,
+                            backgroundColor: bgColor,
+                            color: bgColor, // Font color same as background
                             textAlign: 'center',
-                            fontWeight: 'bold',
+                            fontWeight:
+                              value === 'd' || ['i', 'n', 'u', 's'].includes(value as string) || value === 'a'
+                                ? 'bold'
+                                : undefined,
                           }}
                         >
-                          {/* Optionally, you can show nothing or a label */}
-                          {value === 'a' ? '' : value === 'u' ? '' : value}
+                          {/* {value} */}
                         </TableCell>
                       );
                     }
