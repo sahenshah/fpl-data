@@ -1,3 +1,22 @@
+.MuiTable-root {
+  background-color: #444 !important;
+  color: #fff !important;
+}
+
+.MuiTableCell-root {
+  color: #fff !important;
+}
+
+.MuiTableHead-root .MuiTableCell-root {
+  background-color: #333 !important;
+  color: #fff !important;
+}
+
+.MuiAccordion-root.Mui-expanded,
+.MuiAccordionSummary-root.Mui-expanded {
+  background-color: #41054b !important;
+  color: #fff !important;
+}
 
 td.sticky-id {
   position: sticky !important;

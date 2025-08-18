@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import type { FPLBootstrapResponse } from './types/fpl';
-import TeamTable from './components/TeamTable';
+// import TeamTable from './components/TeamTable';
 import PlayerTable from './components/PlayerTable';
 import type { Element } from './types/fpl'; // <-- Use Element, not Player
 import FixtureTable from './components/FixtureTable'; 
@@ -265,8 +265,8 @@ function App() {
                 }}
               >
                 <Tab label="Players" />
-                <Tab label="Fixtures" />
-                <Tab label="Teams" />
+                <Tab label="Fixtures/Teams" />
+                {/* <Tab label="Teams" /> */}
               </Tabs>
               <Fade in={tabIndex === 0} timeout={400} unmountOnExit>
                 <div>
@@ -278,11 +278,11 @@ function App() {
                   <FixtureTable teams={fplData.teams} fixtures={fixtures} />
                 </div>
               </Fade>
-              <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
+              {/* <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
                 <div>
                   <TeamTable teams={fplData.teams} />
                 </div>
-              </Fade>
+              </Fade> */}
             </Box>
           </div>
         </div>

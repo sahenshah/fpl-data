@@ -10,6 +10,8 @@ import Paper from '@mui/material/Paper';
 import type { Team, Fixture } from '../types/fpl';
 import './FixtureTable.css';
 import { getCurrentGameweek } from '../App'; // Import the function
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface FixtureTableProps {
   teams: Team[];
@@ -31,6 +33,8 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   const [currentGW, setCurrentGW] = useState<number>(1);
   const [gwRange, setGwRange] = useState<[number, number]>([1, 5]);
   const [sortByDifficulty, setSortByDifficulty] = useState(false);
+  const [sortColumn, setSortColumn] = useState<string>('position');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
     getCurrentGameweek().then(gw => {
@@ -50,13 +54,20 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   const columns = [
     { label: '', key: 'badge' },
     { label: 'Name', key: 'name' },
+    { label: 'Position', key: 'position' },
     { label: 'Played', key: 'played' },
     { label: 'Win', key: 'win' },
     { label: 'Draw', key: 'draw' },
     { label: 'Loss', key: 'loss' },
     { label: 'Points', key: 'points' },
-    { label: 'Position', key: 'position' },
     { label: 'Strength', key: 'strength' },
+    { label: 'Strength Overall (H)', key: 'strength_overall_home' },
+    { label: 'Strength Overall (A)', key: 'strength_overall_away' },
+    { label: 'Strength Attack (H)', key: 'strength_attack_home' },
+    { label: 'Strength Attack (A)', key: 'strength_attack_away' },
+    { label: 'Strength Defence (H)', key: 'strength_defence_home' },
+    { label: 'Strength Defence (A)', key: 'strength_defence_away' },
+    { label: 'Form', key: 'form' },
     ...gwColumns.slice(gwRange[0] - 1, gwRange[1]),
   ];
 
@@ -71,9 +82,46 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
     return total;
   }
 
-  const sortedTeams = sortByDifficulty
-    ? [...teams].sort((a, b) => getTeamDifficulty(a.id) - getTeamDifficulty(b.id))
-    : teams;
+  // New: Sorting logic
+  const sortedTeams = (() => {
+    let arr = sortByDifficulty
+      ? [...teams].sort((a, b) => getTeamDifficulty(a.id) - getTeamDifficulty(b.id))
+      : [...teams];
+
+    if (sortColumn && !sortByDifficulty) {
+      arr = arr.sort((a, b) => {
+        let aValue = a[sortColumn as keyof Team];
+        let bValue = b[sortColumn as keyof Team];
+
+        // Try to convert to number if possible
+        if (typeof aValue === 'string' && !isNaN(Number(aValue))) aValue = Number(aValue);
+        if (typeof bValue === 'string' && !isNaN(Number(bValue))) bValue = Number(bValue);
+
+        if (aValue == null) return 1;
+        if (bValue == null) return -1;
+
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+        return sortDirection === 'asc'
+          ? String(aValue).localeCompare(String(bValue))
+          : String(bValue).localeCompare(String(aValue));
+      });
+    }
+    return arr;
+  })();
+
+  const handleSort = (colKey: string) => {
+    // When a table heading is sorted, turn off SortByFixtureDifficulty
+    if (sortByDifficulty) setSortByDifficulty(false);
+
+    if (sortColumn === colKey) {
+      setSortDirection(d => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortColumn(colKey);
+      setSortDirection('asc');
+    }
+  };
 
   return (
     <>
@@ -106,7 +154,15 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
         </div>
         <button
           className={`fixture-sort-btn${sortByDifficulty ? ' active' : ''}`}
-          onClick={() => setSortByDifficulty(s => !s)}
+          onClick={() => {
+            setSortByDifficulty(s => {
+              // When SortByFixtureDifficulty is turned on, reset table heading sorting
+              if (!s) {
+                setSortColumn('');
+              }
+              return !s;
+            });
+          }}
         >
           {sortByDifficulty ? 'Sorted by Fixture Difficulty' : 'Sort by Fixture Difficulty'}
         </button>
@@ -124,9 +180,28 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                     col.key === 'name' ? 'sticky-name' :
                     'gw' in col && col.gw === currentGW ? 'current-gw-col' : undefined
                   }
-                  style={col.key === 'badge' ? { top: 0, left: 0, zIndex: 100, background: '#444', minWidth: 40 } : undefined}
+                  style={col.key === 'badge' ? { top: 0, left: 0, zIndex: 100, background: '#444', minWidth: 40 } : { cursor: 'pointer' }}
+                  onClick={() => {
+                    // Only allow sorting for non-badge and non-GW columns
+                    if (
+                      col.key !== 'badge' &&
+                      !col.key.startsWith('gw_')
+                    ) {
+                      handleSort(col.key);
+                    }
+                  }}
                 >
-                  {col.key === 'badge' ? <span>&nbsp;</span> : col.label}
+                  {col.key === 'badge' ? <span>&nbsp;</span> : (
+                    <>
+                      {col.label}
+                      {/* Show sort arrow if this column is sorted */}
+                      {sortColumn === col.key && (
+                        sortDirection === 'asc'
+                          ? <ArrowDropUpIcon style={{ verticalAlign: 'middle', fontSize: 20, marginLeft: 2 }} />
+                          : <ArrowDropDownIcon style={{ verticalAlign: 'middle', fontSize: 20, marginLeft: 2 }} />
+                      )}
+                    </>
+                  )}
                 </TableCell>
               ))}
             </TableRow>
