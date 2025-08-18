@@ -444,9 +444,51 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           width: '100%',
         }}
       >
-        <MultiAreaRadarAttack player={player} />
-        <MultiAreaRadarDefence player={player} />
-        <MultiAreaRadar player={player} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
+          <h3
+            style={{
+              color: '#fff',
+              marginBottom: 8,
+              marginTop: 0,
+              textAlign: window.innerWidth < 600 ? 'left' : 'center',
+              width: '100%',
+              paddingLeft: window.innerWidth < 600 ? 8 : 0,
+            }}
+          >
+            Attacking Summary
+          </h3>
+          <MultiAreaRadarAttack player={player} showTitle={false} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
+          <h3
+            style={{
+              color: '#fff',
+              marginBottom: 8,
+              marginTop: 0,
+              textAlign: window.innerWidth < 600 ? 'left' : 'center',
+              width: '100%',
+              paddingLeft: window.innerWidth < 600 ? 8 : 0,
+            }}
+          >
+            Defensive Summary
+          </h3>
+          <MultiAreaRadarDefence player={player} showTitle={false} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
+          <h3
+            style={{
+              color: '#fff',
+              marginBottom: 8,
+              marginTop: 0,
+              textAlign: window.innerWidth < 600 ? 'left' : 'center',
+              width: '100%',
+              paddingLeft: window.innerWidth < 600 ? 8 : 0,
+            }}
+          >
+            Summary
+          </h3>
+          <MultiAreaRadar player={player} showTitle={false} />
+        </div>
       </div>
       <h3>Fixtures & Results</h3>
       {loading ? (

@@ -227,10 +227,11 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   // Use only selected players if any are selected, otherwise use all paginated players
   const chartPlayersSource = React.useMemo(() => {
     if (selectedPlayerIds.length > 0) {
-      return paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id));
+      // Always use the selected players from the full player list, regardless of filters/pagination
+      return players.filter(p => selectedPlayerIds.includes(p.id));
     }
     return paginatedPlayers;
-  }, [paginatedPlayers, selectedPlayerIds]);
+  }, [players, paginatedPlayers, selectedPlayerIds]);
 
   // Dynamically get the next 5 GW data for each player based on gwRange
   const chartPlayers = React.useMemo(() => {
@@ -637,7 +638,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           />
         ) : chartMode === 'playerSummaryRadar' ? (
           selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
-            <MultiAreaRadar player={paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id))} />
+            <MultiAreaRadar player={players.filter(p => selectedPlayerIds.includes(p.id))} />
           ) : selectedPlayerIds.length > 10 ? (
             <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
               Please select no more than 10 players for the radar chart.
@@ -649,7 +650,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           )
         ) : chartMode === 'attackSummaryRadar' ? (
           selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
-            <MultiAreaRadarAttack player={paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id))} />
+            <MultiAreaRadarAttack player={players.filter(p => selectedPlayerIds.includes(p.id))} />
           ) : selectedPlayerIds.length > 10 ? (
             <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
               Please select no more than 10 players for the radar chart.
@@ -661,7 +662,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           )
         ) : chartMode === 'defenceSummaryRadar' ? (
           selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
-            <MultiAreaRadarDefence player={paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id))} />
+            <MultiAreaRadarDefence player={players.filter(p => selectedPlayerIds.includes(p.id))} />
           ) : selectedPlayerIds.length > 10 ? (
             <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
               Please select no more than 10 players for the radar chart.

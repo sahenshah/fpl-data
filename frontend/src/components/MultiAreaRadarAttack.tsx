@@ -4,6 +4,7 @@ import type { Element } from '../types/fpl';
 
 interface MultiAreaRadarProps {
   player: Element | Element[];
+  showTitle?: boolean; // <-- Add this prop
 }
 
 const METRICS = [
@@ -46,10 +47,12 @@ const METRICS = [
 ];
 
 const COLORS = [
-  "#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#00c49f", "#ff4f81", "#a28fd0", "#d0ed57"
+  "#8884d8", "#82ca9d", "#ffc658", "#e7e0d9ff", "#00c49f", "#ff4f81", "#d17e7eff", "#bd57ed",
+  "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
+  "#bcbd22", "#17becf", "#393b79", "#637939"
 ];
 
-const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player }) => {
+const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) => {
   const players: Element[] = Array.isArray(player) ? player : [player];
 
   const data = METRICS.map(metric => {
@@ -119,45 +122,52 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player }) => {
         margin: '0 auto',
       }}
     >
-      <ResponsiveContainer width="100%" height={chartHeight}>
-        <RadarChart
-          cx={chartCx}
-          cy="50%"
-          data={data}
-        >
-          <PolarGrid />
-          <PolarAngleAxis
-            dataKey="metric"
-            tick={{
-              fontSize: angleAxisFontSize,
-              fontFamily: 'inherit',
-              fill: '#fff',
-            }}
-            tickLine={false}
-          />
-          <PolarRadiusAxis
-            angle={0}
-            domain={[0, 1]}
-            tick={{
-              fontSize: radiusAxisFontSize,
-              fontFamily: 'inherit',
-              fill: '#aaa',
-            }}
-            tickFormatter={radiusTickFormatter}
-          />
-          {players.map((p, idx) => (
-            <Radar
-              key={p.web_name}
-              name={p.web_name}
-              dataKey={p.web_name}
-              stroke={COLORS[idx % COLORS.length]}
-              fill={COLORS[idx % COLORS.length]}
-              fillOpacity={0.4}
+      {showTitle && (
+        <h3 style={{ color: '#fff', marginTop: 0, marginBottom: 0, textAlign: 'center' }}>
+          Attacking Summary
+        </h3>
+      )}
+      <div style={{ marginTop: -12 }}>
+        <ResponsiveContainer width="100%" height={chartHeight}>
+          <RadarChart
+            cx={chartCx}
+            cy="50%"
+            data={data}
+          >
+            <PolarGrid />
+            <PolarAngleAxis
+              dataKey="metric"
+              tick={{
+                fontSize: angleAxisFontSize,
+                fontFamily: 'inherit',
+                fill: '#fff',
+              }}
+              tickLine={false}
             />
-          ))}
-          {players.length > 1 && <Legend {...legendProps} />}
-        </RadarChart>
-      </ResponsiveContainer>
+            <PolarRadiusAxis
+              angle={0}
+              domain={[0, 1]}
+              tick={{
+                fontSize: radiusAxisFontSize,
+                fontFamily: 'inherit',
+                fill: '#aaa',
+              }}
+              tickFormatter={radiusTickFormatter}
+            />
+            {players.map((p, idx) => (
+              <Radar
+                key={p.web_name}
+                name={p.web_name}
+                dataKey={p.web_name}
+                stroke={COLORS[idx % COLORS.length]}
+                fill={COLORS[idx % COLORS.length]}
+                fillOpacity={0.4}
+              />
+            ))}
+            {players.length > 1 && <Legend {...legendProps} />}
+          </RadarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
