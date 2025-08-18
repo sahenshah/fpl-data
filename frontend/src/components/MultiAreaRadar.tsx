@@ -47,7 +47,7 @@ const METRICS = [
 ];
 
 const COLORS = [
-  "#8884d8", "#82ca9d", "#ffc658", "#e7e0d9ff", "#00c49f", "#ff4f81", "#d17e7eff", "#bd57ed",
+  "#bd56ed", "#8884d8", "#82ca9d", "#ffc658", "#e7e0d9ff", "#00c49f", "#ff4f81", "#d17e7eff", "#bd56ed",
   "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
   "#bcbd22", "#17becf", "#393b79", "#637939"
 ];

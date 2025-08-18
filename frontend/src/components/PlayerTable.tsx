@@ -522,9 +522,9 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             : chartMode === 'playerSummaryRadar'
             ? 'Player Summary Radar'
             : chartMode === 'attackSummaryRadar'
-            ? 'Attack Summary Radar'
-            : chartMode === 'defenseSummaryRadar'
-            ? 'Defense Summary Radar'
+            ? 'Attacking Summary Radar'
+            : chartMode === 'defenceSummaryRadar'
+            ? 'Defensive Summary Radar'
             : ''}
         </h3>
         <IconButton

@@ -317,7 +317,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         maxHeight: '100vh',
         overflowY: 'auto',
         scrollbarWidth: 'auto',
-        scrollbarColor: '#888 #32043a',
+        scrollbarColor: '#888 #181820',
       }}
     >
       <button onClick={onClose} className="player-detail-close-btn" aria-label="Close">
@@ -357,7 +357,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           padding: 0,
           margin: 0,
           scrollbarWidth: 'thin',
-          scrollbarColor: '#888 #32043a',
+          scrollbarColor: '#888 #181820',
         }}
       >
         <div
