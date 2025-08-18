@@ -14,32 +14,32 @@ const METRICS = [
     normalize: (v: number) => v / 10,
   },
   {
-    key: 'expected_goal_involvements_per_90',
-    label: 'xGI/90',
+    key: 'selected_by_percent',
+    label: 'Selected %',
     max: 1,
-    normalize: (v: number) => v / 1,
+    normalize: (v: number) => v / 100,
   },
   {
-    key: 'expected_goals_per_90',
-    label: 'xG/90',
+    key: 'elite_selected_percent',
+    label: 'Elite Selected %',
     max: 1,
-    normalize: (v: number) => v / 1,
+    normalize: (v: number) => v / 100,
   },
   {
-    key: 'expected_assists_per_90',
-    label: 'xA/90',
+    key: 'ict_index',
+    label: 'ICT index',
     max: 1,
-    normalize: (v: number) => v / 1,
+    normalize: (v: number) => v / 20,
   },
   {
-    key: 'defensive_contribution_per_90',
-    label: 'DefCon/90',
+    key: 'pxm_next5_per_m',
+    label: 'xMins /£M <5>',
     max: 20,
     normalize: (v: number) => v / 20,
   },
   {
     key: 'pp_next5_per_m',
-    label: 'xP /£M',
+    label: 'xPoints /£M <5>',
     max: 1,
     normalize: (v: number) => v / 1,
   },
@@ -52,12 +52,25 @@ const COLORS = [
 const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player }) => {
   const players: Element[] = Array.isArray(player) ? player : [player];
 
+  // Responsive settings
+  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
+  const chartHeight = isSmallScreen ? 260 : 400;
+  const chartCx = isSmallScreen ? "53%" : "50%";
+  const angleAxisFontSize = isSmallScreen ? 8 : 11;
+  const radiusAxisFontSize = isSmallScreen ? 7 : 10;
+
   const data = METRICS.map(metric => {
     const entry: { metric: string; [playerName: string]: number | string } = {
       metric: metric.label,
     };
     players.forEach(p => {
-      entry[p.web_name] = metric.normalize(Number(p[metric.key as keyof Element]) || 0);
+      let rawValue: number;
+      if (metric.key === 'selected_by_percent' || metric.key === 'elite_selected_percent') {
+        rawValue = parseFloat((p[metric.key as keyof Element] as string) || '0');
+      } else {
+        rawValue = Number(p[metric.key as keyof Element]) || 0;
+      }
+      entry[p.web_name] = metric.normalize(rawValue);
     });
     return entry;
   });
@@ -68,8 +81,6 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player }) => {
     return '';
   };
 
-  // Responsive legend position
-  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
   const legendProps = isSmallScreen
     ? {
         verticalAlign: "bottom" as const,
@@ -101,22 +112,21 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player }) => {
     <div
       style={{
         width: '100%',
-        maxWidth: 500,
+        maxWidth: isSmallScreen ? 320 : 500,
         margin: '0 auto',
       }}
     >
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <RadarChart
-          cx={isSmallScreen ? "53%" : "50%"}
+          cx={chartCx}
           cy="50%"
-          outerRadius="80%"
           data={data}
         >
           <PolarGrid />
           <PolarAngleAxis
             dataKey="metric"
             tick={{
-              fontSize: 11,
+              fontSize: angleAxisFontSize,
               fontFamily: 'inherit',
               fill: '#fff',
             }}
@@ -126,7 +136,7 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player }) => {
             angle={0}
             domain={[0, 1]}
             tick={{
-              fontSize: 10,
+              fontSize: radiusAxisFontSize,
               fontFamily: 'inherit',
               fill: '#aaa',
             }}

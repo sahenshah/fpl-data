@@ -27,7 +27,9 @@ import Menu from '@mui/material/Menu';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Slider from '@mui/material/Slider';
 import ScatterChart from './ScatterChart';
-import MultiAreaRadar from './MultiAreaRadar'; // <-- Add this import
+import MultiAreaRadar from './MultiAreaRadar';
+import MultiAreaRadarAttack from './MultiAreaRadarAttack';
+import MultiAreaRadarDefence from './MultiAreaRadarDefence';
 
 interface PlayerTableProps {
   players: Element[];
@@ -117,6 +119,8 @@ const chartSections = [
     header: 'Radar',
     options: [
       { label: 'Player Summary', value: 'playerSummaryRadar' },
+      { label: 'Attack Summary', value: 'attackSummaryRadar' },
+      { label: 'Defence Summary', value: 'defenceSummaryRadar' },
     ],
   },
 ];
@@ -516,6 +520,10 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             ? 'Def Con / 90'
             : chartMode === 'playerSummaryRadar'
             ? 'Player Summary Radar'
+            : chartMode === 'attackSummaryRadar'
+            ? 'Attack Summary Radar'
+            : chartMode === 'defenseSummaryRadar'
+            ? 'Defense Summary Radar'
             : ''}
         </h3>
         <IconButton
@@ -543,10 +551,10 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             sx: {
               backgroundColor: '#222',
               color: '#fff',
-              fontSize: '0.85rem',
-              minWidth: 150,
-              width: 150,
-              maxWidth: 150,
+              fontSize: '0.75rem',
+              minWidth: 170,
+              width: 170,
+              maxWidth: 170,
             }
           }}
           anchorOrigin={{
@@ -630,6 +638,30 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
         ) : chartMode === 'playerSummaryRadar' ? (
           selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
             <MultiAreaRadar player={paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id))} />
+          ) : selectedPlayerIds.length > 10 ? (
+            <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
+              Please select no more than 10 players for the radar chart.
+            </div>
+          ) : (
+            <div style={{ color: '#ffffffff', textAlign: 'center', padding: 24 }}>
+              <strong>Select 1-10 players using the checkboxes to view the radar chart.</strong>
+            </div>
+          )
+        ) : chartMode === 'attackSummaryRadar' ? (
+          selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
+            <MultiAreaRadarAttack player={paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id))} />
+          ) : selectedPlayerIds.length > 10 ? (
+            <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
+              Please select no more than 10 players for the radar chart.
+            </div>
+          ) : (
+            <div style={{ color: '#ffffffff', textAlign: 'center', padding: 24 }}>
+              <strong>Select 1-10 players using the checkboxes to view the radar chart.</strong>
+            </div>
+          )
+        ) : chartMode === 'defenceSummaryRadar' ? (
+          selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
+            <MultiAreaRadarDefence player={paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id))} />
           ) : selectedPlayerIds.length > 10 ? (
             <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
               Please select no more than 10 players for the radar chart.

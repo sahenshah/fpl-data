@@ -17,6 +17,8 @@ import AreaAndLineChart from './AreaAndLineChart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
 import { getCurrentGameweek } from '../App';
 import MultiAreaRadar from './MultiAreaRadar';
+import MultiAreaRadarAttack from './MultiAreaRadarAttack';
+import MultiAreaRadarDefence from './MultiAreaRadarDefence';
 
 interface PlayerDetailProps {
   player: Element;
@@ -431,9 +433,21 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       <AreaAndLineChart
         player={player}
       />
-      <MultiAreaRadar 
-        player={player}
-      />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 24,
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          width: '100%',
+        }}
+      >
+        <MultiAreaRadarAttack player={player} />
+        <MultiAreaRadarDefence player={player} />
+        <MultiAreaRadar player={player} />
+      </div>
       <h3>Fixtures & Results</h3>
       {loading ? (
         <p>Loading fixtures...</p>
