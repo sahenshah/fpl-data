@@ -78,12 +78,6 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
     return entry;
   });
 
-  const radiusTickFormatter = (value: number) => {
-    if (value === 0.5) return '0.5';
-    if (value === 1) return '1';
-    return '';
-  };
-
   const legendProps = isSmallScreen
     ? {
         verticalAlign: "bottom" as const,
@@ -143,13 +137,11 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
             />
             <PolarRadiusAxis
               angle={0}
-              domain={[0, 1]}
               tick={{
                 fontSize: radiusAxisFontSize,
                 fontFamily: 'inherit',
                 fill: '#aaa',
               }}
-              tickFormatter={radiusTickFormatter}
             />
             {players.map((p, idx) => (
               <Radar
