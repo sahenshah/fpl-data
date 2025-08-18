@@ -27,6 +27,7 @@ import Menu from '@mui/material/Menu';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Slider from '@mui/material/Slider';
 import ScatterChart from './ScatterChart';
+import MultiAreaRadar from './MultiAreaRadar'; // <-- Add this import
 
 interface PlayerTableProps {
   players: Element[];
@@ -110,6 +111,12 @@ const chartSections = [
       { label: 'xA/90', value: 'xA/90' },
       { label: 'Def Con', value: 'defCon' },
       { label: 'Def Con / 90', value: 'defCon90' },
+    ],
+  },
+  {
+    header: 'Radar',
+    options: [
+      { label: 'Player Summary', value: 'playerSummaryRadar' },
     ],
   },
 ];
@@ -507,6 +514,8 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             ? 'Def Con'
             : chartMode === 'defCon90'
             ? 'Def Con / 90'
+            : chartMode === 'playerSummaryRadar'
+            ? 'Player Summary Radar'
             : ''}
         </h3>
         <IconButton
@@ -535,9 +544,9 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
               backgroundColor: '#222',
               color: '#fff',
               fontSize: '0.85rem',
-              minWidth: 130,
-              width: 130,
-              maxWidth: 130,
+              minWidth: 150,
+              width: 150,
+              maxWidth: 150,
             }
           }}
           anchorOrigin={{
@@ -581,43 +590,63 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
 ])}
         </Menu>
       </Box>
-      {(chartMode === 'totalPoints' || 
-        chartMode === 'xGI' ||
-        chartMode === 'xGI/90' ||
-        chartMode === 'xG' ||
-        chartMode === 'xG/90' ||
-        chartMode === 'xA' ||
-        chartMode === 'xA/90' ||
-        chartMode === 'defCon' ||
-        chartMode === 'defCon90') ? (
-        <ScatterChart
-          players={chartPlayersSource}
-          yKey={chartMode === 'totalPoints' ? 'total_points' : 
-                              chartMode === 'xGI' ? 'expected_goal_involvements' : 
-                              chartMode === 'xGI/90' ? 'expected_goal_involvements_per_90' : 
-                              chartMode === 'xG' ? 'expected_goals' : 
-                              chartMode === 'xG/90' ? 'expected_goals_per_90' : 
-                              chartMode === 'xA' ? 'expected_assists' : 
-                              chartMode === 'xA/90' ? 'expected_assists_per_90' : 
-                              chartMode === 'defCon' ? 'defensive_contribution' : 
-                              chartMode === 'defCon90' ? 'defensive_contribution_per_90' : ''}
-          yLabel={chartMode === 'totalPoints' ? 'Total Points' : 
-                  chartMode === 'xGI' ? 'xGI' : 
-                  chartMode === 'xGI/90' ? 'xGI/90' : 
-                  chartMode === 'xG' ? 'xG' : 
-                  chartMode === 'xG/90' ? 'xG/90' : 
-                  chartMode === 'xA' ? 'xA' : 
-                  chartMode === 'xA/90' ? 'xA/90' : 
-                  chartMode === 'defCon' ? 'Defensive Contributions' : 
-                  chartMode === 'defCon90' ? 'Defensive Contributions / 90' : ''}
-        />
-      ) : (
-        <Next5LineChart
-          players={chartPlayers}
-          mode={chartMode === 'xPoints' || chartMode === 'xMins' ? chartMode : undefined}
-          gwLabels={Array.from({ length: gwRange[1] - gwRange[0] + 1 }, (_, i) => `GW${gwRange[0] + i}`)}
-        />
-      )}
+      <div
+        style={{
+          background: '#333',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        {(chartMode === 'totalPoints' || 
+          chartMode === 'xGI' ||
+          chartMode === 'xGI/90' ||
+          chartMode === 'xG' ||
+          chartMode === 'xG/90' ||
+          chartMode === 'xA' ||
+          chartMode === 'xA/90' ||
+          chartMode === 'defCon' ||
+          chartMode === 'defCon90') ? (
+          <ScatterChart
+            players={chartPlayersSource}
+            yKey={chartMode === 'totalPoints' ? 'total_points' : 
+                            chartMode === 'xGI' ? 'expected_goal_involvements' : 
+                            chartMode === 'xGI/90' ? 'expected_goal_involvements_per_90' : 
+                            chartMode === 'xG' ? 'expected_goals' : 
+                            chartMode === 'xG/90' ? 'expected_goals_per_90' : 
+                            chartMode === 'xA' ? 'expected_assists' : 
+                            chartMode === 'xA/90' ? 'expected_assists_per_90' : 
+                            chartMode === 'defCon' ? 'defensive_contribution' : 
+                            chartMode === 'defCon90' ? 'defensive_contribution_per_90' : ''}
+            yLabel={chartMode === 'totalPoints' ? 'Total Points' : 
+                    chartMode === 'xGI' ? 'xGI' : 
+                    chartMode === 'xGI/90' ? 'xGI/90' : 
+                    chartMode === 'xG' ? 'xG' : 
+                    chartMode === 'xG/90' ? 'xG/90' : 
+                    chartMode === 'xA' ? 'xA' : 
+                    chartMode === 'xA/90' ? 'xA/90' : 
+                    chartMode === 'defCon' ? 'Defensive Contributions' : 
+                    chartMode === 'defCon90' ? 'Defensive Contributions / 90' : ''}
+          />
+        ) : chartMode === 'playerSummaryRadar' ? (
+          selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
+            <MultiAreaRadar player={paginatedPlayers.filter(p => selectedPlayerIds.includes(p.id))} />
+          ) : selectedPlayerIds.length > 10 ? (
+            <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
+              Please select no more than 10 players for the radar chart.
+            </div>
+          ) : (
+            <div style={{ color: '#ffffffff', textAlign: 'center', padding: 24 }}>
+              <strong>Select 1-10 players using the checkboxes to view the radar chart.</strong>
+            </div>
+          )
+        ) : (
+          <Next5LineChart
+            players={chartPlayers}
+            mode={chartMode === 'xPoints' || chartMode === 'xMins' ? chartMode : undefined}
+            gwLabels={Array.from({ length: gwRange[1] - gwRange[0] + 1 }, (_, i) => `GW${gwRange[0] + i}`)}
+          />
+        )}
+      </div>
       <TableContainer
         sx={{
           maxHeight: 800,

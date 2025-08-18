@@ -45,6 +45,12 @@ th.sticky-badge {
   z-index: 101 !important;
 }
 
+th.sticky-checkbox,
+th.sticky-badge,
+th.sticky-web-name {
+  z-index: 1000 !important;
+}
+
 .MuiTable-root {
   background-color: #555 !important;
   color: #fff !important;
@@ -61,7 +67,7 @@ th.sticky-badge {
   justify-content: center;
   background: #444;
   padding-top: 12px;
-  padding-bottom: 12px;
+  padding-bottom: 8px;
   box-sizing: border-box;
 }
 

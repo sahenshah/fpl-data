@@ -16,6 +16,7 @@ import './PlayerDetail.css';
 import AreaAndLineChart from './AreaAndLineChart';
 import type { Element, Team, PlayerFixture } from '../types/fpl';
 import { getCurrentGameweek } from '../App';
+import MultiAreaRadar from './MultiAreaRadar';
 
 interface PlayerDetailProps {
   player: Element;
@@ -373,6 +374,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           {[
             { label: 'Total Points', value: player.total_points },
             { label: 'Minutes', value: player.minutes },
+            { label: 'Points /game', value: player.points_per_game },
             { label: 'Goals', value: player.goals_scored },
             { label: 'Assists', value: player.assists },
             { label: 'Clean Sheets', value: player.clean_sheets },
@@ -427,6 +429,9 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       </div>
 
       <AreaAndLineChart
+        player={player}
+      />
+      <MultiAreaRadar 
         player={player}
       />
       <h3>Fixtures & Results</h3>
