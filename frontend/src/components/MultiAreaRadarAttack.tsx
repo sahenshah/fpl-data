@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend } from 'recharts';
+import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip } from 'recharts';
 import type { Element } from '../types/fpl';
 
 interface MultiAreaRadarProps {
@@ -52,6 +52,7 @@ const COLORS = [
   "#bcbd22", "#17becf", "#393b79", "#637939"
 ];
 
+// Custom Tooltip for 2 decimal places
 const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) => {
   const players: Element[] = Array.isArray(player) ? player : [player];
 
@@ -66,40 +67,17 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
       } else {
         rawValue = Number(p[metric.key as keyof Element]) || 0;
       }
-      entry[p.web_name] = metric.normalize(rawValue);
+      // Normalise, cap at 1, and round to 2 decimal places
+      let normValue = metric.normalize(rawValue);
+      if (normValue > 1) normValue = 1;
+      normValue = Number(normValue.toFixed(2));
+      entry[p.web_name] = normValue;
     });
     return entry;
   });
 
   // Responsive legend position
   const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
-  const legendProps = isSmallScreen
-    ? {
-        verticalAlign: "bottom" as const,
-        align: "center" as const,
-        layout: "horizontal" as const,
-        wrapperStyle: {
-          marginTop: 20,
-          color: "#fff",
-          fontSize: 12,
-          fontFamily: "inherit",
-        },
-      }
-    : {
-        verticalAlign: "middle" as const,
-        align: "right" as const,
-        layout: "vertical" as const,
-        wrapperStyle: {
-          right: -60,
-          top: 0,
-          height: "100%",
-          width: 120,
-          color: "#fff",
-          fontSize: 12,
-          fontFamily: "inherit",
-        },
-      };
-
   // Responsive chart height and width
   const chartHeight = isSmallScreen ? 260 : 400;
   const chartCx = isSmallScreen ? "53%" : "50%";
@@ -146,6 +124,12 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
                 fill: '#aaa',
               }}
             />
+            <Tooltip 
+              wrapperStyle={{ background: "#222", borderRadius: 6, color: "#fff", fontSize: 13, padding: 8 }}
+              contentStyle={{ background: "#222", border: "none", borderRadius: 6, color: "#fff" }}
+              labelStyle={{ color: "#fff", fontWeight: 800 }}
+              cursor={{ fill: 'rgba(255,255,255,0.1)' }}
+            />
             {players.map((p, idx) => (
               <Radar
                 key={p.web_name}
@@ -156,7 +140,6 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
                 fillOpacity={0.4}
               />
             ))}
-            {players.length > 1 && <Legend {...legendProps} />}
           </RadarChart>
         </ResponsiveContainer>
       </div>

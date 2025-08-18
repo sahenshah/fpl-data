@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend } from 'recharts';
+import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip } from 'recharts';
 import type { Element } from '../types/fpl';
 
 interface MultiAreaRadarProps {
@@ -73,37 +73,14 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
       } else {
         rawValue = Number(p[metric.key as keyof Element]) || 0;
       }
-      entry[p.web_name] = metric.normalize(rawValue);
+      // Normalise, cap at 1, and round to 2 decimal places
+      let normValue = metric.normalize(rawValue);
+      if (normValue > 1) normValue = 1;
+      normValue = Number(normValue.toFixed(2));
+      entry[p.web_name] = normValue;
     });
     return entry;
   });
-
-  const legendProps = isSmallScreen
-    ? {
-        verticalAlign: "bottom" as const,
-        align: "center" as const,
-        layout: "horizontal" as const,
-        wrapperStyle: {
-          marginTop: 20,
-          color: "#fff",
-          fontSize: 12,
-          fontFamily: "inherit",
-        },
-      }
-    : {
-        verticalAlign: "middle" as const,
-        align: "right" as const,
-        layout: "vertical" as const,
-        wrapperStyle: {
-          right: -60,
-          top: 0,
-          height: "100%",
-          width: 120,
-          color: "#fff",
-          fontSize: 12,
-          fontFamily: "inherit",
-        },
-      };
 
   return (
     <div
@@ -143,6 +120,12 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
                 fill: '#aaa',
               }}
             />
+            <Tooltip
+              wrapperStyle={{ background: "#222", borderRadius: 6, color: "#fff", fontSize: 13, padding: 8 }}
+              contentStyle={{ background: "#222", border: "none", borderRadius: 6, color: "#fff" }}
+              labelStyle={{ color: "#fff", fontWeight: 800 }}
+              cursor={{ fill: 'rgba(255,255,255,0.1)' }}
+            />
             {players.map((p, idx) => (
               <Radar
                 key={p.web_name}
@@ -153,7 +136,6 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
                 fillOpacity={0.4}
               />
             ))}
-            {players.length > 1 && <Legend {...legendProps} />}
           </RadarChart>
         </ResponsiveContainer>
       </div>
