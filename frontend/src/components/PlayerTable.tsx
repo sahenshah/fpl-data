@@ -14,13 +14,14 @@ import Dialog from '@mui/material/Dialog';
 import PlayerDetail from './PlayerDetail';
 import type { Element, Team } from '../types/fpl';
 import './PlayerTable.css';
-import Next5LineChart from './Next5LineChart';
+import Next5LineChart from './LineChart';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
 import Box from '@mui/material/Box';
 import { getCurrentGameweek } from '../App';
+import { getLastPredictedGw } from './LineChart';
 import { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
@@ -50,9 +51,9 @@ const columns = [
   { id: 'selected_by_percent', label: 'Selected (%)', minWidth: 80, align: 'right' },
   { id: 'elite_selected_percent', label: 'Elite Selected (%)', minWidth: 80, align: 'right' },
   { id: 'predicted_points_next5', label: 'xPoints next 5', minWidth: 80, align: 'right' },
-  { id: 'pp_next5_per_m', label: 'xPoints next 5 / £M', minWidth: 80, align: 'right' },
+  { id: 'pp_next5_per_m', label: 'xPoints / £M', minWidth: 80, align: 'right' },
   { id: 'predicted_xmins_next5', label: 'xMins next 5', minWidth: 80, align: 'right' },
-  { id: 'pxm_next5_per_m', label: 'xMins next 5 / £M', minWidth: 80, align: 'right' },
+  { id: 'pxm_next5_per_m', label: 'xMins / £M', minWidth: 80, align: 'right' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, align: 'right' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, align: 'right' },
   { id: 'assists', label: 'Assists', minWidth: 50, align: 'right' },
@@ -154,11 +155,16 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
   }, []);
 
   useEffect(() => {
-    getCurrentGameweek().then(gw => {
-      if (gw) {
-        setGwRange([gw, gw + 4 > 38 ? 38 : gw + 4]);
+    async function fetchGwRange() {
+      const [currentGw, lastPredGw] = await Promise.all([
+        getCurrentGameweek(),
+        getLastPredictedGw(),
+      ]);
+      if (currentGw && lastPredGw && lastPredGw >= currentGw) {
+        setGwRange([currentGw, lastPredGw]);
       }
-    });
+    }
+    fetchGwRange();
   }, []);
 
   const compactFontSize = isSmallScreen ? '0.75rem' : '0.88rem';
@@ -676,7 +682,6 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           <Next5LineChart
             players={chartPlayers}
             mode={chartMode === 'xPoints' || chartMode === 'xMins' ? chartMode : undefined}
-            gwLabels={Array.from({ length: gwRange[1] - gwRange[0] + 1 }, (_, i) => `GW${gwRange[0] + i}`)}
           />
         )}
       </div>
