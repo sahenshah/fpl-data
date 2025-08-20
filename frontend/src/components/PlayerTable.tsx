@@ -504,9 +504,9 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
           }}
         >
           {chartMode === 'xPoints'
-            ? 'Predicted Points (next 5 GWs)'
+            ? 'Predicted Points (xPoints)'
             : chartMode === 'xMins'
-            ? 'Predicted Minutes (next 5)'
+            ? 'Predicted Minutes (xMins)'
             : chartMode === 'totalPoints'
             ? 'Total Points'
             : chartMode === 'xGI'
