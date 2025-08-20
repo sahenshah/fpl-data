@@ -9,6 +9,12 @@ interface MultiAreaRadarProps {
 
 const METRICS = [
   {
+    key: 'ict_index',
+    label: 'ICT index',
+    max: 1,
+    normalize: (v: number) => v / 20,
+  },
+  {
     key: 'expected_goal_involvements_per_90',
     label: 'xGI/90',
     max: 1,
@@ -17,12 +23,6 @@ const METRICS = [
   {
     key: 'expected_goals_per_90',
     label: 'xG/90',
-    max: 1,
-    normalize: (v: number) => v / 1,
-  },
-  {
-    key: 'expected_assists_per_90',
-    label: 'xA/90',
     max: 1,
     normalize: (v: number) => v / 1,
   },
@@ -39,10 +39,10 @@ const METRICS = [
     custom: (p: Element) => p.minutes ? p.assists / (p.minutes / 90) : 0,
   },
   {
-    key: 'ict_index',
-    label: 'ICT index',
+    key: 'expected_assists_per_90',
+    label: 'xA/90',
     max: 1,
-    normalize: (v: number) => v / 20,
+    normalize: (v: number) => v / 1,
   },
 ];
 

@@ -21,6 +21,17 @@ interface Next5LineChartProps {
   onRefresh?: () => void;
 }
 
+async function getLastPredictedGw(): Promise<number | undefined> {
+  try {
+    const res = await fetch('/api/fpl_data/last_predicted_gw');
+    const data = await res.json();
+    return data?.last_predicted_gw;
+  } catch (e) {
+    console.error('Failed to fetch last predicted gw:', e);
+    return undefined;
+  }
+}
+
 export default function Next5LineChart({
   players,
   gwLabels,
@@ -29,11 +40,18 @@ export default function Next5LineChart({
   const [gwRange, setGwRange] = useState<[number, number]>([1, 5]);
 
   useEffect(() => {
-    getCurrentGameweek().then(gw => {
-      if (gw) {
-        setGwRange([gw, gw + 4 > 38 ? 38 : gw + 4]);
+    async function fetchGwRange() {
+      const [currentGw, lastPredGw] = await Promise.all([
+        getCurrentGameweek(),
+        getLastPredictedGw(),
+      ]);
+      console.log("getCurrentGameweek returned:", currentGw);
+      console.log("getLastPredictedGw returned:", lastPredGw); // <-- Log lastPredGw here
+      if (currentGw && lastPredGw && lastPredGw >= currentGw) {
+        setGwRange([currentGw, lastPredGw]);
       }
-    });
+    }
+    fetchGwRange();
   }, []);
 
   // Compute GW labels based on gwRange
@@ -42,7 +60,8 @@ export default function Next5LineChart({
     (_, i) => `GW${gwRange[0] + i}`
   );
 
-  const labels = gwLabels ?? computedGwLabels;
+  // const labels = gwLabels ?? computedGwLabels;
+  const labels = computedGwLabels ?? gwLabels;
 
   // Prepare data for recharts: one object per GW, with each player's value as a key
   const data = labels.map((label, idx) => {
@@ -66,10 +85,8 @@ export default function Next5LineChart({
         }}
         style={{ background: '#333' }}
       >
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
         <XAxis dataKey="name" />
-        <YAxis
-        />
+        <YAxis />
         <Tooltip
           content={({ label, payload, active }) =>
             active && payload && payload.length ? (

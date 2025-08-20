@@ -16,7 +16,7 @@ export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
     const res = await fetch('/api/fpl_data/events');
     const events = await res.json();
-    const nextEvent = events.find((ev: { is_next: boolean }) => ev.is_next === true);
+    const nextEvent = events.find((ev: { is_next: number }) => ev.is_next === 1);
     return nextEvent ? nextEvent.id : undefined;
   } catch (e) {
     console.error('Failed to fetch events:', e);

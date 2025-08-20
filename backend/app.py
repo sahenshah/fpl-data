@@ -199,6 +199,34 @@ def db_bootstrap_static():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/fpl_data/last_predicted_gw')
+def last_predicted_gw():
+    """
+    Returns the highest gameweek number N such that at least one player has a non-NULL value for pp_gw_N.
+    """
+    try:
+        # Get the columns of the elements table
+        with engine.connect() as conn:
+            columns = pd.read_sql("PRAGMA table_info(elements)", conn)
+        # Find all pp_gw_* columns and sort by GW number
+        pp_gw_cols = [col for col in columns['name'] if col.startswith('pp_gw_')]
+        gw_numbers = sorted(
+            [int(col.split('_')[-1]) for col in pp_gw_cols if col.split('_')[-1].isdigit()],
+            reverse=True
+        )
+        # For each GW (from highest to lowest), check if any player has a non-null value
+        with engine.connect() as conn:
+            for gw in gw_numbers:
+                col = f"pp_gw_{gw}"
+                result = conn.execute(sqlalchemy.text(f"SELECT 1 FROM elements WHERE {col} IS NOT NULL LIMIT 1")).fetchone()
+                if result:
+                    return jsonify({"last_predicted_gw": gw})
+        return jsonify({"last_predicted_gw": None})
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
