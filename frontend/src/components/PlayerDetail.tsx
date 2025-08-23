@@ -261,9 +261,13 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                   <div
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                      gap: 12,
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                      gap: 8,
                       alignItems: 'start',
+                      // background: 'rgba(40,40,60,0.96)',
+                      borderRadius: 8,
+                      padding: '10px 8px 6px 8px',
+                      boxShadow: '0 1px 6px rgba(0,0,0,0.13)',
                     }}
                   >
                     {[
@@ -287,17 +291,59 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                       { label: 'CBI:', value: row.clearances_blocks_interceptions },
                       { label: 'Recoveries:', value: row.recoveries },
                       { label: 'Tackles:', value: row.tackles },
-                      { label: 'Defensive Contribution:', value: row.defensive_contribution },
+                      { label: 'Def Con:', value: row.defensive_contribution },
                       { label: 'xG:', value: row.expected_goals },
                       { label: 'xA:', value: row.expected_assists },
                       { label: 'xGI:', value: row.expected_goal_involvements },
                       { label: 'xGC:', value: row.expected_goals_conceded },
                     ]
-                      .filter(item => item.value !== undefined && item.value !== null && item.value !== '')
+                      // Only show if value is not undefined, not null, not empty string, and not exactly 0
+                      .filter(item => {
+                        if (
+                          item.value === undefined ||
+                          item.value === null ||
+                          item.value === ''
+                        ) return false;
+                        // Hide if value is exactly 0 or parses to 0 (e.g. "0.00")
+                        if (!isNaN(Number(item.value)) && Number(item.value) === 0) return false;
+                        return true;
+                      })
                       .map(item => (
-                        <div key={item.label} style={{ minWidth: 0, marginBottom: 6 }}>
-                          <span style={{ fontWeight: 700, color: '#fff' }}>{item.label}</span>{' '}
-                          <span style={{ color: '#fff' }}>{item.value}</span>
+                        <div
+                          key={item.label}
+                          style={{
+                            minWidth: 0,
+                            marginBottom: 3,
+                            background: 'rgba(255,255,255,0.04)',
+                            borderRadius: 4,
+                            padding: '5px 6px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            boxShadow: '0 0.5px 2px rgba(0,0,0,0.07)',
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontWeight: 600,
+                              color: '#b4b4b4ff',
+                              fontSize: '0.82rem',
+                              marginBottom: 1,
+                              letterSpacing: 0.05,
+                            }}
+                          >
+                            {item.label}
+                          </span>
+                          <span
+                            style={{
+                              color: '#fff',
+                              fontWeight: 500,
+                              fontSize: '0.93rem',
+                              letterSpacing: 0.05,
+                            }}
+                          >
+                            {item.value}
+                          </span>
                         </div>
                       ))}
                   </div>
