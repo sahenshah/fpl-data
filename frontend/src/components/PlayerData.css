@@ -115,14 +115,37 @@
 .chart-mode-dropdown-option.selected {
   background: #a259ff;
   color: #fff;
-  border-radius: 18px;
+}
+
+.chart-mode-dropdown-option:first-child {
+  border-radius: 18px 18px 0 0;
+}
+
+.chart-mode-dropdown-option:last-child {
+  border-radius: 0 0 18px 18px;
 }
 
 .chart-dropdown-container {
   position: absolute;
-  top: 28px;
-  right: 28px;
+  top: 32px;
+  right: 48px;
   z-index: 10;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 999px) {
+  .chart-dropdown-container {
+    top: 16px;
+    right: 16px;
+  }
+}
+
+/* Media query for very small screens */
+@media (max-width: 600px) {
+  .chart-dropdown-container {
+    top: 12px;
+    right: 12px;
+  }
 }
 
 .chart-section-header {

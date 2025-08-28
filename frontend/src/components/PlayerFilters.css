@@ -169,3 +169,31 @@
   text-align: left;
   padding-left: 16px;
 }
+
+/* Media query for screens below 1000px */
+@media (max-width: 999px) {
+  .player-filters-root {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+  
+  .player-filters-left {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .custom-slider-box {
+    order: 10; /* Move sliders to the bottom */
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  
+  .player-filters-search-container {
+    margin-left: 0;
+    justify-content: center;
+    width: 100%;
+  }
+}
