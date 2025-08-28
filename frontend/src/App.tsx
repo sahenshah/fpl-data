@@ -57,7 +57,7 @@ function App() {
         style={{
           width: '100vw',
           height: '100vh',
-          background: '#181820',
+          background: '#14161a',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -87,7 +87,7 @@ function App() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        background: '#181820',
+        background: '#14161a',
         overflowX: 'hidden',
       }}
     >

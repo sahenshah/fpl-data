@@ -32,12 +32,34 @@ export async function getLastPredictedGw(): Promise<number | undefined> {
   }
 }
 
+function CustomDot(props: any) {
+  const { cx, cy, stroke, index, activeIndex, isChartHovered } = props;
+  // When chart is hovered, only the active dot is colored, others are grey.
+  // When chart is not hovered, all dots are colored.
+  const isActive = index === activeIndex;
+  const borderColor = isChartHovered ? (isActive ? stroke : "#888") : stroke;
+  const fillColor = isChartHovered ? (isActive ? stroke : "#212027") : "#212027";
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={7}
+      fill={fillColor}
+      stroke={borderColor}
+      strokeWidth={2}
+      style={{ pointerEvents: "auto" }}
+    />
+  );
+}
+
 export default function LineChart({
   players,
   gwLabels,
   mode = 'xPoints',
 }: LineChartProps) {
   const [gwRange, setGwRange] = useState<[number, number]>([1, 38]);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [isChartHovered, setIsChartHovered] = useState(false);
 
   useEffect(() => {
     async function fetchGwRange() {
@@ -83,42 +105,69 @@ export default function LineChart({
           bottom: 8,
         }}
         style={{ background: 'transparent' }}
+        onMouseMove={state => {
+          setIsChartHovered(true);
+          if (state && state.activeTooltipIndex !== undefined) {
+            const idx = state.activeTooltipIndex;
+            setActiveIndex(typeof idx === 'number' ? idx : null);
+          }
+        }}
+        onMouseLeave={() => {
+          setActiveIndex(null);
+          setIsChartHovered(false);
+        }}
       >
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip
           content={({ label, payload, active }) =>
             active && payload && payload.length ? (
-              <div
-                style={{
-                  background: "rgba(24, 24, 32, 0.9)",
-                  border: "1px solid #888",
-                  borderRadius: 4,
-                  padding: 8,
-                  color: "#fff",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                }}
-              >
-                <div style={{ fontWeight: "bold", marginBottom: 4 }}>{label}</div>
+              <div className="line-chart-tooltip">
+                <div className="line-chart-tooltip-label">{label}</div>
                 {payload.map((entry, idx) => (
-                  <div key={idx} style={{ color: entry.color }}>
-                    {entry.name}: {entry.value}
+                  <div key={idx} className="line-chart-tooltip-item">
+                    <div
+                      className="line-chart-tooltip-dot"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span className="line-chart-tooltip-text" style={{ flex: 1, textAlign: "left" }}>
+                      {entry.name}
+                    </span>
+                    <span className="line-chart-tooltip-value" style={{ minWidth: 32, textAlign: "right", marginLeft: 12, fontWeight: 600 }}>
+                      {entry.value}
+                    </span>
                   </div>
                 ))}
               </div>
             ) : null
           }
         />
-        {players.map((player, idx) => (
-          <Line
-            key={player.web_name}
-            type="monotone"
-            dataKey={player.web_name}
-            stroke={`hsl(${(idx * 360) / players.length}, 70%, 55%)`}
-            activeDot={{ r: 6 }}
-            dot={false}
-          />
-        ))}
+        {players.map((player, idx) => {
+          const playerColor = `hsl(${(idx * 360) / players.length}, 70%, 55%)`;
+          return (
+            <Line
+              key={player.web_name}
+              type="linear"
+              dataKey={player.web_name}
+              stroke={playerColor}
+              dot={dotProps => (
+                <CustomDot
+                  {...dotProps}
+                  stroke={playerColor}
+                  activeIndex={activeIndex}
+                  isChartHovered={isChartHovered}
+                />
+              )}
+              activeDot={{
+                r: 9,
+                strokeWidth: 0,
+                fill: playerColor,
+                stroke: "none",
+                style: { "--dot-color": playerColor } as React.CSSProperties,
+              }}
+            />
+          );
+        })}
       </RechartsLineChart>
     </ResponsiveContainer>
   );

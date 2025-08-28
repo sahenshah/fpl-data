@@ -17,7 +17,7 @@
   width: 100%;
   max-width: none;
   min-height: 320px;
-  background: #212027;
+  background: #1a1c22;
   border-radius: 60px;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
   padding: 24px 24px 16px 24px;
@@ -26,7 +26,25 @@
   align-items: center;
   justify-content: center;
   overflow-x: auto;
+  scrollbar-width: thin;                /* Firefox */
+  scrollbar-color: #7768f6 #14161a;     /* Firefox */
   box-sizing: border-box;
+}
+
+/* Webkit browsers (Chrome, Edge, Safari) */
+.player-data-chart::-webkit-scrollbar {
+  height: 10px;
+  background: #23232b;
+  border-radius: 8px;
+}
+
+.player-data-chart::-webkit-scrollbar-thumb {
+  background: #7768f6;
+  border-radius: 8px;
+}
+
+.player-data-chart::-webkit-scrollbar-thumb:hover {
+  background: #a259ff;
 }
 
 .player-data-filters {
@@ -37,7 +55,7 @@
 }
 
 .player-data-table {
-  background: #212027;
+  background: #1a1c22;
   border-radius: 60px;
   padding: 24px;
   color: #fff;

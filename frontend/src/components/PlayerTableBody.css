@@ -6,7 +6,7 @@
   overflow-x: auto;
   width: 100%;
   /* Set a max-height if you want a vertical scrollbar as well */
-  scrollbar-color: #7469e6 #212027;
+  scrollbar-color: #7469e6 #1a1c22;
 }
 
 .player-table-container {
@@ -59,9 +59,13 @@
   height: 72px; 
 }
 
+.player-table tbody tr:hover .sticky-select,
+.player-table tbody tr:hover .sticky-badge,
+.player-table tbody tr:hover .sticky-name {
+  background-color: #222;
+}
 .player-table tbody tr:hover {
-  background: #41414100;
-  box-shadow: 0 4px 16px 0 rgba(0,0,0,0.18);
+  background: #222;
 }
 
 .player-table tbody tr > td:first-child {
@@ -112,7 +116,7 @@
 .player-table-th.sticky-name,
 .player-table-th.sticky-badge,
 .player-table-th.sticky-select {
-  background-color: #212027;
+  background-color: #1a1c22;
 }
 
 .player-table input[type="checkbox"] {

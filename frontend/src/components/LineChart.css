@@ -34,3 +34,91 @@
   z-index: 2000 !important;
   pointer-events: none;
 }
+
+/* Hide all lines when tooltip is active and make dots visible with their colors */
+.recharts-wrapper:hover .recharts-line .recharts-line-curve {
+  stroke: #666 !important;
+  stroke-opacity: 0.3 !important;
+}
+
+.recharts-wrapper:hover .recharts-line .recharts-line-dot {
+  fill: var(--dot-color) !important;
+  stroke: var(--dot-color) !important;
+  r: 4 !important;
+}
+
+.recharts-wrapper:hover .recharts-active-dot {
+  fill: var(--dot-color) !important;
+  stroke: var(--dot-color) !important;
+}
+
+.line-chart-tooltip {
+  background: #6e6e6e28 !important;
+  border: 1px solid #6e6e6e28 !important;
+  border-radius: 30px !important;
+  padding: 12px !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  font-size: 14px !important;
+}
+
+.line-chart-tooltip-label {
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.line-chart-tooltip-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: #17191d;
+  border-radius: 18px;
+  color: #fff;
+}
+
+.line-chart-tooltip-item:last-child {
+  margin-bottom: 0;
+}
+
+.line-chart-tooltip-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.line-chart-tooltip-text {
+  flex: 1;
+  text-align: left;
+  padding-right: 32px; /* Add more space between name and value */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-chart-tooltip-value {
+  min-width: 40px;
+  text-align: right;
+  margin-left: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Make all dots have a colored border and white center */
+.recharts-line-dot circle {
+  stroke-width: 4 !important;
+  stroke: var(--dot-color, #888) !important; /* fallback to gray if not set */
+  fill: #fff !important;
+  r: 7 !important;
+}
+
+/* When hovering over a data point, remove the border and fill with the line color */
+.recharts-active-dot circle {
+  stroke-width: 0 !important;
+  stroke: none !important;
+  fill: var(--dot-color, #888) !important;
+  r: 9 !important;
+}
