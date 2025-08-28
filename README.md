@@ -9,7 +9,9 @@ This project is a Fantasy Premier League (FPL) data dashboard built with React a
 - Predicted points and xmins charts for selected or filtered players
 - Historical points, expected data etc vs cost charts
 - Radar charts for player attacking, defensive and summary stats 
-- Player detail modal with team badge, stats, detailed historical gameweek data 
+- Player detail modal with team badge, stats, detailed historical gameweek data
+- Fixtures and Teams section for detailed team data and upcoming gameweek fixtures
+- Sort teams by fixture difficulty for any gameweek range 
 - Main data gathered from FPL API
 - Data enrichment from backend CSVs via scripts
 - Responsive design for desktop and mobile

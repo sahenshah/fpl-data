@@ -1,0 +1,150 @@
+.player-data-root {
+  color: #fff;
+  padding: 32px;
+}
+
+.player-data-section {
+  margin-bottom: 32px;
+}
+
+.player-data-header h2 {
+  margin: 0 0 8px 0;
+}
+
+.player-data-chart {
+  width: 95%;
+  max-width: 95%;
+  min-height: 320px;
+  background: #212027;
+  border-radius: 60px;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+  padding: 24px 24px 16px 24px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.player-data-filters {
+  border-radius: 60px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 18px;
+}
+.player-data-table {
+  background: #212027;
+  border-radius: 60px;
+  padding: 24px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.chart-mode-dropdown {
+  width: 140px;
+  height: 36px;
+  border-radius: 22px;
+  border: 1px solid #353545;
+  background: #23232b;
+  color: #fff;
+  font-size: 15px;
+  text-align: left;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.1s;
+}
+
+.chart-mode-dropdown:focus,
+.chart-mode-dropdown:hover {
+  border-color: #8837f1;
+}
+
+.chart-mode-arrow-btn {
+  background: #171719;
+  border: none;
+  padding: 6px;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.chart-mode-arrow-btn:hover,
+.chart-mode-arrow-btn:focus {
+  background: #353545;
+}
+
+.chart-mode-dropdown-list {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  min-width: 200px;
+  background: #7768f6;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(26,35,126,0.25);
+  z-index: 100;
+}
+
+.chart-mode-dropdown-option {
+  color: #fff;
+  font-size: 16px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+  outline: none;
+  border-radius: 0;
+}
+
+.chart-mode-dropdown-option:hover,
+.chart-mode-dropdown-option:focus {
+  background: #a259ff;
+}
+
+.chart-mode-dropdown-option.selected {
+  background: #a259ff;
+  color: #fff;
+  border-radius: 18px;
+}
+
+.chart-dropdown-container {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  z-index: 10;
+}
+
+.chart-section-header {
+  color: #a3a3a3;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px 8px 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s;
+}
+
+.chart-section-header:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.chart-section-divider {
+  height: 1px;
+  background: #283593;
+  margin: 8px 20px;
+}

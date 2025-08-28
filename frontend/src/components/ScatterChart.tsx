@@ -96,7 +96,6 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
           bottom: 20,
           left: -15, 
         }}
-        style={{ background: '#333' }}
       >
         {/* Diagonal gradient from dark green (top left) to light green (top right) to yellow (bottom left/right) */}
         <defs>

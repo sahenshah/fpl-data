@@ -10,7 +10,7 @@ import {
 import { getCurrentGameweek } from '../App';
 import './LineChart.css';
 
-interface Next5LineChartProps {
+interface LineChartProps {
   players: {
     web_name: string;
     predicted_points_gw: number[];
@@ -32,11 +32,11 @@ export async function getLastPredictedGw(): Promise<number | undefined> {
   }
 }
 
-export default function Next5LineChart({
+export default function LineChart({
   players,
   gwLabels,
   mode = 'xPoints',
-}: Next5LineChartProps) {
+}: LineChartProps) {
   const [gwRange, setGwRange] = useState<[number, number]>([1, 38]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function Next5LineChart({
           left: -20,
           bottom: 8,
         }}
-        style={{ background: '#333' }}
+        style={{ background: 'transparent' }}
       >
         <XAxis dataKey="name" />
         <YAxis />

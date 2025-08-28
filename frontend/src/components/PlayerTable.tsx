@@ -14,7 +14,7 @@ import Dialog from '@mui/material/Dialog';
 import PlayerDetail from './PlayerDetail';
 import type { Element, Team } from '../types/fpl';
 import './PlayerTable.css';
-import Next5LineChart from './LineChart';
+import LineChart from './LineChart';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
@@ -120,8 +120,8 @@ const chartSections = [
     header: 'Radar',
     options: [
       { label: 'Player Summary', value: 'playerSummaryRadar' },
-      { label: 'Attack Summary', value: 'attackSummaryRadar' },
-      { label: 'Defence Summary', value: 'defenceSummaryRadar' },
+      { label: 'Player Summary Attack', value: 'attackSummaryRadar' },
+      { label: 'Player Summary Defence', value: 'defenceSummaryRadar' },
     ],
   },
 ];
@@ -526,11 +526,11 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             : chartMode === 'defCon90'
             ? 'Def Con / 90'
             : chartMode === 'playerSummaryRadar'
-            ? 'Player Summary Radar'
+            ? 'Player Summary'
             : chartMode === 'attackSummaryRadar'
-            ? 'Attacking Summary Radar'
+            ? 'Player Summary Attack'
             : chartMode === 'defenceSummaryRadar'
-            ? 'Defensive Summary Radar'
+            ? 'Player Summary Defence'
             : ''}
         </h3>
         <IconButton
@@ -679,7 +679,7 @@ export default function PlayerTable({ players, teams }: PlayerTableProps) {
             </div>
           )
         ) : (
-          <Next5LineChart
+          <LineChart
             players={chartPlayers}
             mode={chartMode === 'xPoints' || chartMode === 'xMins' ? chartMode : undefined}
           />
