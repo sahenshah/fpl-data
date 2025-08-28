@@ -5,6 +5,8 @@
 
 .player-data-section {
   margin-bottom: 32px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .player-data-header h2 {
@@ -12,18 +14,19 @@
 }
 
 .player-data-chart {
-  width: 95%;
-  max-width: 95%;
+  width: 100%;
+  max-width: none;
   min-height: 320px;
   background: #212027;
   border-radius: 60px;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
   padding: 24px 24px 16px 24px;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow-x: auto;
+  box-sizing: border-box;
 }
 
 .player-data-filters {
@@ -32,6 +35,7 @@
   font-weight: 500;
   font-size: 18px;
 }
+
 .player-data-table {
   background: #212027;
   border-radius: 60px;
@@ -39,6 +43,8 @@
   color: #fff;
   font-weight: 500;
   font-size: 18px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .chart-mode-dropdown {
@@ -127,25 +133,9 @@
 
 .chart-dropdown-container {
   position: absolute;
-  top: 32px;
-  right: 48px;
+  top: 24px;
+  right: 24px;
   z-index: 10;
-}
-
-/* Media query for smaller screens */
-@media (max-width: 999px) {
-  .chart-dropdown-container {
-    top: 16px;
-    right: 16px;
-  }
-}
-
-/* Media query for very small screens */
-@media (max-width: 600px) {
-  .chart-dropdown-container {
-    top: 12px;
-    right: 12px;
-  }
 }
 
 .chart-section-header {
