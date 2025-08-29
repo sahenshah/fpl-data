@@ -16,7 +16,7 @@
 .player-data-chart {
   width: 100%;
   max-width: none;
-  min-height: 320px;
+  min-height: 600px;
   background: #1a1c22;
   border-radius: 60px;
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
@@ -99,7 +99,7 @@
   min-width: 200px;
   padding-top: 10px;
   padding-bottom: 10px;
-  background: #7264eb;
+  background: #7768f6;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(26,35,126,0.25);
   z-index: 100;
@@ -118,11 +118,11 @@
 
 .chart-mode-dropdown-option:hover,
 .chart-mode-dropdown-option:focus {
-  background: #a259ff;
+  background: #6758ec;
 }
 
 .chart-mode-dropdown-option.selected {
-  background: #a259ff;
+  background: #5a47ff;
   color: #fff;
   border-radius: 18px;
 }
