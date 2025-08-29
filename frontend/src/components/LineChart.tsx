@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from 'recharts';
 import { getCurrentGameweek } from '../App';
-import './LineChart.css';
+import styles from './LineChart.module.css';
 
 interface LineChartProps {
   players: {
@@ -122,18 +122,18 @@ export default function LineChart({
         <Tooltip
           content={({ label, payload, active }) =>
             active && payload && payload.length ? (
-              <div className="line-chart-tooltip">
-                <div className="line-chart-tooltip-label">{label}</div>
+              <div className={styles['line-chart-tooltip']}>
+                <div className={styles['line-chart-tooltip-label']}>{label}</div>
                 {payload.map((entry, idx) => (
-                  <div key={idx} className="line-chart-tooltip-item">
+                  <div key={idx} className={styles['line-chart-tooltip-item']}>
                     <div
-                      className="line-chart-tooltip-dot"
+                      className={styles['line-chart-tooltip-dot']}
                       style={{ backgroundColor: entry.color }}
                     />
-                    <span className="line-chart-tooltip-text" style={{ flex: 1, textAlign: "left" }}>
+                    <span className={styles['line-chart-tooltip-text']} style={{ flex: 1, textAlign: "left" }}>
                       {entry.name}
                     </span>
-                    <span className="line-chart-tooltip-value" style={{ minWidth: 32, textAlign: "right", marginLeft: 12, fontWeight: 600 }}>
+                    <span className={styles['line-chart-tooltip-value']} style={{ minWidth: 32, textAlign: "right", marginLeft: 12, fontWeight: 600 }}>
                       {entry.value}
                     </span>
                   </div>

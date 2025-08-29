@@ -1,10 +1,42 @@
 import React from 'react';
 import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip } from 'recharts';
 import type { Element } from '../types/fpl';
+import styles from './MultiAreaRadar.module.css';
+
+// Custom Tooltip for better player styling and header
+const CustomTooltip = ({ payload, label }: any) => {
+  if (!payload || !payload.length) return null;
+  return (
+    <div>
+      <div className={styles['multi-area-radar-tooltip-header']}>{label}</div>
+      <div className={styles['multi-area-radar-tooltip-content']}>
+        {payload.map((entry: any) => (
+          <div key={entry.name} className={styles['multi-area-radar-tooltip-player']}>
+            <span
+              style={{
+                display: 'inline-block',
+                width: 14,
+                height: 14,
+                borderRadius: '50%',
+                background: entry.color,
+                marginRight: 8,
+                // border: '2px solid #fff',
+                verticalAlign: 'middle',
+                flexShrink: 0,
+              }}
+            />
+            <span className={styles['multi-area-radar-tooltip-label']}>{entry.name}</span>
+            <span className={styles['multi-area-radar-tooltip-value']}>{entry.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 interface MultiAreaRadarProps {
   player: Element | Element[];
-  showTitle?: boolean; // <-- Add this prop
+  showTitle?: boolean;
 }
 
 const METRICS = [
@@ -82,27 +114,13 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) =>
   });
 
   return (
-    <div
-      style={{
-        width: '100%',
-        maxWidth: isSmallScreen ? 320 : 500,
-        margin: '0 auto',
-        padding: 0,
-      }}
-    >
+    <div className={styles['multi-area-radar-container']}>
       {showTitle && (
-        <h3 style={{
-          color: '#fff',
-          marginTop: 0,
-          marginBottom: 0,
-          padding: 0,
-          textAlign: 'center',
-          lineHeight: 1.1,
-        }}>
+        <h3 className={styles['multi-area-radar-title']}>
           Summary
         </h3>
       )}
-      <div style={{ marginTop: -12 }}>
+      <div className={styles['multi-area-radar-inner']}>
         <ResponsiveContainer width="100%" height={chartHeight}>
           <RadarChart
             cx={chartCx}
@@ -128,10 +146,9 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) =>
               }}
             />
             <Tooltip 
-              wrapperStyle={{ background: "#222", borderRadius: 6, color: "#fff", fontSize: 13, padding: 8 }}
-              contentStyle={{ background: "#222", border: "none", borderRadius: 6, color: "#fff" }}
-              labelStyle={{ color: "#fff", fontWeight: 800 }}
-              cursor={{ fill: 'rgba(255,255,255,0.1)' }}
+              content={CustomTooltip}
+              wrapperClassName={styles['multi-area-radar-tooltip-wrapper']}
+              cursor={{ className: styles['multi-area-radar-tooltip-cursor'] }}
             />
             {players.map((p, idx) => (
               <Radar
@@ -141,6 +158,7 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) =>
                 stroke={COLORS[idx % COLORS.length]}
                 fill={COLORS[idx % COLORS.length]}
                 fillOpacity={0.4}
+                dot={true}
               />
             ))}
           </RadarChart>

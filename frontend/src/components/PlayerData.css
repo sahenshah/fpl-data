@@ -65,23 +65,6 @@
   box-sizing: border-box;
 }
 
-.chart-mode-dropdown {
-  width: 140px;
-  height: 36px;
-  border-radius: 22px;
-  border: 1px solid #353545;
-  background: #23232b;
-  color: #fff;
-  font-size: 15px;
-  text-align: left;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: border-color 0.1s;
-}
-
 .chart-mode-dropdown:focus,
 .chart-mode-dropdown:hover {
   border-color: #8837f1;
@@ -111,9 +94,11 @@
 
 .chart-mode-dropdown-list {
   position: absolute;
-  top: 50px;
+  top: 40px;
   right: 0;
   min-width: 200px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   background: #7768f6;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(26,35,126,0.25);

@@ -1,10 +1,11 @@
 import React from 'react';
 import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip } from 'recharts';
 import type { Element } from '../types/fpl';
+import styles from './MultiAreaRadar.module.css';
 
 interface MultiAreaRadarProps {
   player: Element | Element[];
-  showTitle?: boolean; // <-- Add this prop
+  showTitle?: boolean;
 }
 
 const METRICS = [
@@ -51,6 +52,36 @@ const COLORS = [
   "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
   "#bcbd22", "#17becf", "#393b79", "#637939"
 ];
+
+// Custom Tooltip using MultiAreaRadar.module.css
+const CustomTooltip = ({ payload, label }: any) => {
+  if (!payload || !payload.length) return null;
+  return (
+    <div>
+      <div className={styles['multi-area-radar-tooltip-header']}>{label}</div>
+      <div className={styles['multi-area-radar-tooltip-content']}>
+        {payload.map((entry: any) => (
+          <div key={entry.name} className={styles['multi-area-radar-tooltip-player']}>
+            <span
+              style={{
+                display: 'inline-block',
+                width: 14,
+                height: 14,
+                borderRadius: '50%',
+                background: entry.color,
+                marginRight: 8,
+                verticalAlign: 'middle',
+                flexShrink: 0,
+              }}
+            />
+            <span className={styles['multi-area-radar-tooltip-label']}>{entry.name}</span>
+            <span className={styles['multi-area-radar-tooltip-value']}>{entry.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) => {
   const players: Element[] = Array.isArray(player) ? player : [player];
@@ -120,10 +151,9 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
               }}
             />
             <Tooltip
-              wrapperStyle={{ background: "#222", borderRadius: 6, color: "#fff", fontSize: 13, padding: 8 }}
-              contentStyle={{ background: "#222", border: "none", borderRadius: 6, color: "#fff" }}
-              labelStyle={{ color: "#fff", fontWeight: 800 }}
-              cursor={{ fill: 'rgba(255,255,255,0.1)' }}
+              content={CustomTooltip}
+              wrapperClassName={styles['multi-area-radar-tooltip-wrapper']}
+              cursor={{ className: styles['multi-area-radar-tooltip-cursor'] }}
             />
             {players.map((p, idx) => (
               <Radar

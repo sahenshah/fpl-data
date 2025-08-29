@@ -1,5 +1,6 @@
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, ReferenceArea } from 'recharts';
 import './ScatterChart.css';
+import { useState, useMemo } from 'react';
 
 interface Player {
   id: number | string;
@@ -26,8 +27,8 @@ function getRandomColor() {
 const CustomTooltip = ({ active, payload, coordinate }: any) => {
   if (active && payload && payload.length && payload[0].payload) {
     const point = payload[0].payload;
-    const tooltipWidth = 120;
-    const tooltipHeight = 70;
+    const tooltipWidth = 140;
+    const tooltipHeight = 90;
     let left = coordinate ? coordinate.x + 10 : 0;
     let top = coordinate ? coordinate.y : 0;
     if (typeof window !== 'undefined') {
@@ -39,7 +40,6 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
       top = Math.max(0, top);
     }
     const style: React.CSSProperties = {
-      // Remove position: 'fixed'
       pointerEvents: 'none',
       zIndex: 1000,
       width: tooltipWidth,
@@ -48,12 +48,61 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
       textAlign: 'left',
       whiteSpace: 'normal',
       wordBreak: 'break-word',
+      background: '#6e6e6e63',
+      borderRadius: 14,
+      padding: 14,
+      color: '#fff',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+      border: '1px solid #444',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 12,
+    };
+    const valueStyle: React.CSSProperties = {
+      background: '#17191d',
+      borderRadius: 8,
+      padding: '8px 12px',
+      marginBottom: 0,
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: 12,
+    };
+    const labelStyle: React.CSSProperties = {
+      textAlign: 'left',
+      flex: 1,
+      fontWeight: 400,
+    };
+    const rightValueStyle: React.CSSProperties = {
+      textAlign: 'right',
+      minWidth: 40,
+      fontWeight: 600,
+    };
+    const dotStyle: React.CSSProperties = {
+      display: 'inline-block',
+      width: 14,
+      height: 14,
+      borderRadius: '50%',
+      background: point.fill,
+      marginRight: 8,
+      border: '2px solid #fff',
+      verticalAlign: 'middle',
     };
     return (
       <div className="scatter-tooltip" style={style}>
-        <div><strong>{point.web_name}</strong></div>
-        <div>Cost: {point.x}</div>
-        <div>{point.yLabel}: {point.y}</div>
+        <div style={{ marginBottom: 2, display: 'flex', alignItems: 'center' }}>
+          <span style={dotStyle}></span>
+          <strong>{point.web_name}</strong>
+        </div>
+        <div style={valueStyle}>
+          <span style={labelStyle}>Cost:</span>
+          <span style={rightValueStyle}>{point.x}</span>
+        </div>
+        <div style={valueStyle}>
+          <span style={labelStyle}>{point.yLabel}:</span>
+          <span style={rightValueStyle}>{point.y}</span>
+        </div>
       </div>
     );
   }
@@ -76,16 +125,48 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
   const xTicks = [xMin, xMid, xMax];
   const yTicks = [yMin, yMid, yMax];
 
-  // Assign a random color to each point
+  // Assign a random color to each player ONCE, locked for the session
+  const colorMap = useMemo(() => {
+    const map = new Map<string, string>();
+    players.forEach(player => {
+      map.set(player.web_name, getRandomColor());
+    });
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [players.map(p => p.web_name).join(',')]);
+
   const data = players
     .map(player => ({
       x: player.now_cost / 10,
       y: Number(player[yKey]),
       web_name: player.web_name,
       yLabel,
-      fill: getRandomColor(),
+      fill: colorMap.get(player.web_name) || "#8884d8",
     }))
     .filter(d => typeof d.x === 'number' && typeof d.y === 'number' && !isNaN(d.x) && !isNaN(d.y));
+
+  // Track hovered dot by web_name
+  const [hoveredName, setHoveredName] = useState<string | null>(null);
+
+  // Custom dot shape with hover logic
+  function CustomDot(props: any) {
+    const { cx, cy, fill, payload } = props;
+    const isActive = hoveredName === payload.web_name;
+    const isAnyHovered = hoveredName !== null;
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={8}
+        fill={isActive ? fill : 'transparent'}
+        stroke={isAnyHovered ? (isActive ? fill : '#bbb') : fill}
+        strokeWidth={3}
+        style={{ transition: 'all 0.15s', cursor: 'pointer' }}
+        onMouseOver={() => setHoveredName(payload.web_name)}
+        onMouseOut={() => setHoveredName(null)}
+      />
+    );
+  }
 
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -143,6 +224,9 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
           name={yLabel}
           data={data}
           fill="#8884d8"
+          shape={(props: any) => (
+            <CustomDot {...props} hoveredName={hoveredName} />
+          )}
         />
       </ScatterChart>
     </ResponsiveContainer>
