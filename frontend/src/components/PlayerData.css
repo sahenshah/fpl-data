@@ -99,7 +99,7 @@
   min-width: 200px;
   padding-top: 10px;
   padding-bottom: 10px;
-  background: #7768f6;
+  background: #7264eb;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(26,35,126,0.25);
   z-index: 100;
@@ -124,14 +124,7 @@
 .chart-mode-dropdown-option.selected {
   background: #a259ff;
   color: #fff;
-}
-
-.chart-mode-dropdown-option:first-child {
-  border-radius: 18px 18px 0 0;
-}
-
-.chart-mode-dropdown-option:last-child {
-  border-radius: 0 0 18px 18px;
+  border-radius: 18px;
 }
 
 .chart-dropdown-container {

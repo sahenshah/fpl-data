@@ -11,10 +11,10 @@ import PlayerFilters from './PlayerFilters';
 
 const chartSections = [
 	{
-		header: 'Expected',
+		header: 'Predicted',
 		options: [
-			{ value: 'xPoints', label: 'Expected Points', component: 'line' },
-			{ value: 'xMins', label: 'Expected Minutes', component: 'line' },
+			{ value: 'xPoints', label: 'Predicted Points', component: 'line' },
+			{ value: 'xMins', label: 'Predicted Minutes', component: 'line' },
 		],
 	},
 	{

@@ -282,9 +282,9 @@ export default function PlayerTableBody({ players, teams, checked, setChecked }:
                       <td key={col.id} className={`align-${col.align} ${stickyClass}`}>
                         {teamMap[player.team] ? (
                           <img
-                            src={`/team-badges/${teamMap[player.team]}.svg`}
+                            src={`/team-kits/${teamMap[player.team]}.png`}
                             alt={teamMap[player.team]}
-                            style={{ width: 28, height: 28 }}
+                            style={{ width: 48, height: 60 }}
                           />
                         ) : null}
                       </td>
