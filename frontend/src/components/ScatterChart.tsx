@@ -169,7 +169,7 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
   }
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer width="100%" height={500}>
       <ScatterChart
         margin={{
           top: 20,

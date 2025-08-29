@@ -106,9 +106,9 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
   });
 
   // Responsive legend position
-  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
+  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 550;
   // Responsive chart height and width
-  const chartHeight = isSmallScreen ? 260 : 400;
+  const chartHeight = isSmallScreen ? 260 : 550;
   const chartCx = isSmallScreen ? "53%" : "50%";
 
   // Responsive font sizes for axis labels

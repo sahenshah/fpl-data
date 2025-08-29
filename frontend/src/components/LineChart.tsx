@@ -116,7 +116,7 @@ export default function LineChart({
         }}
       >
         <div style={{ minWidth: 700 }}>
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={420}>
             <RechartsLineChart
               data={visibleData}
               margin={{
