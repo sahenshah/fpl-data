@@ -111,6 +111,7 @@ export default function LineChart({
         style={{
           width: '100%',
           overflowX: 'auto',
+          overflowY: isChartHovered ? undefined : 'hidden', // Lock vertical scroll when not hovered
           scrollbarWidth: 'thin',
           scrollbarColor: '#7768f6 #1a1c22',
         }}
