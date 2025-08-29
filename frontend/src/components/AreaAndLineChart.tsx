@@ -1,12 +1,15 @@
 import { useEffect, useState, useMemo } from 'react';
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMediaQuery } from '@mui/material';
+import styles from './LineChart.module.css';
 
 interface AreaAndLineChartProps {
   player: any;
   gwStart?: number;
   gwEnd?: number;
 }
+
+const VISIBLE_GW_COUNT = 5;
 
 const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
   // Dynamically calculate gwEnd based on the last populated predicted GW column
@@ -52,13 +55,13 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
   }, [player.id]);
 
   // Prepare data for the chart
-  const data = [];
+  const allData = [];
   for (let gw = gwStart; gw <= gwEnd; gw++) {
     const xPoints = player[`pp_gw_${gw}`];
     const xMins = player[`xmins_gw_${gw}`];
     const points = historyPoints[gw];
     const minutes = historyMinutes[gw];
-    data.push({
+    allData.push({
       name: `GW${gw}`,
       xPoints: Number(xPoints ?? 0),
       xMins: Number(xMins ?? 0),
@@ -69,78 +72,107 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
 
   const isSmallScreen = useMediaQuery ? useMediaQuery('(max-width:600px)') : window.innerWidth < 600;
 
+  // Scroll state for visible gameweeks
+  const [scrollIndex, setScrollIndex] = useState(0);
+  const maxScroll = Math.max(0, allData.length - VISIBLE_GW_COUNT);
+  const visibleData = allData.slice(scrollIndex, scrollIndex + VISIBLE_GW_COUNT);
+
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <AreaChart
-        width={500}
-        height={300}
-        data={data}
-        margin={{
-          top: 30,
-          right: -20,
-          left: -30,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis yAxisId="left" />
-        <YAxis yAxisId="right" orientation="right" />
-        <Tooltip
-          content={({ label, payload, active }) =>
-            active && payload && payload.length ? (
-              <div style={{ background: "rgb(24, 24, 32, 0.9)", border: "1px solid #ffffffff", borderRadius: 4, padding: 8 }}>
-                <div style={{ fontWeight: "bold" }}>{label}</div>
-                {payload.map((entry, idx) => (
-                  <div key={idx} style={{ color: entry.color }}>
-                    {entry.name}: {entry.value}
-                  </div>
-                ))}
-              </div>
-            ) : null
-          }
-        />
-        <Legend
-          verticalAlign="top"
-          height={36}
-          wrapperStyle={{
-            fontSize: isSmallScreen ? '0.75rem' : '1rem',
+    <div style={{ width: '100%' }}>
+      <ResponsiveContainer width="100%" height={300}>
+        <AreaChart
+          width={500}
+          height={300}
+          data={visibleData}
+          margin={{
+            top: 30,
+            right: -20,
+            left: -30,
+            bottom: 5,
           }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis yAxisId="left" />
+          <YAxis yAxisId="right" orientation="right" />
+          <Tooltip
+            content={({ label, payload, active }) =>
+              active && payload && payload.length ? (
+                <div style={{ background: "rgb(24, 24, 32, 0.9)", border: "1px solid #ffffffff", borderRadius: 4, padding: 8 }}>
+                  <div style={{ fontWeight: "bold" }}>{label}</div>
+                  {payload.map((entry, idx) => (
+                    <div key={idx} style={{ color: entry.color }}>
+                      {entry.name}: {entry.value}
+                    </div>
+                  ))}
+                </div>
+              ) : null
+            }
+          />
+          <Legend
+            verticalAlign="top"
+            height={36}
+            wrapperStyle={{
+              fontSize: isSmallScreen ? '0.75rem' : '1rem',
+            }}
+          />
+          <Line
+            yAxisId="left"
+            type="linear"
+            dataKey="xPoints"
+            stroke="#9c162e"
+            name="xPoints"
+            activeDot={{ r: 6 }}
+          />
+          <Area
+            yAxisId="left"
+            type="linear"
+            dataKey="Points"
+            stroke="#5c2a41ff"
+            fill="#5c2a41ff"
+            name="Points"
+            activeDot={{ r: 6 }}
+          />
+          <Line
+            yAxisId="right"
+            type="linear"
+            dataKey="xMins"
+            stroke="#4c76b7"
+            name="xMins"
+            activeDot={{ r: 6 }}
+          />
+          <Area
+            yAxisId="right"
+            type="linear"
+            dataKey="Minutes"
+            stroke="#184152ff"
+            fill="#184152b0"
+            name="Minutes"
+            dot={false}
+            activeDot={{ r: 6 }}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+      <div style={{ marginTop: 12, textAlign: 'center', justifyContent: 'center' }}>
+        <input
+          type="range"
+          min={0}
+          max={maxScroll}
+          value={scrollIndex}
+          onChange={e => setScrollIndex(Number(e.target.value))}
+          style={{
+            width: '75%',
+            background: 'transparent',
+            WebkitAppearance: 'none',
+            height: 8,
+            margin: 0,
+            padding: 0,
+          }}
+          className={styles["line-chart-slider"]}
+          aria-label="Scroll gameweeks"
         />
-        <Area
-          yAxisId="left"
-          type="monotone"
-          dataKey="xPoints"
-          stroke="#8884d8"
-          fill="#8884d8"
-          name="xPoints"
-        />
-        <Area
-          yAxisId="left"
-          type="monotone"
-          dataKey="Points"
-          stroke="#82ca9d"
-          fill="#82ca9d"
-          name="Points"
-        />
-        <Line
-          yAxisId="right"
-          type="monotone"
-          dataKey="xMins"
-          stroke="#ffc658"
-          name="xMins"
-          activeDot={{ r: 8 }}
-        />
-        <Line
-          yAxisId="right"
-          type="monotone"
-          dataKey="Minutes"
-          stroke="#f5232396"
-          name="Minutes"
-          dot={false}
-        />
-      </AreaChart>
-    </ResponsiveContainer>
+      </div>
+    </div>
   );
 };
 

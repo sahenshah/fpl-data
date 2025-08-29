@@ -1,7 +1,8 @@
 .player-detail-modal {
-  background: #32213b; 
+  background: #212027; 
   color: #fff;
   font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, 'Liberation Sans', sans-serif;
+  padding: 24px;
 }
 
 .player-detail-modal:focus,
@@ -17,7 +18,7 @@
   margin-bottom: 12px;
   margin-top: 20px;
   background: linear-gradient(90deg, #6ec6ff 0%, #23235e 100%);
-  border-radius: 6px;
+  border-radius: 36px;
   position: relative;
   overflow: hidden;
 }
@@ -162,7 +163,7 @@
 }
 
 .player-detail-data-box {
-  background: #dadadac7;
+  background: #1c1c20;
   border-radius: 8px;
   padding: 12px 10px;
   min-width: 110px;
@@ -175,7 +176,7 @@
 
 .player-detail-data-label {
   font-size: 0.95rem;
-  color: #333;
+  color: #ffffff;
   font-weight: 500;
   margin-bottom: 4px;
   text-align: center;
@@ -183,7 +184,7 @@
 
 .player-detail-data-value {
   font-size: 1.15rem;
-  color: #41054b;
+  color: #ffffff;
   font-weight: 700;
   text-align: center;
 }
@@ -217,4 +218,47 @@
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   z-index: 2;
   position: relative;
+}
+
+/* Add this to PlayerDetail.css */
+
+.compact-fixtures-table,
+.compact-fixtures-table tbody,
+.compact-fixtures-table thead,
+.MuiPaper-root,
+.MuiTable-root {
+  background: #23232b !important;
+  color: #fff !important;
+}
+
+/* Only set background on the row, not on every cell */
+.compact-fixtures-table tr {
+  background: #23232b !important;
+}
+
+/* Zebra striping for better readability */
+.compact-fixtures-table tr:nth-child(even) {
+  background: #282838 !important;
+}
+
+.compact-fixtures-table tr,
+.compact-fixtures-table td,
+.compact-fixtures-table th {
+  color: #fff; 
+}
+
+/* Allow the difficulty cell to control its own text color */
+.difficulty-cell {
+  color: inherit !important;
+}
+
+/* Add this to PlayerDetail.css or update if already present */
+
+.past-seasons-table,
+.past-seasons-table tbody,
+.past-seasons-table thead,
+.past-seasons-table tr,
+.past-seasons-table td,
+.past-seasons-table th {
+  color: #fff !important;
 }

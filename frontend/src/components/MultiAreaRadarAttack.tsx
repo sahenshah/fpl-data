@@ -6,6 +6,8 @@ import styles from './MultiAreaRadar.module.css';
 interface MultiAreaRadarProps {
   player: Element | Element[];
   showTitle?: boolean;
+  height?: number;
+  width?: number | string;
 }
 
 const METRICS = [
@@ -83,7 +85,7 @@ const CustomTooltip = ({ payload, label }: any) => {
   );
 };
 
-const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) => {
+const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle, height, width }) => {
   const players: Element[] = Array.isArray(player) ? player : [player];
 
   const data = METRICS.map(metric => {
@@ -107,8 +109,11 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
 
   // Responsive legend position
   const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 550;
-  // Responsive chart height and width
-  const chartHeight = isSmallScreen ? 260 : 550;
+  // Use height and width from props, fallback to responsive defaults
+  const chartHeight = typeof height === 'number'
+    ? height
+    : (isSmallScreen ? 260 : 550);
+  const chartWidth = width ?? '100%';
   const chartCx = isSmallScreen ? "53%" : "50%";
 
   // Responsive font sizes for axis labels
@@ -129,7 +134,7 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
         </h3>
       )}
       <div style={{ marginTop: -12 }}>
-        <ResponsiveContainer width="100%" height={chartHeight}>
+        <ResponsiveContainer width={chartWidth} height={chartHeight}>
           <RadarChart
             cx={chartCx}
             cy="50%"

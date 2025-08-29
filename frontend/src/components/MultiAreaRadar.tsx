@@ -37,6 +37,8 @@ const CustomTooltip = ({ payload, label }: any) => {
 interface MultiAreaRadarProps {
   player: Element | Element[];
   showTitle?: boolean;
+  height?: number; // Add this
+  width?: number | string; // Optional: allow width override
 }
 
 const METRICS = [
@@ -84,12 +86,15 @@ const COLORS = [
   "#bcbd22", "#17becf", "#393b79", "#637939"
 ];
 
-const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) => {
+const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle, height, width }) => {
   const players: Element[] = Array.isArray(player) ? player : [player];
 
   // Responsive settings
   const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
-  const chartHeight = isSmallScreen ? 260 : 550;
+  const chartHeight = typeof height === 'number'
+    ? height
+    : (isSmallScreen ? 260 : 550);
+  const chartWidth = width ?? '100%';
   const chartCx = isSmallScreen ? "53%" : "50%";
   const angleAxisFontSize = isSmallScreen ? 8 : 11;
   const radiusAxisFontSize = isSmallScreen ? 7 : 10;
@@ -121,7 +126,7 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle }) =>
         </h3>
       )}
       <div className={styles['multi-area-radar-inner']}>
-        <ResponsiveContainer width="100%" height={chartHeight}>
+        <ResponsiveContainer width={chartWidth} height={chartHeight}>
           <RadarChart
             cx={chartCx}
             cy="50%"

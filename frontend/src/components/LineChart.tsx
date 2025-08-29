@@ -199,7 +199,7 @@ export default function LineChart({
           </ResponsiveContainer>
         </div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', marginTop: 24 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 24 }}>
         {/* Increased marginTop for more space between X axis and slider */}
         <input
           type="range"
@@ -208,7 +208,8 @@ export default function LineChart({
           value={scrollIndex}
           onChange={e => setScrollIndex(Number(e.target.value))}
           style={{
-            width: '100%',
+            width: '75%',
+            alignItems: 'center',
             background: 'transparent',
             WebkitAppearance: 'none',
             height: 8,

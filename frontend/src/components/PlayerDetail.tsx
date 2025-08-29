@@ -363,7 +363,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         maxHeight: '100vh',
         overflowY: 'auto',
         scrollbarWidth: 'auto',
-        scrollbarColor: '#888 #32213b',
+        scrollbarColor: '#888 #212027',
       }}
     >
       <button onClick={onClose} className="player-detail-close-btn" aria-label="Close">
@@ -408,7 +408,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           padding: 0,
           margin: 0,
           scrollbarWidth: 'thin',
-          scrollbarColor: '#888 #32213b',
+          scrollbarColor: '#888 #212027',
         }}
       >
         <div
@@ -451,7 +451,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                 flex: '0 0 auto',
                 minWidth: 90,
                 padding: '10px 10px',
-                borderRadius: 6,
+                borderRadius: '24px',
                 textAlign: 'center',
                 fontSize: window.innerWidth < 600 ? '0.85rem' : '1rem',
               }}
@@ -461,7 +461,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
                 style={{
                   display: 'block',
                   fontSize: window.innerWidth < 600 ? '0.72rem' : '0.92rem',
-                  color: '#333',
+                  fontWeight: 400,
+                  color: '#9e9d9dff',
                   marginBottom: 2,
                 }}
               >
@@ -484,6 +485,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       <AreaAndLineChart
         player={player}
       />
+      {/* Add margin below the chart for spacing */}
+      <div style={{ height: 32 }} />
       <div
         style={{
           display: 'flex',
@@ -495,7 +498,19 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           width: '100%',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: 500,
+            background: '#1c1c20',           // Add background
+            borderRadius: 24,                // Add border radius
+            padding: '24px 12px',            // Add padding
+            boxShadow: '0 2px 16px rgba(0,0,0,0.12)', // Optional: subtle shadow
+          }}
+        >
           <h3
             style={{
               color: '#fff',
@@ -508,9 +523,21 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           >
             Attacking Summary
           </h3>
-          <MultiAreaRadarAttack player={player} showTitle={false} />
+          <MultiAreaRadarAttack player={player} showTitle={false} height={400}/>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: 500,
+            background: '#1c1c20',           // Add background
+            borderRadius: 24,                // Add border radius
+            padding: '24px 12px',            // Add padding
+            boxShadow: '0 2px 16px rgba(0,0,0,0.12)', // Optional: subtle shadow
+          }}
+        >
           <h3
             style={{
               color: '#fff',
@@ -523,9 +550,21 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           >
             Defensive Summary
           </h3>
-          <MultiAreaRadarDefence player={player} showTitle={false} />
+          <MultiAreaRadarDefence player={player} showTitle={false} height={400}/>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+            maxWidth: 500,
+            background: '#1c1c20',           // Add background
+            borderRadius: 24,                // Add border radius
+            padding: '24px 12px',            // Add padding
+            boxShadow: '0 2px 16px rgba(0,0,0,0.12)', // Optional: subtle shadow
+          }}
+        >
           <h3
             style={{
               color: '#fff',
@@ -538,7 +577,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
           >
             Summary
           </h3>
-          <MultiAreaRadar player={player} showTitle={false} />
+          <MultiAreaRadar player={player} showTitle={false} height={400}/>
         </div>
       </div>
       <h3>Fixtures & Results</h3>
@@ -595,7 +634,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       {/* Past Seasons Table */}
       <h3>Past Seasons</h3>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="player history table">
+        <Table className="past-seasons-table" sx={{ minWidth: 650 }} size="small" aria-label="player history table">
           <TableHead>
             <TableRow>
               <TableCell>Season</TableCell>
