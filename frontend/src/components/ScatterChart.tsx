@@ -203,6 +203,7 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
           dataKey="x"
           name="Cost"
           unit=""
+          tick={{ fill: "#fff" }} 
           tickFormatter={v => `£${v}m`}
           domain={[xMin, xMax]}
           ticks={xTicks}
@@ -210,6 +211,7 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
         <YAxis
           type="number"
           dataKey="y"
+          tick={{ fill: "#fff" }} 
           name={yLabel}
           domain={[yMin, yMax]}
           ticks={yTicks}

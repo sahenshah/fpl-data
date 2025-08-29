@@ -92,9 +92,19 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis yAxisId="left" />
-          <YAxis yAxisId="right" orientation="right" />
+          <XAxis 
+            dataKey="name"
+            tick={{ fill: "#fff" }} // Make X axis labels white
+          />
+          <YAxis 
+            yAxisId="left"
+            tick={{ fill: "#fff" }} // Make left Y axis labels white
+          />
+          <YAxis 
+            yAxisId="right"
+            orientation="right"
+            tick={{ fill: "#fff" }} // Make right Y axis labels white
+          />
           <Tooltip
             content={({ label, payload, active }) =>
               active && payload && payload.length ? (

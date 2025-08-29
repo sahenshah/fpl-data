@@ -139,8 +139,8 @@ export default function LineChart({
                 setIsChartHovered(false);
               }}
             >
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="name" tick={{ fill: "#fff" }} />
+              <YAxis tick={{ fill: "#fff" }} />
               <Tooltip
                 content={({ label, payload, active }) =>
                   active && payload && payload.length ? (

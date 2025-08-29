@@ -135,9 +135,14 @@
 
 .MuiTableCell-root,
 .MuiTableCell-head,
-.MuiTableCell-body {
-  text-align: center !important;
-  vertical-align: middle !important;
+.MuiTableCell-body,
+.MuiTableCell-footer,
+.MuiTable-root,
+.MuiTableBody-root,
+.MuiTableHead-root,
+.MuiTableRow-root,
+.MuiTableContainer-root {
+  color: #fff !important;
 }
 .MuiSlider-markLabel[data-index="0"],
 .MuiSlider-markLabel[data-index="1"] {

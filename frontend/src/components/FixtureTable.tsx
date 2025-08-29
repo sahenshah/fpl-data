@@ -180,7 +180,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                     col.key === 'name' ? 'sticky-name' :
                     'gw' in col && col.gw === currentGW ? 'current-gw-col' : undefined
                   }
-                  style={col.key === 'badge' ? { top: 0, left: 0, zIndex: 100, background: '#444', minWidth: 40 } : { cursor: 'pointer' }}
+                  style={col.key === 'badge' ? { top: 0, left: 0, zIndex: 100, minWidth: 40 } : { cursor: 'pointer' }}
                   onClick={() => {
                     // Only allow sorting for non-badge and non-GW columns
                     if (
