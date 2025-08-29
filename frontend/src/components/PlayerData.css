@@ -119,11 +119,11 @@
 
 .chart-mode-dropdown-option:hover,
 .chart-mode-dropdown-option:focus {
-  background: #513eff96;
+  background: #6758ec;
 }
 
 .chart-mode-dropdown-option.selected {
-  background: #513eff;
+  background: #5441fd;
   color: #fff;
   border-radius: 18px;
 }
