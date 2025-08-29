@@ -128,7 +128,11 @@ export default function LineChart({
                   <div key={idx} className={styles['line-chart-tooltip-item']}>
                     <div
                       className={styles['line-chart-tooltip-dot']}
-                      style={{ backgroundColor: entry.color }}
+                      style={{
+                        backgroundColor: players.find(p => p.web_name === entry.name)
+                          ? `hsl(${(players.findIndex(p => p.web_name === entry.name) * 360) / players.length}, 70%, 55%)`
+                          : entry.color
+                      }}
                     />
                     <span className={styles['line-chart-tooltip-text']} style={{ flex: 1, textAlign: "left" }}>
                       {entry.name}
@@ -144,12 +148,14 @@ export default function LineChart({
         />
         {players.map((player, idx) => {
           const playerColor = `hsl(${(idx * 360) / players.length}, 70%, 55%)`;
+          // Make all lines grey when the chart is hovered, otherwise use player color
+          const lineColor = isChartHovered ? "#888" : playerColor;
           return (
             <Line
               key={player.web_name}
               type="linear"
               dataKey={player.web_name}
-              stroke={playerColor}
+              stroke={lineColor}
               dot={dotProps => (
                 <CustomDot
                   {...dotProps}
