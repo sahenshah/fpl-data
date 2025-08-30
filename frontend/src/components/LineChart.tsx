@@ -98,6 +98,15 @@ export default function LineChart({
   // Always use the fixed sliderMax for the slider's max value
   const minGameweek = 1;
 
+  // Limit to 10 players, show message if more
+  if (players.length > 10) {
+    return (
+      <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
+        Please select no more than 10 players for the expected data chart.
+      </div>
+    );
+  }
+
   return (
     <div style={{ position: 'relative', width: '100%' }}>
       <div
