@@ -236,26 +236,39 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               { value: 150 }
             ]}
             valueLabelDisplay="auto"
-            valueLabelFormat={v => (v / 10).toFixed(1)} // <-- Add this line
             onChange={(_, value) => setCostRange(value as [number, number])}
             disableSwap
             sx={{ 
               color: '#7768f6', 
               flex: 1,
               '& .MuiSlider-rail': {
-                height: 12,
+                height: 12, // Increase rail thickness here (default is 4)
                 borderRadius: 4,
                 color: '#000000ff'
               },
               '& .MuiSlider-track': {
-                height: 12,
+                height: 12, // Match the rail thickness
                 borderRadius: 4,
               },
               '& .MuiSlider-thumb': {
                 color: '#000000ff',
                 outline: '4px solid #7768f6',
-                height: 9,
-                width: 9,
+                height: 7,
+                width: 7,
+              },
+              // Left thumb (first thumb)
+              '& .MuiSlider-thumb[data-index="0"]': {
+                borderTopRightRadius: '0',
+                borderBottomRightRadius: '0',
+                borderTopLeftRadius: '50%',
+                borderBottomLeftRadius: '50%',
+              },
+              // Right thumb (second thumb)
+              '& .MuiSlider-thumb[data-index="1"]': {
+                borderTopRightRadius: '50%',
+                borderBottomRightRadius: '50%',
+                borderTopLeftRadius: '0',
+                borderBottomLeftRadius: '0',
               },
             }}
           />

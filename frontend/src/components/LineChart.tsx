@@ -227,8 +227,22 @@ export default function LineChart({
             '& .MuiSlider-thumb': {
               color: '#000000ff',
               outline: '8px solid #7768f6',
-              height: 15,
-              width: 15,
+              height: 8,
+              width: 8,
+            },
+            // Left thumb (first thumb)
+            '& .MuiSlider-thumb[data-index="0"]': {
+              borderTopLeftRadius: '50%',
+              borderBottomLeftRadius: '50%',
+              borderTopRightRadius: '0',
+              borderBottomRightRadius: '0',
+            },
+            // Right thumb (second thumb)
+            '& .MuiSlider-thumb[data-index="1"]': {
+              borderTopLeftRadius: '0',
+              borderBottomLeftRadius: '0',
+              borderTopRightRadius: '50%',
+              borderBottomRightRadius: '50%',
             },
           }}
           disableSwap
