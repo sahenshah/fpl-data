@@ -12,6 +12,8 @@ interface PlayerFiltersProps {
   players: Element[];
   teams: Team[];
   onFilteredPlayers: (filtered: Element[]) => void;
+  costRange: [number, number];
+  setCostRange: React.Dispatch<React.SetStateAction<[number, number]>>;
 }
 
 const positionOptions: PositionOption[] = [
@@ -21,12 +23,11 @@ const positionOptions: PositionOption[] = [
   { value: '4', label: 'FWD' },
 ];
 
-const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFilteredPlayers }) => {
+const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFilteredPlayers, costRange, setCostRange }) => {
   const [positionFilter, setPositionFilter] = React.useState<string[]>([]);
   const [teamFilter, setTeamFilter] = React.useState<string[]>(() => teams.map(t => t.name));
   const [minutesFilter, setMinutesFilter] = React.useState<string>('');
   const [searchTerm, setSearchTerm] = React.useState<string>('');
-  const [costRange, setCostRange] = React.useState<[number, number]>([40, 150]);
   const [showSearchInput, setShowSearchInput] = React.useState(false);
   const [showPositionDropdown, setShowPositionDropdown] = React.useState(false);
   const [showTeamDropdown, setShowTeamDropdown] = React.useState(false);
@@ -236,6 +237,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               { value: 150 }
             ]}
             valueLabelDisplay="auto"
+            valueLabelFormat={v => (v / 10).toFixed(1)} 
             onChange={(_, value) => setCostRange(value as [number, number])}
             disableSwap
             sx={{ 

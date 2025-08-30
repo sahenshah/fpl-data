@@ -50,6 +50,7 @@ function PlayerData() {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const gwRange: [number, number] = [1, 38];
+	const [costRange, setCostRange] = useState<[number, number]>([40, 150]); // Example: £4.0m to £15.0m
 
 	// Get the section that contains the current chart mode
 	const getCurrentSection = () => {
@@ -254,6 +255,7 @@ function PlayerData() {
 													chartMode === 'xA90' ? 'xA/90' :
 														chartMode === 'defCon' ? 'DefCons' :
 															chartMode === 'defCon90' ? 'DefCons / 90' : ''}
+							costRange={costRange} // Pass the cost range here
 						/>
 					) : chartMode === 'playerSummaryRadar' ? (
 						selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
@@ -307,6 +309,8 @@ function PlayerData() {
 						players={players}
 						teams={teams}
 						onFilteredPlayers={setFilteredPlayers}
+						costRange={costRange}
+						setCostRange={setCostRange}
 					/>
 				</div>
 			</section>

@@ -13,6 +13,7 @@ interface ScatterChartProps {
   players: Player[];
   yKey: string;
   yLabel?: string;
+  costRange: [number, number];
 }
 
 // Generate a random color for each point
@@ -109,10 +110,9 @@ const CustomTooltip = ({ active, payload, coordinate }: any) => {
   return null;
 };
 
-const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChartProps) => {
-  // Always show from 4m to 14.5m
-  const xMin = 4;
-  const xMax = 14.5;
+const ScatterChartComponent = ({ players, yKey, yLabel = 'Value', costRange }: ScatterChartProps) => {
+  const xMin = costRange[0] / 10;
+  const xMax = costRange[1] / 10;
   const yVals = players.map(player => Number(player[yKey])).filter(v => !isNaN(v));
   const yMin = 0;
   const yMax = Math.max(...yVals);
@@ -202,8 +202,7 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value' }: ScatterChart
           type="number"
           dataKey="x"
           name="Cost"
-          unit=""
-          tick={{ fill: "#fff" }} 
+          tick={{ fill: "#fff" }}
           tickFormatter={v => `£${v}m`}
           domain={[xMin, xMax]}
           ticks={xTicks}
