@@ -220,7 +220,7 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
             yAxisId="right"
             type="linear"
             dataKey="Minutes"
-            stroke="#1742553b"
+            stroke="#104c66d0"
             fill="#17425598"
             name="Minutes"
             dot={false}
