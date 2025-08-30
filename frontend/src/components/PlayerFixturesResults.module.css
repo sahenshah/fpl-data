@@ -118,7 +118,7 @@
 }
 
 .fixtures-results-row:hover {
-  background: #525252; 
+  background: #6e61cc; 
   transition: background 0.2s;
   cursor: pointer;
 }

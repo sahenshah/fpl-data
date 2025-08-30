@@ -312,8 +312,8 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                                           { label: 'Own Goals', value: fix.own_goals },
                                           { label: 'Penalties Saved', value: fix.penalties_saved },
                                           { label: 'Penalties Missed', value: fix.penalties_missed },
-                                          { label: 'Yellow Cards', value: fix.yellow_cards },
-                                          { label: 'Red Cards', value: fix.red_cards },
+                                          { label: <img src="/YC.svg" alt="Yellow Cards" title="Yellow Cards" style={{ width: 18, height: 18, verticalAlign: 'middle' }} />, value: fix.yellow_cards },
+                                          { label: <img src="/RC.svg" alt="Red Cards" title="Red Cards" style={{ width: 18, height: 18, verticalAlign: 'middle' }} />, value: fix.red_cards },
                                           { label: 'Saves', value: fix.saves },
                                           { label: 'Bonus', value: fix.bonus },
                                           { label: 'BPS', value: fix.bps },
@@ -340,7 +340,7 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                                             return true;
                                           })
                                           .map(item => (
-                                            <div key={item.label} style={{
+                                            <div key={String(item.label)} style={{
                                               minWidth: 0,
                                               background: '#6e61cc',
                                               borderRadius: 12,
