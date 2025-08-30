@@ -137,69 +137,8 @@
 }
 
 
-/* Chrome/Safari/Edge */
-.line-chart-slider::-webkit-slider-runnable-track {
-  background: #17171b; /* red */
-  height: 8px;
-  border-radius: 4px;
-}
-.line-chart-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 300px;
-  height: 8px;
-  border-radius: 4px;
-  background: #7768f6;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  cursor: pointer;
-  margin-top: 0px; /* perfectly center thumb on track of height 8px */
-  transition: background 0.2s;
-}
-.line-chart-slider:focus::-webkit-slider-thumb {
-  outline: 2px solid #7768f6;
-}
 
-/* Firefox */
-.line-chart-slider::-moz-range-track {
-  background: #17171b; /* red */
-  height: 8px;
-  border-radius: 4px;
-}
-.line-chart-slider::-moz-range-thumb {
-  width: 300px;
-  height: 8px;
-  border-radius: 4px;
-  background: #7768f6;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.line-chart-slider:focus::-moz-range-thumb {
-  outline: 2px solid #7768f6;
-}
 
-/* IE */
-.line-chart-slider::-ms-thumb {
-  width: 300px;
-  height: 8px;
-  border-radius: 4px;
-  background: #7768f6;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.line-chart-slider:focus::-ms-thumb {
-  outline: 2px solid #7768f6;
-}
-.line-chart-slider::-ms-fill-lower {
-  background: #17171b; /* dark gray */
-}
-.line-chart-slider::-ms-fill-upper {
-  background: #17171b; /* dark gray */
-}
 
 /* Remove focus outline and border from chart container and all children */
 .recharts-wrapper:focus,
@@ -217,20 +156,4 @@ svg:focus-visible {
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
-}
-
-/* Remove default outline and background */
-.line-chart-slider:focus {
-  outline: none;
-}
-.line-chart-slider::-ms-tooltip {
-  display: none;
-}
-
-/* Hide the blue progress bar in Firefox */
-.line-chart-slider::-moz-range-progress {
-  background-color: transparent;
-}
-.line-chart-slider::-moz-focus-outer {
-  border: 0;
 }

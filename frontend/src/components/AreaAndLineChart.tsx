@@ -130,7 +130,7 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
             yAxisId="left"
             type="linear"
             dataKey="xPoints"
-            stroke="#9c162e"
+            stroke="#a8001fff"
             name="xPoints"
             activeDot={{ r: 6 }}
           />
@@ -138,8 +138,8 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
             yAxisId="left"
             type="linear"
             dataKey="Points"
-            stroke="#5c2a41ff"
-            fill="#5c2a41ff"
+            stroke="#771325ff"
+            fill="#771325dc"
             name="Points"
             activeDot={{ r: 6 }}
           />
@@ -156,7 +156,7 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
             type="linear"
             dataKey="Minutes"
             stroke="#184152ff"
-            fill="#184152b0"
+            fill="#1841529f"
             name="Minutes"
             dot={false}
             activeDot={{ r: 6 }}

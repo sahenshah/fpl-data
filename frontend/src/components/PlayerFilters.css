@@ -83,7 +83,7 @@
   height: 36px;
   border-radius: 18px;
   text-align: left;
-  border: 1px solid #353545;
+  border: transparent; 
   background: #23232b;
   color: #fff;
   font-size: 15px;
@@ -101,7 +101,7 @@
   align-items: center;
   gap: 8px;
   width: 250px;
-  max-width: 250px;
+  max-width: 400px;
 }
 
 .custom-slider {

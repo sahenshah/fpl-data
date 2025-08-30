@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { getCurrentGameweek } from '../App';
 import styles from './LineChart.module.css';
+import Slider from '@mui/material/Slider';
 
 interface LineChartProps {
   players: {
@@ -56,9 +57,9 @@ export default function LineChart({
   mode = 'xPoints',
 }: LineChartProps) {
   const [gwRange, setGwRange] = useState<[number, number]>([1, 38]);
+  const [sliderMax, setSliderMax] = useState<number>(38); // <-- Track the true max for the slider
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isChartHovered, setIsChartHovered] = useState(false);
-  const [scrollIndex, setScrollIndex] = useState(0);
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
@@ -70,6 +71,7 @@ export default function LineChart({
       ]);
       if (currentGw && lastPredGw && lastPredGw >= currentGw) {
         setGwRange([currentGw, lastPredGw]);
+        setSliderMax(lastPredGw); // <-- Set the slider max to the true max
       }
     }
     fetchGwRange();
@@ -82,27 +84,19 @@ export default function LineChart({
   );
   const labels = computedGwLabels ?? gwLabels;
 
-  // Show 5 gameweeks at a time
-  const visibleCount = 5;
-  // Calculate the max scroll index
-  const maxScroll = Math.max(0, labels.length - visibleCount);
-
   // Prepare data for recharts: one object per GW, with each player's value as a key
   const data = labels.map((label, idx) => {
+    const gwIdx = gwRange[0] + idx - 1;
     const obj: { name: string; [key: string]: number | string } = { name: label };
     players.forEach(player => {
       const arr = mode === 'xPoints' ? player.predicted_points_gw : player.predicted_xmins_gw ?? [];
-      obj[player.web_name] = arr[idx] ?? 0;
+      obj[player.web_name] = arr[gwIdx] ?? 0;
     });
     return obj;
   });
 
-  // Slice the data for the visible window
-  const visibleData = data.slice(scrollIndex, scrollIndex + visibleCount);
-
-  // // Scroll handlers
-  // const handleScrollLeft = () => setScrollIndex(idx => Math.max(0, idx - 1));
-  // const handleScrollRight = () => setScrollIndex(idx => Math.min(maxScroll, idx + 1));
+  // Always use the fixed sliderMax for the slider's max value
+  const minGameweek = 1;
 
   return (
     <div style={{ position: 'relative', width: '100%' }}>
@@ -111,7 +105,7 @@ export default function LineChart({
         style={{
           width: '100%',
           overflowX: 'auto',
-          overflowY: isChartHovered ? undefined : 'hidden', // Lock vertical scroll when not hovered
+          overflowY: isChartHovered ? undefined : 'hidden',
           scrollbarWidth: 'thin',
           scrollbarColor: '#7768f6 #1a1c22',
         }}
@@ -119,12 +113,12 @@ export default function LineChart({
         <div style={{ minWidth: 700 }}>
           <ResponsiveContainer width="100%" height={420}>
             <RechartsLineChart
-              data={visibleData}
+              data={data}
               margin={{
                 top: 8,
                 right: 40,
                 left: -20,
-                bottom: 35, 
+                bottom: 35,
               }}
               style={{ background: 'transparent' }}
               onMouseMove={state => {
@@ -199,25 +193,36 @@ export default function LineChart({
           </ResponsiveContainer>
         </div>
       </div>
+      {/* Range slider for min/max gameweek */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 24 }}>
-        {/* Increased marginTop for more space between X axis and slider */}
-        <input
-          type="range"
-          min={0}
-          max={maxScroll}
-          value={scrollIndex}
-          onChange={e => setScrollIndex(Number(e.target.value))}
-          style={{
-            width: '75%',
-            alignItems: 'center',
-            background: 'transparent',
-            WebkitAppearance: 'none',
-            height: 8,
-            margin: 0,
-            padding: 0,
+        <Slider
+          value={gwRange}
+          min={minGameweek}
+          max={sliderMax}
+          step={1}
+          onChange={(_, value) => setGwRange(value as [number, number])}
+          valueLabelDisplay="auto"
+          sx={{ 
+            width: '90%', 
+            mx: 2, 
+            color: '#7768f6',
+            '& .MuiSlider-rail': {
+              height: 22, // Increase rail thickness here (default is 4)
+              borderRadius: 4,
+              color: '#000000ff'
+            },
+            '& .MuiSlider-track': {
+              height: 22, // Match the rail thickness
+              borderRadius: 4,
+            },
+            '& .MuiSlider-thumb': {
+              color: '#000000ff',
+              outline: '8px solid #7768f6',
+              height: 15,
+              width: 15,
+            },
           }}
-          aria-label="Scroll gameweeks"
-          className={styles['line-chart-slider']}
+          disableSwap
         />
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Team, Element } from '../types/fpl';
 import './PlayerFilters.css';
+import Slider from '@mui/material/Slider';
 
 interface PositionOption {
   value: string;
@@ -81,16 +82,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
       searchInputRef.current.focus();
     }
   }, [showSearchInput]);
-
-  // Handle cost slider
-  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>, idx: 0 | 1) => {
-    let val = Number(e.target.value);
-    if (isNaN(val)) val = 0;
-    if (idx === 0 && val > costRange[1]) val = costRange[1];
-    if (idx === 1 && val < costRange[0]) val = costRange[0];
-    const newRange: [number, number] = idx === 0 ? [val, costRange[1]] : [costRange[0], val];
-    setCostRange(newRange);
-  };
 
   // Position dropdown logic
   const togglePositionDropdown = () => setShowPositionDropdown(v => !v);
@@ -211,26 +202,74 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
           className="xmins-filter-input"
           step={10}
         />
-        {/* Cost range slider (custom) */}
-        <div className="custom-slider-box">
-          <label style={{ color: '#fff', fontSize: 13 }}>£{(costRange[0] / 10).toFixed(1)}</label>
-          <input
-            type="range"
+        {/* Add margin-top to the slider box for spacing */}
+        <div
+          className="custom-slider-box"
+          style={{
+            width: 400,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            paddingLeft: 0,
+            paddingRight: 0,
+          }}
+        >
+          <span
+            style={{
+              color: '#fff',
+              fontSize: 13,
+              minWidth: 40,
+              padding: 6,
+              textAlign: 'right',
+              flexShrink: 0,
+            }}
+          >
+            £{(costRange[0] / 10).toFixed(1)}
+          </span>
+          <Slider
+            value={costRange}
             min={40}
             max={150}
-            value={costRange[0]}
-            onChange={e => handleCostChange(e, 0)}
-            className="custom-slider"
+            step={1}
+            marks={[
+              { value: 40 },
+              { value: 150 }
+            ]}
+            valueLabelDisplay="auto"
+            onChange={(_, value) => setCostRange(value as [number, number])}
+            disableSwap
+            sx={{ 
+              color: '#7768f6', 
+              flex: 1,
+              '& .MuiSlider-rail': {
+                height: 12, // Increase rail thickness here (default is 4)
+                borderRadius: 4,
+                color: '#000000ff'
+              },
+              '& .MuiSlider-track': {
+                height: 12, // Match the rail thickness
+                borderRadius: 4,
+              },
+              '& .MuiSlider-thumb': {
+                color: '#000000ff',
+                outline: '4px solid #7768f6',
+                height: 9,
+                width: 9,
+              },
+            }}
           />
-          <input
-            type="range"
-            min={40}
-            max={150}
-            value={costRange[1]}
-            onChange={e => handleCostChange(e, 1)}
-            className="custom-slider"
-          />
-          <label style={{ color: '#fff', fontSize: 13 }}>£{(costRange[1] / 10).toFixed(1)}</label>
+          <span
+            style={{
+              color: '#fff',
+              fontSize: 13,
+              padding: 6,
+              minWidth: 40,
+              textAlign: 'left',
+              flexShrink: 0,
+            }}
+          >
+            £{(costRange[1] / 10).toFixed(1)}
+          </span>
         </div>
       </div>
       <div className="player-filters-search-container">

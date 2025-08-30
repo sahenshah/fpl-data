@@ -1,0 +1,116 @@
+.fixtures-results-container {
+  width: 95%;
+  overflow-x: auto;
+  background: transparent;
+  padding: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.fixtures-results-table {
+  border-collapse: separate;
+  border-spacing: 0 16px;
+  width: 100%;
+  color: #fff;
+  font-size: 0.97rem;
+  background: transparent;
+  overflow: hidden;
+}
+
+.fixtures-results-table th {
+  padding: 8px 4px;
+  padding-bottom: 32px;
+  background: transparent;
+  font-weight: 600;
+  border-bottom: 2px solid #525252; /* Add the line under each header cell */
+}
+
+.fixtures-results-row {
+  background: #1c1c20;
+  border-radius: 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.fixtures-results-row.open {
+  box-shadow: 0 2px 8px rgba(119,104,246,0.10);
+  outline: 2px solid #8373f7;
+}
+
+.fixtures-results-cell {
+  text-align: center;
+  padding: 10px 4px;
+}
+
+.fixtures-results-cell.h-col,
+.fixtures-results-cell.a-col {
+  padding: 10px 2px;
+}
+
+.fixtures-results-cell.first {
+  border-radius: 28px 0 0 28px;
+}
+
+.fixtures-results-cell.last {
+  border-radius: 0 28px 28px 0;
+}
+
+.fixtures-difficulty {
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 2px 8px;
+  min-width: 32px;
+  display: inline-block;
+}
+
+.fixtures-difficulty-1 { background-color: #00831fff; color: #fff; }
+.fixtures-difficulty-2 { background-color: #54c96fe5; color: #fff; }
+.fixtures-difficulty-3 { background-color: #f3be4de3; color: #000; }
+.fixtures-difficulty-4 { background-color: #e75f5fff; color: #fff; }
+.fixtures-difficulty-5 { background-color: #a7242fff; color: #fff; }
+
+.fixtures-details-row {
+  background: #8373f7;           /* Purple background */
+  box-shadow: 0 2px 8px rgba(119,104,246,0.10);
+}
+
+.fixtures-details-row > td {
+  border-top: none;
+  position: relative;
+}
+
+.fixtures-details-row > td::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 2.5%;
+  top: 0;
+  width: 95%;
+  height: 1px;
+  background: #646464;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.fixtures-details-content {
+  padding: 12px 24px;
+  color: #fff;
+  font-size: 0.97rem;
+  background: transparent;
+  margin: 2px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fixtures-details-content > div > div {
+  flex: 1 1 120px;
+  min-width: 100px;
+  max-width: 100px;
+  box-sizing: border-box;
+}
+
+/* Remove gap above the details row when open */
+.fixtures-results-row.open + .fixtures-details-row > td {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}

@@ -387,6 +387,11 @@ export default function PlayerTableBody({ players, teams, checked, setChecked }:
         onClose={handleCloseModal}
         maxWidth="lg"
         fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '36px',
+          }
+        }}
       >
         {selectedPlayer && (
           <PlayerDetail
