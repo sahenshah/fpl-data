@@ -53,8 +53,32 @@ const columns = [
   { id: 'ict_index', label: 'ICT Index', minWidth: 80, align: 'center' },
   { id: 'bonus', label: 'Bonus', minWidth: 80, align: 'center' },
   { id: 'bps', label: 'BPS', minWidth: 80, align: 'center' },
-  { id: 'yellow_cards', label: 'Yellow Cards', minWidth: 80, align: 'center' },
-  { id: 'red_cards', label: 'Red Cards', minWidth: 80, align: 'center' },
+  {
+    id: 'yellow_cards',
+    label: (
+      <img
+        src="/YC.svg"
+        alt="Yellow Cards"
+        title="Yellow Cards"
+        style={{ width: 18, height: 18, verticalAlign: 'middle' }}
+      />
+    ),
+    minWidth: 40,
+    align: 'center',
+  },
+  {
+    id: 'red_cards',
+    label: (
+      <img
+        src="/RC.svg"
+        alt="Red Cards"
+        title="Red Cards"
+        style={{ width: 18, height: 18, verticalAlign: 'middle' }}
+      />
+    ),
+    minWidth: 40,
+    align: 'center',
+  },
   { id: 'status', label: 'Status', minWidth: 50, align: 'center' },
 ];
 
