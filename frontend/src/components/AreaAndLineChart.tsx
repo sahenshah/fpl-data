@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMediaQuery } from '@mui/material';
-import styles from './LineChart.module.css';
+import Slider from '@mui/material/Slider';
 
 interface AreaAndLineChartProps {
   player: any;
@@ -9,9 +9,7 @@ interface AreaAndLineChartProps {
   gwEnd?: number;
 }
 
-const VISIBLE_GW_COUNT = 5;
-
-const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
+const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
   // Dynamically calculate gwEnd based on the last populated predicted GW column
   const gwEnd = useMemo(() => {
     let lastGW = 1;
@@ -30,6 +28,16 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
   // State for history points and minutes
   const [historyPoints, setHistoryPoints] = useState<{ [gw: number]: number }>({});
   const [historyMinutes, setHistoryMinutes] = useState<{ [gw: number]: number }>({});
+
+  // Add state for GW range slider
+  const [gwRange, setGwRange] = useState<[number, number]>([1, gwEnd]);
+
+  useEffect(() => {
+    setGwRange(([min, max]) => [
+      Math.max(1, Math.min(min, gwEnd)),
+      Math.max(1, Math.min(max, gwEnd)),
+    ]);
+  }, [gwEnd]);
 
   useEffect(() => {
     // Fetch the element summary history for this player
@@ -54,9 +62,9 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
       });
   }, [player.id]);
 
-  // Prepare data for the chart
+  // Prepare data for the chart (show from gwRange[0] to gwRange[1])
   const allData = [];
-  for (let gw = gwStart; gw <= gwEnd; gw++) {
+  for (let gw = gwRange[0]; gw <= gwRange[1]; gw++) {
     const xPoints = player[`pp_gw_${gw}`];
     const xMins = player[`xmins_gw_${gw}`];
     const points = historyPoints[gw];
@@ -72,18 +80,13 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
 
   const isSmallScreen = useMediaQuery ? useMediaQuery('(max-width:600px)') : window.innerWidth < 600;
 
-  // Scroll state for visible gameweeks
-  const [scrollIndex, setScrollIndex] = useState(0);
-  const maxScroll = Math.max(0, allData.length - VISIBLE_GW_COUNT);
-  const visibleData = allData.slice(scrollIndex, scrollIndex + VISIBLE_GW_COUNT);
-
   return (
     <div style={{ width: '100%' }}>
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart
           width={500}
           height={300}
-          data={visibleData}
+          data={allData}
           margin={{
             top: 30,
             right: -20,
@@ -94,16 +97,16 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
             dataKey="name"
-            tick={{ fill: "#fff" }} // Make X axis labels white
+            tick={{ fill: "#fff" }}
           />
           <YAxis 
             yAxisId="left"
-            tick={{ fill: "#fff" }} // Make left Y axis labels white
+            tick={{ fill: "#fff" }}
           />
           <YAxis 
             yAxisId="right"
             orientation="right"
-            tick={{ fill: "#fff" }} // Make right Y axis labels white
+            tick={{ fill: "#fff" }}
           />
           <Tooltip
             content={({ label, payload, active }) =>
@@ -163,24 +166,58 @@ const AreaAndLineChart = ({ player, gwStart = 1 }: AreaAndLineChartProps) => {
           />
         </AreaChart>
       </ResponsiveContainer>
-      <div style={{ marginTop: 12, textAlign: 'center', justifyContent: 'center' }}>
-        <input
-          type="range"
-          min={0}
-          max={maxScroll}
-          value={scrollIndex}
-          onChange={e => setScrollIndex(Number(e.target.value))}
-          style={{
-            width: '75%',
-            background: 'transparent',
-            WebkitAppearance: 'none',
-            height: 8,
-            margin: 0,
-            padding: 0,
+      {/* Slider moved below the chart */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 16 }}>
+        {/* <span style={{ color: "#fff", fontSize: 13, minWidth: 40, textAlign: "right" }}>
+          GW {gwRange[0]}
+        </span> */}
+        <Slider
+          value={gwRange}
+          min={1}
+          max={gwEnd}
+          step={1}
+          onChange={(_, value) => setGwRange(value as [number, number])}
+          valueLabelDisplay="auto"
+          sx={{
+            width: '90%',
+            mx: 2,
+            paddingTop: '24px',
+            color: '#7768f6',
+            '& .MuiSlider-rail': {
+              height: 22, // Increase rail thickness here (default is 4)
+              borderRadius: 4,
+              color: '#000000ff'
+            },
+            '& .MuiSlider-track': {
+              height: 22, // Match the rail thickness
+              borderRadius: 4,
+            },
+            '& .MuiSlider-thumb': {
+              color: '#000000ff',
+              outline: '8px solid #7768f6',
+              height: 8,
+              width: 8,
+            },
+            // Left thumb (first thumb)
+            '& .MuiSlider-thumb[data-index="0"]': {
+              borderTopLeftRadius: '50%',
+              borderBottomLeftRadius: '50%',
+              borderTopRightRadius: '0',
+              borderBottomRightRadius: '0',
+            },
+            // Right thumb (second thumb)
+            '& .MuiSlider-thumb[data-index="1"]': {
+              borderTopLeftRadius: '0',
+              borderBottomLeftRadius: '0',
+              borderTopRightRadius: '50%',
+              borderBottomRightRadius: '50%',
+            },
           }}
-          className={styles["line-chart-slider"]}
-          aria-label="Scroll gameweeks"
+          disableSwap
         />
+        {/* <span style={{ color: "#fff", fontSize: 13, minWidth: 40, textAlign: "left" }}>
+          GW {gwRange[1]}
+        </span> */}
       </div>
     </div>
   );
