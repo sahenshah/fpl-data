@@ -116,3 +116,9 @@
   padding-top: 0 !important;
   margin-top: 0 !important;
 }
+
+.fixtures-results-row:hover {
+  background: #525252; 
+  transition: background 0.2s;
+  cursor: pointer;
+}

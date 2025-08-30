@@ -191,24 +191,34 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                               ? { background: '#8373f7', borderRadius: 28 }
                               : { background: 'transparent', borderRadius: 28 }
                           }
+                          tabIndex={0}
+                          role="button"
+                          aria-pressed={isOpen}
+                          onClick={() => setOpenRow(isOpen ? null : idx)}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              setOpenRow(isOpen ? null : idx);
+                            }
+                          }}
                         >
-                          <table style={{ 
-                            width: '100%', 
-                            borderCollapse: 'separate', 
-                            borderSpacing: 0 }}>
+                          <table style={{
+                            width: '100%',
+                            borderCollapse: 'separate',
+                            borderSpacing: 0
+                          }}>
                             <colgroup>
-                              <col style={{ width: '5%' }} />    {/* GW */}
-                              <col style={{ width: '8%' }} />    {/* Home - reduced */}
-                              <col style={{ width: '3%' }} />    {/* Home Score */}
-                              <col style={{ width: '2%' }} />    {/* Separator */}
-                              <col style={{ width: '3%' }} />    {/* Away Score */}
-                              <col style={{ width: '8%' }} />    {/* Away - reduced */}
-                              <col style={{ width: '8%' }} />    {/* Difficulty */}
-                              <col style={{ width: '8%' }} />    {/* xPoints */}
-                              <col style={{ width: '8%' }} />    {/* Points */}
-                              <col style={{ width: '8%' }} />    {/* xMinutes */}
-                              <col style={{ width: '8%' }} />    {/* Minutes */}
-                              <col style={{ width: '6%' }} />    {/* Chevron/Expand */}
+                              <col style={{ width: '5%' }} />
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '3%' }} />
+                              <col style={{ width: '2%' }} />
+                              <col style={{ width: '3%' }} />
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '8%' }} />
+                              <col style={{ width: '6%' }} />
                             </colgroup>
                             <tbody>
                               <tr className={`${styles['fixtures-results-row']} ${isOpen ? styles['open'] : ''}`}>
@@ -268,7 +278,11 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                                       cursor: 'pointer',
                                       outline: 'none',
                                     }}
-                                    onClick={() => setOpenRow(isOpen ? null : idx)}
+                                    tabIndex={-1}
+                                    onClick={e => {
+                                      e.stopPropagation();
+                                      setOpenRow(isOpen ? null : idx);
+                                    }}
                                     aria-label={isOpen ? 'Collapse row' : 'Expand row'}
                                   >
                                     <Chevron open={isOpen} />
