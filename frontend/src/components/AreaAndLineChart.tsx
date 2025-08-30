@@ -127,22 +127,83 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
             height={36}
             wrapperStyle={{
               fontSize: isSmallScreen ? '0.75rem' : '1rem',
+              display: 'flex',
+              justifyContent: 'center', // Center the legend
+              width: '100%',
+              marginBottom: 8,
             }}
+            content={() => (
+              <div style={{
+                display: 'flex',
+                gap: 16,
+                color: '#dfdfdfff',
+                fontSize: isSmallScreen ? '0.65rem' : '0.8rem',
+                width: '100%',
+                justifyContent: 'center', // Center the legend
+                marginBottom: 8,
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{
+                    width: 16,
+                    height: 2,
+                    background: '#ea123c',
+                    display: 'inline-block',
+                    marginRight: 4,
+                    borderRadius: 2
+                  }}></span>
+                  xPoints
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{
+                    width: 16,
+                    height: 8,
+                    background: '#722d4a',
+                    display: 'inline-block',
+                    marginRight: 4,
+                    borderRadius: 2
+                  }}></span>
+                  Points
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{
+                    width: 16,
+                    height: 2,
+                    background: '#71abfb',
+                    display: 'inline-block',
+                    marginRight: 4,
+                    borderRadius: 2
+                  }}></span>
+                  xMins
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <span style={{
+                    width: 16,
+                    height: 8,
+                    background: '#174255',
+                    display: 'inline-block',
+                    marginRight: 4,
+                    borderRadius: 2
+                  }}></span>
+                  Minutes
+                </span>
+              </div>
+            )}
           />
           <Line
             yAxisId="left"
             type="linear"
             dataKey="xPoints"
-            stroke="#a8001fff"
+            stroke="#ea123c"
             name="xPoints"
+            dot={false}
             activeDot={{ r: 6 }}
           />
           <Area
             yAxisId="left"
             type="linear"
             dataKey="Points"
-            stroke="#771325ff"
-            fill="#771325dc"
+            stroke="#722d4a"
+            fill="#722d4a"
             name="Points"
             activeDot={{ r: 6 }}
           />
@@ -150,16 +211,17 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
             yAxisId="right"
             type="linear"
             dataKey="xMins"
-            stroke="#4c76b7"
+            stroke="#71abfb"
             name="xMins"
+            dot={false}
             activeDot={{ r: 6 }}
           />
           <Area
             yAxisId="right"
             type="linear"
             dataKey="Minutes"
-            stroke="#184152ff"
-            fill="#1841529f"
+            stroke="#1742553b"
+            fill="#17425598"
             name="Minutes"
             dot={false}
             activeDot={{ r: 6 }}
