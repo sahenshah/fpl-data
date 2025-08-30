@@ -35,8 +35,8 @@ const chartSections = [
 			{ value: 'xG90', label: 'xG/90', component: 'scatter' },
 			{ value: 'xA', label: 'xA', component: 'scatter' },
 			{ value: 'xA90', label: 'xA/90', component: 'scatter' },
-			{ value: 'defCon', label: 'DefCon', component: 'scatter' },
-			{ value: 'defCon90', label: 'DefCon/90', component: 'scatter' },
+			{ value: 'defCon', label: 'DefCons', component: 'scatter' },
+			{ value: 'defCon90', label: 'DefCons/90', component: 'scatter' },
 		],
 	},
 ];
@@ -238,22 +238,22 @@ function PlayerData() {
 							players={selectedPlayers}
 							yKey={chartMode === 'totalPoints' ? 'total_points' :
 								chartMode === 'xGI' ? 'expected_goal_involvements' :
-									chartMode === 'xGI/90' ? 'expected_goal_involvements_per_90' :
+									chartMode === 'xGI90' ? 'expected_goal_involvements_per_90' :
 										chartMode === 'xG' ? 'expected_goals' :
-											chartMode === 'xG/90' ? 'expected_goals_per_90' :
+											chartMode === 'xG90' ? 'expected_goals_per_90' :
 												chartMode === 'xA' ? 'expected_assists' :
-													chartMode === 'xA/90' ? 'expected_assists_per_90' :
+													chartMode === 'xA90' ? 'expected_assists_per_90' :
 														chartMode === 'defCon' ? 'defensive_contribution' :
 															chartMode === 'defCon90' ? 'defensive_contribution_per_90' : ''}
 							yLabel={chartMode === 'totalPoints' ? 'Total Points' :
 								chartMode === 'xGI' ? 'xGI' :
-									chartMode === 'xGI/90' ? 'xGI/90' :
+									chartMode === 'xGI90' ? 'xGI/90' :
 										chartMode === 'xG' ? 'xG' :
-											chartMode === 'xG/90' ? 'xG/90' :
+											chartMode === 'xG90' ? 'xG/90' :
 												chartMode === 'xA' ? 'xA' :
-													chartMode === 'xA/90' ? 'xA/90' :
-														chartMode === 'defCon' ? 'Defensive Contributions' :
-															chartMode === 'defCon90' ? 'Defensive Contributions / 90' : ''}
+													chartMode === 'xA90' ? 'xA/90' :
+														chartMode === 'defCon' ? 'DefCons' :
+															chartMode === 'defCon90' ? 'DefCons / 90' : ''}
 						/>
 					) : chartMode === 'playerSummaryRadar' ? (
 						selectedPlayerIds.length > 0 && selectedPlayerIds.length <= 10 ? (
