@@ -165,7 +165,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
             <span className="custom-dropdown-arrow">&#9662;</span>
           </button>
           {showTeamDropdown && (
-            <div className="custom-dropdown-menu">
+            <div className="custom-dropdown-menu teams-dropdown">
               <label className="custom-dropdown-item">
                 <input
                   type="checkbox"

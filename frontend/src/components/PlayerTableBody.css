@@ -60,12 +60,12 @@
 }
 
 .player-table tbody tr:hover .sticky-select,
-.player-table tbody tr:hover .sticky-badge,
+.player-table tbody tr:hover .sticky-badge, 
 .player-table tbody tr:hover .sticky-name {
-  background-color: #222;
+  background: #54b1f0; 
 }
 .player-table tbody tr:hover {
-  background: #222;
+  background: linear-gradient(90deg, #5bbeff 0%, #23235e 100%);
 }
 
 .player-table tbody tr > td:first-child {
@@ -204,6 +204,24 @@
   color: #888;
   margin-left: 2px;
   vertical-align: middle;
+}
+
+.player-table td.status-a {
+  background: #119721 !important; /* green */
+  color: #fff !important;
+}
+
+.player-table td.status-u,
+.player-table td.status-s,
+.player-table td.status-n,
+.player-table td.status-i {
+  background: #e74c3c !important; /* red */
+  color: #fff !important;
+}
+
+.player-table td.status-d {
+  background: #ffe066 !important; /* yellow */
+  color: #222 !important;
 }
 
 

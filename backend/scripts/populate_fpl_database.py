@@ -745,7 +745,7 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
 
             # Prepare update fields for xmins_gw_* and pp_gw_*
             update_fields = {}
-            for gw in range(2, 14):  # GW2 to GW13 as per your CSV columns
+            for gw in range(2, 39):  # GW2 to GW38 as per your CSV columns
                 xmins_col = f"{gw}_xMins"
                 pts_col = f"{gw}_Pts"
                 db_xmins_col = f"xmins_gw_{gw}"

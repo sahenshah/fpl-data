@@ -58,6 +58,27 @@
   padding: 8px 0;
 }
 
+.custom-dropdown-menu.teams-dropdown {
+  max-height: 500px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff transparent;
+}
+
+/* For Webkit browsers (Chrome, Edge, Safari) */
+.custom-dropdown-menu.teams-dropdown::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+.custom-dropdown-menu.teams-dropdown::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+}
+
+.custom-dropdown-menu.teams-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .custom-dropdown-item {
   display: flex;
   align-items: center;
@@ -74,8 +95,37 @@
 }
 
 .custom-dropdown-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #7768f6;
+  background: #23232b;
+  outline: none;
+  cursor: pointer;
   margin-right: 8px;
-  accent-color: #7768f6;
+  position: relative;
+  transition: border-color 0.2s;
+  vertical-align: middle;
+}
+
+.custom-dropdown-item input[type="checkbox"]:checked {
+  border-color: #3a8bfd;
+  background: #ffffff;
+}
+
+.custom-dropdown-item input[type="checkbox"]:checked::before {
+  content: '';
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  height: 80%;
+  background: #3a8bfd;
+  border-radius: 50%;
+  position: absolute;
+  top: 10%;
+  left: 10%;
 }
 
 .xmins-filter-input {

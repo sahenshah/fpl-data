@@ -53,6 +53,8 @@
 
 .fixtures-results-cell.last {
   border-radius: 0 28px 28px 0;
+  padding-right: 24px;
+  text-align: right;
 }
 
 .fixtures-difficulty {

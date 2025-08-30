@@ -323,6 +323,14 @@ export default function PlayerTableBody({ players, teams, checked, setChecked }:
                       </td>
                     );
                   }
+                  if (col.id === 'status') {
+                    const statusValue = player.status.charAt(0).toUpperCase() + player.status.slice(1);
+                    return (
+                      <td key={col.id} className={`align-${col.align} status-${statusValue.toLowerCase()}`}>
+                        {/* {statusValue} */}
+                      </td>
+                    );
+                  }
                   return (
                     <td key={col.id} className={`align-${col.align} ${stickyClass}`}>
                       {(player as any)[col.id]}
