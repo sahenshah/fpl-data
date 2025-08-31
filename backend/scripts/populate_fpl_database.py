@@ -772,6 +772,51 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
                 cur.execute(sql, values)
                 conn.commit()
 
+def update_team_stats_from_fixtures(conn):
+    c = conn.cursor()
+    # Get all team ids
+    c.execute("SELECT id FROM teams")
+    team_ids = [row[0] for row in c.fetchall()]
+    # Initialize stats
+    stats = {tid: {'played': 0, 'win': 0, 'draw': 0, 'loss': 0, 'points': 0} for tid in team_ids}
+
+    # Get all finished fixtures with scores
+    c.execute("SELECT team_h, team_h_score, team_a, team_a_score, finished FROM fixtures WHERE finished = 1")
+    for team_h, team_h_score, team_a, team_a_score, finished in c.fetchall():
+        if team_h_score is None or team_a_score is None:
+            continue  # skip if no score
+        # Home team
+        stats[team_h]['played'] += 1
+        # Away team
+        stats[team_a]['played'] += 1
+
+        if team_h_score > team_a_score:
+            # Home win
+            stats[team_h]['win'] += 1
+            stats[team_h]['points'] += 3
+            stats[team_a]['loss'] += 1
+        elif team_h_score < team_a_score:
+            # Away win
+            stats[team_a]['win'] += 1
+            stats[team_a]['points'] += 3
+            stats[team_h]['loss'] += 1
+        else:
+            # Draw
+            stats[team_h]['draw'] += 1
+            stats[team_a]['draw'] += 1
+            stats[team_h]['points'] += 1
+            stats[team_a]['points'] += 1
+
+    # Update the teams table
+    for tid, s in stats.items():
+        c.execute("""
+            UPDATE teams
+            SET played = ?, win = ?, draw = ?, loss = ?, points = ?
+            WHERE id = ?
+        """, (s['played'], s['win'], s['draw'], s['loss'], s['points'], tid))
+    conn.commit()
+    print("Teams table updated with stats from fixtures.")
+
 def main():
     # Run the expected data update script first
     user_input = input(f"Do you want to run update expected data script? (y/N): ").strip().lower()
@@ -862,6 +907,11 @@ def main():
         print("Elements updated from projection CSV.")
     else:
         print("Projection CSV not found, skipping update.")
+
+    # Update team stats from fixtures
+    conn = sqlite3.connect(DB_PATH)
+    update_team_stats_from_fixtures(conn)
+    conn.close()
 
 if __name__ == "__main__":
     main()
