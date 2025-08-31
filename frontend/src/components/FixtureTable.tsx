@@ -222,7 +222,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
               valueLabelDisplay="auto"
               disableSwap
               sx={{
-                width: 320,
+                width: '50%',
                 color: '#7768f6',
                 mx: 2,
                 '& .MuiSlider-rail': {
@@ -387,9 +387,18 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                     return (
                       <td
                         key={col.key}
-                        className={stickyClass}
+                        className={stickyClass + (col.key === 'name' ? ' name-cell' : '')}
                       >
-                        {team[col.key as keyof Team] ?? ''}
+                        {col.key === 'name'
+                          ? (
+                            <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'left', fontWeight: 'bold' }}>
+                              <span>{team[col.key as keyof Team]}</span>
+                              <span style={{ fontWeight: 400, fontSize: '0.85em', color: '#bdbdbd' }}>
+                                {team.short_name}
+                              </span>
+                            </span>
+                          )
+                          : team[col.key as keyof Team] ?? ''}
                       </td>
                     );
                   })}
