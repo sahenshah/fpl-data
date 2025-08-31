@@ -1,17 +1,8 @@
 import { useEffect, useState } from 'react';
-import Slider from '@mui/material/Slider';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import type { Team, Fixture } from '../types/fpl';
 import './FixtureTable.css';
-import { getCurrentGameweek } from '../App'; // Import the function
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { getCurrentGameweek } from '../App';
+import Slider from '@mui/material/Slider';
 
 interface FixtureTableProps {
   teams: Team[];
@@ -52,9 +43,9 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   }));
 
   const columns = [
+    { label: '#', key: 'position' },
     { label: '', key: 'badge' },
     { label: 'Name', key: 'name' },
-    { label: 'Position', key: 'position' },
     { label: 'Played', key: 'played' },
     { label: 'Win', key: 'win' },
     { label: 'Draw', key: 'draw' },
@@ -73,19 +64,38 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
 
   const teamFixturesMap = buildTeamFixturesMap(teams, fixtures);
 
-  function getTeamDifficulty(teamId: number) {
+  function getTeamOverallDifficulty(team: Team) {
     let total = 0;
     for (let gw = gwRange[0]; gw <= gwRange[1]; gw++) {
-      const fixture = teamFixturesMap[teamId][gw];
-      if (fixture) total += fixture.difficulty;
+      const fixture = fixtures.find(fix =>
+        (fix.team_h === team.id || fix.team_a === team.id) && fix.event === gw
+      );
+      if (fixture) {
+        if (fixture.team_h === team.id) {
+          // Home: use opponent's strength_overall_away
+          const opponent = teams.find(t => t.id === fixture.team_a);
+          total += opponent ? Number(opponent.strength_overall_away) || 0 : 0;
+        } else if (fixture.team_a === team.id) {
+          // Away: use opponent's strength_overall_home
+          const opponent = teams.find(t => t.id === fixture.team_h);
+          total += opponent ? Number(opponent.strength_overall_home) || 0 : 0;
+        }
+      }
     }
     return total;
   }
 
-  // New: Sorting logic
+  // Sorting logic
   const sortedTeams = (() => {
     let arr = sortByDifficulty
-      ? [...teams].sort((a, b) => getTeamDifficulty(a.id) - getTeamDifficulty(b.id))
+      ? [...teams]
+          .map(team => {
+            const difficulty = getTeamOverallDifficulty(team);
+            // Log the calculated difficulty for each team
+            return { team, difficulty };
+          })
+          .sort((a, b) => a.difficulty - b.difficulty) // Ascending order
+          .map(obj => obj.team)
       : [...teams];
 
     if (sortColumn && !sortByDifficulty) {
@@ -112,7 +122,6 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   })();
 
   const handleSort = (colKey: string) => {
-    // When a table heading is sorted, turn off SortByFixtureDifficulty
     if (sortByDifficulty) setSortByDifficulty(false);
 
     if (sortColumn === colKey) {
@@ -124,65 +133,102 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   };
 
   return (
-    <>
-      <div className="fixture-controls">
-        <div
-          className="fixture-slider"
-          style={{
-            paddingTop: 32,
-            paddingBottom: 8,
-            display: 'flex',
-            justifyContent: 'left',
-            alignItems: 'left',
-            width: '100%',
-          }}
-        >
-          <Slider
-            value={gwRange}
-            min={1}
-            max={38}
-            step={1}
-            marks={[
-              { value: 1, label: 'GW1' },
-              { value: 38, label: 'GW38' }
-            ]}
-            valueLabelDisplay="auto"
-            onChange={(_, value) => setGwRange(value as [number, number])}
-            disableSwap
-            sx={{ width: 600 }}
-          />
+    <div className="fixture-table-outer-container">
+      <div className="fixture-table-container">
+        <div className="fixture-controls">
+          <div className="fixture-slider" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+            <span style={{ 
+              color: '#fff', 
+              minWidth: 35, 
+              padding: 0, 
+              textAlign: 'right', 
+              fontSize: 14, 
+              fontWeight: 500 
+            }}>
+              GW {gwRange[0]}
+            </span>
+            <Slider
+              value={gwRange}
+              min={1}
+              max={38}
+              step={1}
+              onChange={(_, value) => setGwRange(value as [number, number])}
+              valueLabelDisplay="auto"
+              disableSwap
+              sx={{
+                width: 320,
+                color: '#7768f6',
+                mx: 2,
+                '& .MuiSlider-rail': {
+                  height: 18,
+                  borderRadius: 4,
+                },
+                '& .MuiSlider-track': {
+                  height: 18,
+                  borderRadius: 4,
+                },
+                '& .MuiSlider-thumb': {
+                  height: 20,
+                  width: 20,
+                  backgroundColor: '#000000ff',
+                  border: '7px solid #7768f6',
+                },
+                // Left thumb (first thumb)
+                '& .MuiSlider-thumb[data-index="0"]': {
+                  borderTopLeftRadius: '50%',
+                  borderBottomLeftRadius: '50%',
+                  borderTopRightRadius: '0',
+                  borderBottomRightRadius: '0',
+                },
+                // Right thumb (second thumb)
+                '& .MuiSlider-thumb[data-index="1"]': {
+                  borderTopLeftRadius: '0',
+                  borderBottomLeftRadius: '0',
+                  borderTopRightRadius: '50%',
+                  borderBottomRightRadius: '50%',
+                },
+              }}
+            />
+            <span style={{ 
+              color: '#fff', 
+              minWidth: 48, 
+              padding: 0, 
+              fontSize: 14, 
+              textAlign: 'left', 
+              fontWeight: 500 
+            }}>
+              GW {gwRange[1]}
+            </span>
+          </div>
+          <button
+            className={`fixture-sort-btn${sortByDifficulty ? ' active' : ''}`}
+            onClick={() => {
+              setSortByDifficulty(s => {
+                if (!s) setSortColumn('position');
+                return !s;
+              });
+            }}
+          >
+            {sortByDifficulty ? 'Sorted by Overall Fixture Difficulty' : 'Sort by Overall Fixture Difficulty'}
+          </button>
         </div>
-        <button
-          className={`fixture-sort-btn${sortByDifficulty ? ' active' : ''}`}
-          onClick={() => {
-            setSortByDifficulty(s => {
-              // When SortByFixtureDifficulty is turned on, reset table heading sorting
-              if (!s) {
-                setSortColumn('');
-              }
-              return !s;
-            });
-          }}
-        >
-          {sortByDifficulty ? 'Sorted by Fixture Difficulty' : 'Sort by Fixture Difficulty'}
-        </button>
-      </div>
-      <TableContainer component={Paper} sx={{ maxWidth: '95vw', width: '100%' }}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="fixture table">
-          <TableHead>
-            <TableRow>
+        <div style={{ overflowX: 'auto', maxWidth: '95vw', width: '100%' }}>
+          <table className="fixture-table">
+            <thead>
               {columns.map(col => (
-                <TableCell
+                <th
                   key={col.key}
                   className={
                     col.key === 'badge' ? 'sticky-badge-fixture' :
-                    col.key === 'short_name' ? 'sticky-id' :
+                    col.key === 'position' ? 'sticky-position' :
                     col.key === 'name' ? 'sticky-name' :
                     'gw' in col && col.gw === currentGW ? 'current-gw-col' : undefined
                   }
-                  style={col.key === 'badge' ? { top: 0, left: 0, zIndex: 100, minWidth: 40 } : { cursor: 'pointer' }}
+                  style={{
+                    cursor: col.key !== 'badge' && !col.key.startsWith('gw_') ? 'pointer' : undefined,
+                    minWidth: col.key === 'badge' ? 40 : undefined,
+                  }}
                   onClick={() => {
-                    // Only allow sorting for non-badge and non-GW columns
                     if (
                       col.key !== 'badge' &&
                       !col.key.startsWith('gw_')
@@ -194,90 +240,90 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                   {col.key === 'badge' ? <span>&nbsp;</span> : (
                     <>
                       {col.label}
-                      {/* Show sort arrow if this column is sorted */}
                       {sortColumn === col.key && (
                         sortDirection === 'asc'
-                          ? <ArrowDropUpIcon style={{ verticalAlign: 'middle', fontSize: 20, marginLeft: 2 }} />
-                          : <ArrowDropDownIcon style={{ verticalAlign: 'middle', fontSize: 20, marginLeft: 2 }} />
+                          ? <span style={{ verticalAlign: 'middle', fontSize: 16, marginLeft: 2 }}>▲</span>
+                          : <span style={{ verticalAlign: 'middle', fontSize: 16, marginLeft: 2 }}>▼</span>
                       )}
                     </>
                   )}
-                </TableCell>
+                </th>
               ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedTeams.map(team => (
-              <TableRow key={team.id} sx={{ height: 40 }}>
-                {columns.map(col => {
-                  const stickyClass =
-                    col.key === 'short_name' ? 'sticky-id' :
-                    col.key === 'name' ? 'sticky-name' :
-                    undefined;
+            </thead>
+            <tbody>
+              {sortedTeams.map(team => (
+                <tr key={team.id}>
+                  {columns.map(col => {
+                    const stickyClass =
+                      col.key === 'position' ? 'sticky-position' :
+                      col.key === 'name' ? 'sticky-name' :
+                      undefined;
 
-                  if (col.key === 'badge') {
-                    return (
-                      <TableCell key={col.key} className="sticky-badge-fixture" style={{ height: 40, padding: '8px', background: '#444' }}>
-                        <img
-                          src={`/team-badges/${team.short_name}.svg`}
-                          alt={team.short_name}
-                          style={{ width: 28, height: 28 }}
-                        />
-                      </TableCell>
-                    );
-                  }
+                    if (col.key === 'badge') {
+                      return (
+                        <td key={col.key} className="sticky-badge-fixture">
+                          <img
+                            src={`/team-badges/${team.short_name}.svg`}
+                            alt={team.short_name}
+                            style={{ width: 28, height: 28 }}
+                          />
+                        </td>
+                      );
+                    }
 
-                  if (col.key === 'strength') {
-                    const strengthValue = team[col.key as keyof Team];
-                    const bgColor = getDifficultyColor(Number(strengthValue));
+                    if (col.key === 'strength') {
+                      const strengthValue = team[col.key as keyof Team];
+                      const bgColor = getDifficultyColor(Number(strengthValue));
+                      return (
+                        <td key={col.key}>
+                          <span
+                            style={{
+                              backgroundColor: bgColor,
+                              color: '#ffffffff',
+                              fontWeight: 'bold',
+                              borderRadius: '8px',
+                              padding: '4px 12px',
+                              display: 'inline-block',
+                              minWidth: 32,
+                            }}
+                          >
+                            {strengthValue}
+                          </span>
+                        </td>
+                      );
+                    }
+
+                    if (col.key.startsWith('gw_')) {
+                      const gwNum = Number(col.key.replace('gw_', ''));
+                      const fixture = teamFixturesMap[team.id][gwNum];
+                      const bgColor = fixture ? getDifficultyColor(fixture.difficulty) : '#fff';
+                      return (
+                        <td
+                          key={col.key}
+                          className={`${stickyClass ? stickyClass + ' ' : ''}${gwNum === currentGW ? 'current-gw-cell' : ''}`}
+                          style={{ backgroundColor: bgColor }}
+                        >
+                          {fixture ? fixture.text : ''}
+                        </td>
+                      );
+                    }
+
                     return (
-                      <TableCell
+                      <td
                         key={col.key}
-                        style={{
-                          backgroundColor: bgColor,
-                          height: 40,
-                          padding: '8px',
-                          color: '#222',
-                          fontWeight: 'bold',
-                          textAlign: 'center',
-                        }}
+                        className={stickyClass}
                       >
-                        {strengthValue}
-                      </TableCell>
+                        {team[col.key as keyof Team] ?? ''}
+                      </td>
                     );
-                  }
-
-                  if (col.key.startsWith('gw_')) {
-                    const gwNum = Number(col.key.replace('gw_', ''));
-                    const fixture = teamFixturesMap[team.id][gwNum];
-                    const bgColor = fixture ? getDifficultyColor(fixture.difficulty) : '#fff';
-                    return (
-                      <TableCell
-                        key={col.key}
-                        className={`${stickyClass ? stickyClass + ' ' : ''}${gwNum === currentGW ? 'current-gw-cell' : ''}`}
-                        style={{ backgroundColor: bgColor, height: 40, padding: '8px' }}
-                      >
-                        {fixture ? fixture.text : ''}
-                      </TableCell>
-                    );
-                  }
-
-                  return (
-                    <TableCell
-                      key={col.key}
-                      className={stickyClass}
-                      style={{ background: '#444', height: 40, padding: '8px' }}
-                    >
-                      {team[col.key as keyof Team] ?? ''}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 };
 

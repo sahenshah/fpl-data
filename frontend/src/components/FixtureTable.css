@@ -1,36 +1,3 @@
-/* Sticky badge header and cell */
-/* th.sticky-badge-fixture,
-.sticky-badge-fixture {
-  position: sticky !important;
-  top: 0 !important;
-  left: 0 !important;
-  background: #444 !important;
-  z-index: 21 !important;
-}
-/* Adjust adjacent sticky columns to sit next to the badge column */
-/* th.sticky-id {
-  left: 0 !important;
-  z-index: 99 !important;
-} */
-/* th.sticky-name {
-  position: sticky !important;
-  top: 0 !important;
-  left: 65px !important; /* Match badge column width */
-  /* background: #444 !important;
-  z-index: 20 !important;
-  overflow: hidden !important;
-} */
-/* td.sticky-name {
-  position: sticky !important;
-  left: 65px !important; /* Match badge column width */
-  /* z-index: 3 !important;
-  overflow: hidden !important;
-} */
-.css-swtyag-MuiSlider-markLabel ,
-.css-1qb795b-MuiSlider-markLabel,
-.MuiSlider-markLabel {
-  color: #fff !important;
-}
 @media (max-width: 600px) {
   th.sticky-name,
   td.sticky-name {
@@ -68,43 +35,34 @@
 }
 
 .fixture-slider {
-  flex: 1;
+  padding-top: 32px;
+  padding-bottom: 8px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: left;
+  align-items: left;
+  width: 100%;
 }
 
 .fixture-sort-btn {
-  margin-left: 16px;
-}
-
-.fixture-sort-btn {
+  margin-top: 8px;
   padding: 6px 16px;
-  background: #444;
+  background: #23243a;
   color: #fff;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid #35365a;
+  border-radius: 24px;
   cursor: pointer;
-  white-space: nowrap;
-  margin-left: 16px;
-  font-size: 14px;
-  transition: background 0.2s;
-  min-width: 200px; /* Set a fixed minimum width */
-  width: 200px;     /* Set a fixed width so it doesn't grow/shrink with text */
-  box-sizing: border-box;
-  text-align: center;
-  overflow: hidden;           /* Hide overflow */
-  text-overflow: ellipsis;    /* Show "..." when text is too long */
-  display: inline-block;      /* Needed for ellipsis to work */
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
 }
 
 .fixture-sort-btn:hover {
-  background: #5a2d82; /* Slightly lighter/different purple for hover */
+  background: #9084f8; /* Slightly lighter/different purple for hover */
   color: #fff;
   transition: background 0.2s;
 }
 
 .fixture-sort-btn.active {
-  background: #8e24aa;
+  background: #6255bd;
 }
 
 .fixture-sort-btn {
@@ -122,29 +80,120 @@
   margin-top: 8px;
 }
 
+.fixture-table-container {
+  width: 100%;
+}
+
+.fixture-table-outer-container {
+  background: #1a1c22;
+  border-radius: 36px;
+  padding: 32px 32px;           /* Reduce horizontal padding */
+  margin: 32px auto;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.07);
+  width: 100%;
+  max-width: 100vw;             /* Prevent overflow */
+  overflow-x: auto;             /* Allow horizontal scroll if needed */
+  box-sizing: border-box;       /* Include padding in width */
+}
+
+.fixture-table thead {
+  position: relative;
+}
+
+.fixture-table thead::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: #35365a;
+  z-index: 2;
+}
+
+.fixture-table tbody tr > td:first-child {
+  border-top-left-radius: 48px;
+  border-bottom-left-radius: 48px;
+}
+
+.fixture-table tbody tr > td:last-child {
+  border-top-right-radius: 48px;
+  border-bottom-right-radius: 48px;
+}
+
+.fixture-table {
+  min-width: 650px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 18px; /* space between rows */
+}
+
+.fixture-table th {
+  color: #fff;
+  text-align: center;
+  padding: 30px 20px;
+  padding-bottom: 40px;
+  font-weight: 400;
+}
+
+.fixture-table td {
+  background: #1c1c20;
+  color: #fff;
+  text-align: center;
+  padding: 12px 20px;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+.fixture-table td.name-cell {
+  font-weight: bold;
+}
+
+/* Sticky columns for position, badge, and name */
+.fixture-table th.sticky-position,
+.fixture-table td.sticky-position {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.fixture-table th.sticky-badge-fixture,
+.fixture-table td.sticky-badge-fixture {
+  position: sticky;
+  left: 60px; /* Adjust based on your column widths */
+  z-index: 3;
+}
+
+.fixture-table th.sticky-name,
+.fixture-table td.sticky-name {
+  position: sticky;
+  left: 120px; /* Adjust based on your column widths */
+  z-index: 3;
+}
+.fixture-table th.sticky-position,
+.fixture-table th.sticky-badge-fixture,
+.fixture-table th.sticky-name {
+  z-index: 0;
+  background-color: #1c1c20;
+}
+
+.fixture-table tr {
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.10);
+  border-radius: 16px;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+.fixture-table tr:hover td {
+  background: #28294a;
+  /* box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18); */
+}
+
 .current-gw-col {
-  border-top: 3px solid #ffffff !important;
-  border-right: 3px solid #ffffff !important;
-  border-left: 3px solid #ffffff !important;
+  border: 2px solid #fff;
 }
 
 .current-gw-cell {
-  border-right: 3px solid #ffffff !important;
-  border-left: 3px solid #ffffff !important;
-}
-
-.MuiTableCell-root,
-.MuiTableCell-head,
-.MuiTableCell-body,
-.MuiTableCell-footer,
-.MuiTable-root,
-.MuiTableBody-root,
-.MuiTableHead-root,
-.MuiTableRow-root,
-.MuiTableContainer-root {
-  color: #fff !important;
-}
-.MuiSlider-markLabel[data-index="0"],
-.MuiSlider-markLabel[data-index="1"] {
-  font-weight: bold !important;
+  border: 2px solid #fff;
+  font-weight: 600;
 }
