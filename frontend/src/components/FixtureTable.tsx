@@ -24,6 +24,8 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   const [currentGW, setCurrentGW] = useState<number>(1);
   const [gwRange, setGwRange] = useState<[number, number]>([1, 5]);
   const [sortByDifficulty, setSortByDifficulty] = useState(false);
+  const [sortByAttackDifficulty, setSortByAttackDifficulty] = useState(false);
+  const [sortByDefenceDifficulty, setSortByDefenceDifficulty] = useState(false);
   const [sortColumn, setSortColumn] = useState<string>('position');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
@@ -64,7 +66,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
 
   const teamFixturesMap = buildTeamFixturesMap(teams, fixtures);
 
-  function getTeamOverallDifficulty(team: Team) {
+  function getTeamDifficulty(team: Team, mode: 'overall' | 'attack' | 'defence' = 'overall') {
     let total = 0;
     for (let gw = gwRange[0]; gw <= gwRange[1]; gw++) {
       const fixture = fixtures.find(fix =>
@@ -72,13 +74,25 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
       );
       if (fixture) {
         if (fixture.team_h === team.id) {
-          // Home: use opponent's strength_overall_away
+          // Home: use opponent's value
           const opponent = teams.find(t => t.id === fixture.team_a);
-          total += opponent ? Number(opponent.strength_overall_away) || 0 : 0;
+          if (mode === 'overall') {
+            total += opponent ? Number(opponent.strength_overall_away) || 0 : 0;
+          } else if (mode === 'attack') {
+            total += opponent ? Number(opponent.strength_defence_away) || 0 : 0;
+          } else if (mode === 'defence') {
+            total += opponent ? Number(opponent.strength_attack_away) || 0 : 0;
+          }
         } else if (fixture.team_a === team.id) {
-          // Away: use opponent's strength_overall_home
+          // Away: use opponent's value
           const opponent = teams.find(t => t.id === fixture.team_h);
-          total += opponent ? Number(opponent.strength_overall_home) || 0 : 0;
+          if (mode === 'overall') {
+            total += opponent ? Number(opponent.strength_overall_home) || 0 : 0;
+          } else if (mode === 'attack') {
+            total += opponent ? Number(opponent.strength_defence_home) || 0 : 0;
+          } else if (mode === 'defence') {
+            total += opponent ? Number(opponent.strength_attack_home) || 0 : 0;
+          }
         }
       }
     }
@@ -90,15 +104,31 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
     let arr = sortByDifficulty
       ? [...teams]
           .map(team => {
-            const difficulty = getTeamOverallDifficulty(team);
+            const difficulty = getTeamDifficulty(team, 'overall');
             // Log the calculated difficulty for each team
+            return { team, difficulty };
+          })
+          .sort((a, b) => a.difficulty - b.difficulty) // Ascending order
+          .map(obj => obj.team)
+      : sortByAttackDifficulty
+      ? [...teams]
+          .map(team => {
+            const difficulty = getTeamDifficulty(team, 'attack');
+            return { team, difficulty };
+          })
+          .sort((a, b) => a.difficulty - b.difficulty) // Ascending order
+          .map(obj => obj.team)
+      : sortByDefenceDifficulty
+      ? [...teams]
+          .map(team => {
+            const difficulty = getTeamDifficulty(team, 'defence');
             return { team, difficulty };
           })
           .sort((a, b) => a.difficulty - b.difficulty) // Ascending order
           .map(obj => obj.team)
       : [...teams];
 
-    if (sortColumn && !sortByDifficulty) {
+    if (sortColumn && !sortByDifficulty && !sortByAttackDifficulty && !sortByDefenceDifficulty) {
       arr = arr.sort((a, b) => {
         let aValue = a[sortColumn as keyof Team];
         let bValue = b[sortColumn as keyof Team];
@@ -123,6 +153,8 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
 
   const handleSort = (colKey: string) => {
     if (sortByDifficulty) setSortByDifficulty(false);
+    if (sortByAttackDifficulty) setSortByAttackDifficulty(false);
+    if (sortByDefenceDifficulty) setSortByDefenceDifficulty(false);
 
     if (sortColumn === colKey) {
       setSortDirection(d => (d === 'asc' ? 'desc' : 'asc'));
@@ -130,6 +162,40 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
       setSortColumn(colKey);
       setSortDirection('asc');
     }
+  };
+
+  // --- Button handlers: only allow one sort at a time ---
+  const handleOverallSort = () => {
+    setSortByDifficulty(s => {
+      if (!s) {
+        setSortByAttackDifficulty(false);
+        setSortByDefenceDifficulty(false);
+        setSortColumn('position');
+      }
+      return !s;
+    });
+  };
+
+  const handleAttackSort = () => {
+    setSortByAttackDifficulty(s => {
+      if (!s) {
+        setSortByDifficulty(false);
+        setSortByDefenceDifficulty(false);
+        setSortColumn('position');
+      }
+      return !s;
+    });
+  };
+
+  const handleDefenceSort = () => {
+    setSortByDefenceDifficulty(s => {
+      if (!s) {
+        setSortByDifficulty(false);
+        setSortByAttackDifficulty(false);
+        setSortColumn('position');
+      }
+      return !s;
+    });
   };
 
   return (
@@ -200,16 +266,26 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
               GW {gwRange[1]}
             </span>
           </div>
+          <span style={{ color: '#fff', fontSize: 14, fontWeight: 500, paddingRight: 14, textAlign: 'right' }}> 
+            Sort by Fixture Difficulty Rating (FDR) 
+            </span>
           <button
             className={`fixture-sort-btn${sortByDifficulty ? ' active' : ''}`}
-            onClick={() => {
-              setSortByDifficulty(s => {
-                if (!s) setSortColumn('position');
-                return !s;
-              });
-            }}
+            onClick={handleOverallSort}
           >
-            {sortByDifficulty ? 'Sorted by Overall Fixture Difficulty' : 'Sort by Overall Fixture Difficulty'}
+            Overall 
+          </button>
+          <button
+            className={`fixture-sort-btn${sortByAttackDifficulty ? ' active' : ''}`}
+            onClick={handleAttackSort}
+          >
+            Attack 
+          </button>
+          <button
+            className={`fixture-sort-btn${sortByDefenceDifficulty ? ' active' : ''}`}
+            onClick={handleDefenceSort}
+          >
+           Defence 
           </button>
         </div>
         <div style={{ overflowX: 'auto', maxWidth: '95vw', width: '100%' }}>
