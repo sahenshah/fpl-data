@@ -81,15 +81,16 @@ function PlayerData() {
 		});
 	}, [chartMode]);
 
+	const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 	useEffect(() => {
-		fetch('/api/fpl_data/players')
+		fetch(`${apiBaseUrl}/api/fpl_data/players`)
 			.then(res => res.json())
 			.then(data => setPlayers(data))
 			.catch(() => setPlayers([]));
 	}, []);
 
 	useEffect(() => {
-		fetch('/api/fpl_data/teams')
+		fetch(`${apiBaseUrl}/api/fpl_data/teams`)
 			.then(res => res.json())
 			.then(data => setTeams(data))
 			.catch(() => setTeams([]));

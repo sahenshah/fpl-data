@@ -43,8 +43,9 @@ const columns = [
 const PlayerPastSeasons: React.FC<{ player: Element }> = ({ player }) => {
   const [historyPast, setHistoryPast] = React.useState<any[]>([]);
 
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   React.useEffect(() => {
-    fetch(`/api/fpl_data/element-summary-history-past/${player.id}`)
+    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-history-past/${player.id}`)
       .then(res => res.json())
       .then(data => {
         setHistoryPast(data.history_past || []);

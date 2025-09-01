@@ -39,9 +39,10 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
     ]);
   }, [gwEnd]);
 
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     // Fetch the element summary history for this player
-    fetch(`/api/fpl_data/element-summary-history/${player.id}`)
+    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-history/${player.id}`)
       .then(res => res.json())
       .then(data => {
         const pointsMap: { [gw: number]: number } = {};

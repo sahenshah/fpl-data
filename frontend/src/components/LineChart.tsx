@@ -22,9 +22,10 @@ interface LineChartProps {
   onRefresh?: () => void;
 }
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export async function getLastPredictedGw(): Promise<number | undefined> {
   try {
-    const res = await fetch('/api/fpl_data/last_predicted_gw');
+    const res = await fetch(`${apiBaseUrl}/api/fpl_data/last_predicted_gw`);
     const data = await res.json();
     return data?.last_predicted_gw;
   } catch (e) {

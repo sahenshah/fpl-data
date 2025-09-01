@@ -13,9 +13,10 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
   const [loading, setLoading] = React.useState(true);
   const [openRow, setOpenRow] = React.useState<number | null>(null);
 
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   React.useEffect(() => {
     setLoading(true);
-    fetch(`/api/fpl_data/element-summary-fixtures/${player.id}`)
+    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-fixtures/${player.id}`)
       .then(res => res.json())
       .then(data => {
         setFixtures(data.fixtures || []);
@@ -26,7 +27,7 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
 
   React.useEffect(() => {
     setLoading(true);
-    fetch(`/api/fpl_data/element-summary-history/${player.id}`)
+    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-history/${player.id}`)
       .then(res => res.json())
       .then(data => {
         setHistory(data.history || []);
