@@ -9,7 +9,7 @@ import Fade from '@mui/material/Fade';
 import PlayerData from './components/PlayerData'; 
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-// Replace the old getCurrentGameweek function with this async version
+
 export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
     const res = await fetch(`${apiBaseUrl}/api/fpl_data/events`);
@@ -29,30 +29,41 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [fadeSplash, setFadeSplash] = useState(false);
 
-  useEffect(() => {
-    // Fetch from local API/database endpoints
-    Promise.all([
-      fetch(`${apiBaseUrl}/api/fpl_data/bootstrap-static`).then(res => res.json()),
-      fetch(`${apiBaseUrl}/api/fpl_data/fixtures`).then(res => res.json())
-    ])
-      .then(([bootstrapData, fixturesData]) => {
-        setFplData(bootstrapData);
-        setFixtures(fixturesData);
-      })
-      .catch(console.error);
-  }, []);
+  // Track loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Start fade out before hiding splash
-    const fadeTimer = setTimeout(() => setFadeSplash(true), 1000); // Start fade after 1s
-    const hideTimer = setTimeout(() => setShowSplash(false), 1400); // Hide after fade
-    return () => {
-      clearTimeout(fadeTimer);
-      clearTimeout(hideTimer);
+    const loadData = async () => {
+      Promise.all([
+        fetch(`${apiBaseUrl}/api/fpl_data/bootstrap-static`).then(res => res.json()),
+        fetch(`${apiBaseUrl}/api/fpl_data/fixtures`).then(res => res.json())
+      ])
+        .then(([bootstrapData, fixturesData]) => {
+          setFplData(bootstrapData);
+          setFixtures(fixturesData);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+          setLoading(false);
+        });
     };
+    loadData();
   }, []);
 
-  if (showSplash) {
+  useEffect(() => {
+    // Only start fade out when data is loaded
+    if (!loading) {
+      const fadeTimer = setTimeout(() => setFadeSplash(true), 1000); // Start fade after 1s
+      const hideTimer = setTimeout(() => setShowSplash(false), 1400); // Hide after fade
+      return () => {
+        clearTimeout(fadeTimer);
+        clearTimeout(hideTimer);
+      };
+    }
+  }, [loading]);
+
+  if (showSplash || loading) {
     return (
       <div
         style={{
@@ -154,7 +165,6 @@ function App() {
               },
             }}
           >
-            {/* <Tab label="Player Data" /> */}
             <Tab label="Player Data" />
             <Tab label="Fixtures" />
           </Tabs>
