@@ -8,10 +8,11 @@ import Box from '@mui/material/Box';
 import Fade from '@mui/material/Fade';
 import PlayerData from './components/PlayerData'; 
 
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 // Replace the old getCurrentGameweek function with this async version
 export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
-    const res = await fetch('/api/fpl_data/events');
+    const res = await fetch(`${apiBaseUrl}/api/fpl_data/events`);
     const events = await res.json();
     const nextEvent = events.find((ev: { is_next: number }) => ev.is_next === 1);
     return nextEvent ? nextEvent.id : undefined;
@@ -31,8 +32,8 @@ function App() {
   useEffect(() => {
     // Fetch from local API/database endpoints
     Promise.all([
-      fetch('/api/fpl_data/bootstrap-static').then(res => res.json()),
-      fetch('/api/fpl_data/fixtures').then(res => res.json())
+      fetch(`${apiBaseUrl}/api/fpl_data/bootstrap-static`).then(res => res.json()),
+      fetch(`${apiBaseUrl}/api/fpl_data/fixtures`).then(res => res.json())
     ])
       .then(([bootstrapData, fixturesData]) => {
         setFplData(bootstrapData);
