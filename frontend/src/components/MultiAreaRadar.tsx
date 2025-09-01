@@ -44,7 +44,7 @@ interface MultiAreaRadarProps {
 const METRICS = [
   {
     key: 'points_per_game',
-    label: 'Pts /game Rank',
+    label: 'Pts /game (x10)',
     max: 10,
     normalize: (v: number) => v / 10,
   },
