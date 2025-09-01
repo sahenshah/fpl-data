@@ -48,7 +48,23 @@ WebDriverWait(driver, 20).until(
     EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Projected Points Table')]"))
 )
 
-# Select "All Players" in the group dropdown
+# Wait for the scout table to load initially
+WebDriverWait(driver, 40).until(
+    EC.presence_of_element_located((By.XPATH, "//table[@id='scout_table']//tbody//td"))
+)
+
+# Refresh the page
+driver.refresh()
+
+# Wait for the page and scout table to load again after refresh
+WebDriverWait(driver, 20).until(
+    EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Projected Points Table')]"))
+)
+WebDriverWait(driver, 40).until(
+    EC.presence_of_element_located((By.XPATH, "//table[@id='scout_table']//tbody//td"))
+)
+
+# Now select "All Players" in the group dropdown
 group_dropdown = Select(driver.find_element(By.ID, "myGroup"))
 group_dropdown.select_by_visible_text("All Players")
 
@@ -96,6 +112,36 @@ else:
         header_texts = [cell.get_text(strip=True) for cell in header_cells]
     else:
         header_texts = []
+
+# If less than 5 columns, click the "Toggle Detailed Gameweek Data" checkbox and reload the table
+if len(header_texts) < 5:
+    print("Less than 5 columns detected, toggling detailed gameweek data...")
+    checker = driver.find_element(By.ID, "checker")
+    if not checker.is_selected():
+        checker.click()
+        # Wait for the table to reload
+        WebDriverWait(driver, 40).until(
+            EC.presence_of_element_located((By.XPATH, "//table[@id='scout_table']//tbody//td"))
+        )
+        # Re-parse the table after toggling
+        html = driver.page_source
+        soup = BeautifulSoup(html, "html.parser")
+        scout_table = soup.find("table", {"id": "scout_table"})
+        # Re-extract headers
+        thead = scout_table.find("thead")
+        if thead:
+            header_row = thead.find("tr")
+            header_cells = header_row.find_all(["th", "td"])
+            header_texts = [cell.get_text(strip=True) for cell in header_cells]
+        else:
+            rows = scout_table.find("tbody").find_all("tr")
+            if rows:
+                header_cells = rows[0].find_all(["th", "td"])
+                header_texts = [cell.get_text(strip=True) for cell in header_cells]
+            else:
+                header_texts = []
+else:
+    print(f"Header length: {len(header_texts)}")
 
 # Skip all leading empty header cells
 non_empty_headers = [h for h in header_texts if h.strip() != ""]
