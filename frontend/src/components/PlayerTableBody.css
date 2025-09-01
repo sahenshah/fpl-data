@@ -224,4 +224,94 @@
   color: #222 !important;
 }
 
+@media (max-width: 600px) {
+  .player-table {
+    min-width: 900px;
+    border-spacing: 0 8px; /* less vertical space between rows */
+  }
+
+  .player-table-th,
+  .player-table td, 
+  .player-table th {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .player-table td.sticky-name {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .player-table td {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .player-table tbody tr {
+    height: 38px;
+    border-radius: 20px;
+  }
+
+  .player-table tbody tr > td:first-child {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+
+  .player-table tbody tr > td:last-child {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+
+  /* Sticky columns: adjust left offsets for smaller columns */
+  .player-table-th.sticky-select,
+  .player-table td.sticky-select {
+    left: 0;
+  }
+  .player-table-th.sticky-badge,
+  .player-table td.sticky-badge {
+    left: 38px; /* smaller select column */
+  }
+  .player-table-th.sticky-name,
+  .player-table td.sticky-name {
+    left: 76px; /* select+badge total width */
+  }
+
+  /* Smaller badge size */
+  .player-table td.sticky-badge img {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px;
+    min-height: 22px;
+    max-width: 22px;
+    max-height: 22px;
+  }
+
+  /* Smaller checkbox */
+  .player-table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+  .player-table input[type="checkbox"]::after {
+    width: 8px;
+    height: 8px;
+    margin: 2px auto;
+  }
+
+  .player-table-pagination {
+    font-size: 10px;
+    gap: 10px;
+    margin: 16px 0 12px 0;
+  }
+  .player-table-pagination .pagination-arrow {
+    padding: 4px;
+    font-size: 12px;
+  }
+  .player-table-pagination .pagination-arrow svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
 

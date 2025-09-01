@@ -2,11 +2,21 @@
   color: #fff;
   padding: 32px;
 }
-
+@media (max-width: 600px) {
+  .player-data-root {
+    padding: 0px;
+  }
+}
 .player-data-section {
   margin-bottom: 32px;
   width: 100%;
   box-sizing: border-box;
+}
+@media (max-width: 600px) {
+  .player-data-section {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
 }
 
 .player-data-header h2 {
@@ -31,6 +41,13 @@
   scrollbar-color: #7768f6 #14161a;     /* Firefox */
   box-sizing: border-box;
 }
+@media (max-width: 600px) {
+  .player-data-chart {
+    height: 400px;
+    padding: 0;
+    padding-right: 5px;
+  }
+}
 
 /* Webkit browsers (Chrome, Edge, Safari) */
 .player-data-chart::-webkit-scrollbar {
@@ -54,7 +71,11 @@
   font-weight: 500;
   font-size: 18px;
 }
-
+@media (max-width: 600px) {
+  .player-data-filters {
+    margin-top: 16px;
+  }
+}
 .player-data-table {
   background: #1a1c22;
   border-radius: 60px;

@@ -1,6 +1,7 @@
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, ReferenceArea } from 'recharts';
 import './ScatterChart.css';
 import { useState, useMemo } from 'react';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface Player {
   id: number | string;
@@ -168,8 +169,11 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value', costRange }: S
     );
   }
 
+  // Add this line to detect small screens
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
+
   return (
-    <ResponsiveContainer width="100%" height={500}>
+    <ResponsiveContainer width="100%" height={isSmallScreen ? 380 : 500}>
       <ScatterChart
         margin={{
           top: 20,

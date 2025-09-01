@@ -317,7 +317,7 @@ export default function PlayerTableBody({ players, teams, checked, setChecked }:
                   if (col.id === 'web_name') {
                     return (
                       <td key={col.id} className={`align-${col.align} ${stickyClass}`}>
-                        <div style={{ fontWeight: 600, fontSize: 16 }}>
+                        <div> 
                           {player.web_name}
                         </div>
                         <div style={{ fontWeight: 400, fontSize: 13, color: '#aaa', lineHeight: 1.2 }}>

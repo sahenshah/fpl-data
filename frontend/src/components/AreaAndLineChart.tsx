@@ -129,6 +129,7 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
             wrapperStyle={{
               fontSize: isSmallScreen ? '0.75rem' : '1rem',
               display: 'flex',
+              left: 0,
               justifyContent: 'center', // Center the legend
               width: '100%',
               marginBottom: 8,

@@ -10,6 +10,7 @@ import {
 import { getCurrentGameweek } from '../App';
 import styles from './LineChart.module.css';
 import Slider from '@mui/material/Slider';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 interface LineChartProps {
   players: {
@@ -64,6 +65,8 @@ export default function LineChart({
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
+
   useEffect(() => {
     async function fetchGwRange() {
       const [currentGw, lastPredGw] = await Promise.all([
@@ -71,12 +74,16 @@ export default function LineChart({
         getLastPredictedGw(),
       ]);
       if (currentGw && lastPredGw && lastPredGw >= currentGw) {
-        setGwRange([currentGw, lastPredGw]);
-        setSliderMax(lastPredGw); // <-- Set the slider max to the true max
+        setSliderMax(lastPredGw); // Always set the slider max to lastPredGw
+        const rightThumb = isSmallScreen
+          ? Math.min(lastPredGw, currentGw + 5)
+          : lastPredGw;
+        setGwRange([currentGw, rightThumb]);
       }
     }
     fetchGwRange();
-  }, []);
+    // Add isSmallScreen as a dependency if you want it to update on resize
+  }, [isSmallScreen]);
 
   const gwCount = gwRange[1] - gwRange[0] + 1;
   const computedGwLabels = Array.from(
@@ -120,8 +127,19 @@ export default function LineChart({
           scrollbarColor: '#7768f6 #1a1c22',
         }}
       >
-        <div style={{ minWidth: 700 }}>
-          <ResponsiveContainer width="100%" height={420}>
+        <div
+          style={{
+            minWidth: isSmallScreen ? 300 : 700, 
+            maxWidth: isSmallScreen ? 400 : '100%',
+            margin: '0 auto',
+            height: '100%',
+            maxHeight: '420px',
+          }}
+        >
+          <ResponsiveContainer
+            width="100%"
+            height={isSmallScreen ? 300 : 420}
+          >
             <RechartsLineChart
               data={data}
               margin={{
@@ -204,7 +222,12 @@ export default function LineChart({
         </div>
       </div>
       {/* Range slider for min/max gameweek */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 24 }}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        marginTop: isSmallScreen ? 0 : 24, 
+      }}>
         <Slider
           value={gwRange}
           min={minGameweek}

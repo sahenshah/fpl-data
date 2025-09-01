@@ -36,7 +36,6 @@ const StyledTabsBar = styled('div')({
   alignItems: 'center',
   margin: '24px auto 16px auto',
   width: 'fit-content',
-  minWidth: 340,
 });
 
 const StyledTabs = styled(Tabs)({
@@ -155,7 +154,7 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
       <StyledTabsBar>
         <StyledTabs value={tab} onChange={handleTabChange} centered>
           <StyledTab label="Statistics" style={{ textTransform: 'none' }}/>
-          <StyledTab label="Fixtures and Results" style={{ textTransform: 'none' }}/>
+          <StyledTab label="Fixtures & Results" style={{ textTransform: 'none' }}/>
           <StyledTab label="Past Seasons" style={{ textTransform: 'none' }}/>
         </StyledTabs>
       </StyledTabsBar>

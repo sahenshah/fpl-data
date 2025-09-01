@@ -263,3 +263,32 @@
 .past-seasons-table th {
   color: #fff !important;
 }
+@media (max-width: 600px) {
+  .StyledTabsBar,
+  .MuiTabs-root {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  .StyledTabsBar .MuiTabs-flexContainer,
+  .MuiTabs-flexContainer {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    gap: 8px !important; 
+  }
+  .StyledTabsBar .MuiTab-root,
+  .MuiTab-root {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    font-size: 0.7rem !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    text-align: center !important;
+    line-height: 1.1 !important;
+  }
+}

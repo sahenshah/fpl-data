@@ -139,6 +139,11 @@ function App() {
                 fontSize: '0.7rem',
                 fontWeight: 600,
                 textTransform: 'none',
+                '@media (max-width: 500px)': {
+                  minWidth: 70,
+                  fontSize: '0.7rem',
+                  padding: '2px 6px',
+                },
               },
               '& .Mui-selected': {
                 background: '#7768f6',
