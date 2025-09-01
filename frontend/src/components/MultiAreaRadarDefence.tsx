@@ -12,8 +12,8 @@ interface MultiAreaRadarProps {
 
 const METRICS = [
   {
-    key: 'defensive_contributions_per_90',
-    label: 'DefCon/90',
+    key: 'defensive_contribution_per_90',
+    label: 'DefCon/90 (x10)',
     max: 10,
     normalize: (v: number) => v / 10,
   },
@@ -30,19 +30,19 @@ const METRICS = [
     normalize: (v: number) => v / 1,
   },
   {
-    label: 'CBI/90',
+    label: 'CBI/90 (x10)',
     max: 10,
     normalize: (v: number) => v / 10,
     custom: (p: Element) => p.minutes ? (Number(p.clearances_blocks_interceptions) / p.minutes) * 90 : 0,
   },
   {
-    label: 'Tackles/90',
+    label: 'Tackles/90 (x10)',
     max: 10,
     normalize: (v: number) => v / 10,
     custom: (p: Element) => p.minutes ? (Number(p.tackles) / p.minutes) * 90 : 0,
   },
   {
-    label: 'Recoveries/90',
+    label: 'Recoveries/90 (x10)',
     max: 10,
     normalize: (v: number) => v / 10,
     custom: (p: Element) => p.minutes ? (Number(p.recoveries) / p.minutes) * 90 : 0,
