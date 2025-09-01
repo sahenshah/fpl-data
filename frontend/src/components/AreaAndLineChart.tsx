@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMediaQuery } from '@mui/material';
 import Slider from '@mui/material/Slider';
+import { getCurrentGameweek } from '../App'; // adjust import path as needed
 
 interface AreaAndLineChartProps {
   player: any;
@@ -25,12 +26,26 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
     return lastGW;
   }, [player]);
 
+  // Default to [1, gwEnd] until we fetch current GW
+  const [gwRange, setGwRange] = useState<[number, number]>([1, gwEnd]);
+
+  useEffect(() => {
+    async function setInitialGwRange() {
+      const currentGw = await getCurrentGameweek();
+      if (currentGw) {
+        const lower = Math.max(1, currentGw - 3);
+        const upper = Math.min(gwEnd, currentGw + 3);
+        setGwRange([lower, upper]);
+      } else {
+        setGwRange([1, gwEnd]);
+      }
+    }
+    setInitialGwRange();
+  }, [gwEnd]);
+
   // State for history points and minutes
   const [historyPoints, setHistoryPoints] = useState<{ [gw: number]: number }>({});
   const [historyMinutes, setHistoryMinutes] = useState<{ [gw: number]: number }>({});
-
-  // Add state for GW range slider
-  const [gwRange, setGwRange] = useState<[number, number]>([1, gwEnd]);
 
   useEffect(() => {
     setGwRange(([min, max]) => [
