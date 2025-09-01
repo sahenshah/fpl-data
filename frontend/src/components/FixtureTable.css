@@ -219,3 +219,117 @@
   display: block;
   margin: 0 auto;
 }
+
+@media (max-width: 600px) {
+  .fixture-table-outer-container {
+    padding: 4px 2px;
+    margin: 8px auto;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    max-width: 100vw;
+    overflow-x: auto;
+  }
+
+  .fixture-table-container {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .fixture-table {
+    min-width: 420px;
+    font-size: 0.85rem;
+    border-spacing: 0 6px;
+    width: 100%;
+  }
+
+  .fixture-table th,
+  .fixture-table td {
+    padding: 6px 6px;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+  }
+
+  .fixture-table th {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    font-size: 0.9rem;
+  }
+
+  .fixture-table td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 0.85rem;
+  }
+
+  .fixture-table td.name-cell {
+    font-size: 0.95rem;
+    padding-left: 8px;
+  }
+
+  .fixture-table td.points-cell {
+    font-size: 0.95rem;
+    padding-right: 8px !important;
+  }
+
+  .fixture-table tbody tr {
+    height: 32px;
+    border-radius: 10px;
+  }
+
+  .fixture-table tbody tr > td:first-child {
+    border-top-left-radius: 28px;
+    border-bottom-left-radius: 28px;
+  }
+
+  .fixture-table tbody tr > td:last-child {
+    border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+  }
+
+  .sticky-badge-fixture img {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px;
+    min-height: 22px;
+    max-width: 22px;
+    max-height: 22px;
+  }
+
+  /* Sticky columns: adjust left offsets for smaller columns */
+  .fixture-table th.sticky-position,
+  .fixture-table td.sticky-position {
+    left: 0;
+    min-width: 38px !important;
+    width: 38px !important;
+    max-width: 38px !important;
+    /* Optionally, center the text */
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .fixture-table th.sticky-badge-fixture,
+  .fixture-table td.sticky-badge-fixture {
+    left: 34px;
+  }
+  .fixture-table th.sticky-name,
+  .fixture-table td.sticky-name {
+    left: 40px !important;
+  }
+
+  .fixture-table th.sticky-position,
+  .fixture-table th.sticky-badge-fixture,
+  .fixture-table th.sticky-name {
+    background-color: #1a1c22;
+    z-index: 1;
+  }
+
+  .fixture-table tr {
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.08);
+    border-radius: 10px;
+  }
+
+  .fixture-table tr:hover td {
+    background: #23243a;
+  }
+}

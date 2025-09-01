@@ -129,11 +129,12 @@ export default function LineChart({
       >
         <div
           style={{
-            minWidth: isSmallScreen ? 300 : 700, 
-            maxWidth: isSmallScreen ? 400 : '100%',
+            minWidth: isSmallScreen ? 0 : 700,
+            maxWidth: isSmallScreen ? '100vw' : '100%',
             margin: '0 auto',
             height: '100%',
             maxHeight: '420px',
+            boxSizing: 'border-box',
           }}
         >
           <ResponsiveContainer
