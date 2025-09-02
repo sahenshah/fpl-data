@@ -62,9 +62,9 @@
 }
 
 .line-chart-tooltip {
-  /* max-height: 260px;         Set a max height for the tooltip */
-  /* overflow-y: auto;          Enable vertical scrolling if content is too tall */
-  overflow-x: hidden;
+  max-height: 800px;
+  max-width: 700px;
+  overflow: auto; 
   box-sizing: border-box;
   background: #6e6e6e28 !important;
   border: 1px solid #6e6e6e28 !important;
@@ -73,6 +73,32 @@
   color: #fff !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
   font-size: 14px !important;
+  z-index: 10;
+  display: block;
+}
+
+/* Use columns for long lists */
+.line-chart-tooltip-items {
+  column-count: 3;
+  column-gap: 18px;
+  max-height: inherit;
+}
+@media (max-width: 600px) {
+  .line-chart-tooltip {
+    max-width: 220px;
+    font-size: 0.85em;
+  }
+  .line-chart-tooltip-items {
+      column-count: 1;
+      column-gap: 18px;
+      max-height: inherit;
+    }
+}
+
+
+.line-chart-tooltip-item {
+  break-inside: avoid;
+  margin-bottom: 8px;
 }
 
 .line-chart-tooltip-label {

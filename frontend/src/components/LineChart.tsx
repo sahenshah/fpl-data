@@ -106,11 +106,15 @@ export default function LineChart({
   // Always use the fixed sliderMax for the slider's max value
   const minGameweek = 1;
 
-  // Limit to 10 players, show message if more
-  if (players.length > 10) {
+  // Limit to 20 players for large screens and 10 for small screens, show message if more
+  if( isSmallScreen && players.length > 10 )
+    return( <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
+        Please select no more than 10 players for the expected data chart.
+      </div>)
+  else if ( !isSmallScreen && players.length > 20) {
     return (
       <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
-        Please select no more than 10 players for the expected data chart.
+        Please select no more than 20 players for the expected data chart.
       </div>
     );
   }
@@ -169,24 +173,29 @@ export default function LineChart({
                   active && payload && payload.length ? (
                     <div className={styles['line-chart-tooltip']}>
                       <div className={styles['line-chart-tooltip-label']}>{label}</div>
-                      {payload.map((entry, idx) => (
-                        <div key={idx} className={styles['line-chart-tooltip-item']}>
-                          <div
-                            className={styles['line-chart-tooltip-dot']}
-                            style={{
-                              backgroundColor: players.find(p => p.web_name === entry.name)
-                                ? `hsl(${(players.findIndex(p => p.web_name === entry.name) * 360) / players.length}, 70%, 55%)`
-                                : entry.color
-                            }}
-                          />
-                          <span className={styles['line-chart-tooltip-text']} style={{ flex: 1, textAlign: "left" }}>
-                            {entry.name}
-                          </span>
-                          <span className={styles['line-chart-tooltip-value']} style={{ minWidth: 32, textAlign: "right", marginLeft: 12, fontWeight: 600 }}>
-                            {entry.value}
-                          </span>
-                        </div>
-                      ))}
+                      <div className={styles['line-chart-tooltip-items']}>
+                        {payload
+                          .slice() // Make a copy so we don't mutate the original
+                          .sort((a, b) => (b.value ?? 0) - (a.value ?? 0)) // Descending order
+                          .map((entry, idx) => (
+                            <div key={idx} className={styles['line-chart-tooltip-item']}>
+                              <div
+                                className={styles['line-chart-tooltip-dot']}
+                                style={{
+                                  backgroundColor: players.find(p => p.web_name === entry.name)
+                                    ? `hsl(${(players.findIndex(p => p.web_name === entry.name) * 360) / players.length}, 70%, 55%)`
+                                    : entry.color
+                                }}
+                              />
+                              <span className={styles['line-chart-tooltip-text']} style={{ flex: 1, textAlign: "left" }}>
+                                {entry.name}
+                              </span>
+                              <span className={styles['line-chart-tooltip-value']} style={{ minWidth: 32, textAlign: "right", marginLeft: 12, fontWeight: 600 }}>
+                                {entry.value}
+                              </span>
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   ) : null
                 }
