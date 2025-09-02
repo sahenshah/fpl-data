@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "name": "Overall",
+    "start_event": 1,
+    "stop_event": 38,
+    "highest_score": 272.0
+  },
+  {
+    "id": 2,
+    "name": "August",
+    "start_event": 1,
+    "stop_event": 3,
+    "highest_score": 272.0
+  },
+  {
+    "id": 3,
+    "name": "September",
+    "start_event": 4,
+    "stop_event": 6,
+    "highest_score": null
+  },
+  {
+    "id": 4,
+    "name": "October",
+    "start_event": 7,
+    "stop_event": 9,
+    "highest_score": null
+  },
+  {
+    "id": 5,
+    "name": "November",
+    "start_event": 10,
+    "stop_event": 13,
+    "highest_score": null
+  },
+  {
+    "id": 6,
+    "name": "December",
+    "start_event": 14,
+    "stop_event": 19,
+    "highest_score": null
+  },
+  {
+    "id": 7,
+    "name": "January",
+    "start_event": 20,
+    "stop_event": 24,
+    "highest_score": null
+  },
+  {
+    "id": 8,
+    "name": "February",
+    "start_event": 25,
+    "stop_event": 28,
+    "highest_score": null
+  },
+  {
+    "id": 9,
+    "name": "March",
+    "start_event": 29,
+    "stop_event": 31,
+    "highest_score": null
+  },
+  {
+    "id": 10,
+    "name": "April",
+    "start_event": 32,
+    "stop_event": 34,
+    "highest_score": null
+  },
+  {
+    "id": 11,
+    "name": "May",
+    "start_event": 35,
+    "stop_event": 38,
+    "highest_score": null
+  }
+]

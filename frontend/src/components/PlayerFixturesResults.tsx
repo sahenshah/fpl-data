@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Element, Team, PlayerFixture } from '../types/fpl';
+import type { Element, Team } from '../types/fpl';
 import styles from './PlayerFixturesResults.module.css';
 
 interface PlayerFixturesResultsProps {
@@ -8,90 +8,90 @@ interface PlayerFixturesResultsProps {
 }
 
 const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, teams }) => {
-  const [fixtures, setFixtures] = React.useState<PlayerFixture[]>([]);
   const [history, setHistory] = React.useState<any[]>([]);
+  const [allFixtures, setAllFixtures] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [openRow, setOpenRow] = React.useState<number | null>(null);
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   React.useEffect(() => {
     setLoading(true);
-    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-fixtures/${player.id}`)
-      .then(res => res.json())
-      .then(data => {
-        setFixtures(data.fixtures || []);
+    Promise.all([
+      fetch('/static_json/fixtures.json').then(res => res.json()),
+      fetch('/static_json/element_summary_history.json').then(res => res.json())
+    ])
+      .then(([fixturesData, historyData]) => {
+        setAllFixtures(Array.isArray(fixturesData) ? fixturesData : []);
+        setHistory(
+          Array.isArray(historyData)
+            ? historyData.filter((h: any) => h.element === player.id || h.player_id === player.id)
+            : []
+        );
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, [player.id]);
 
-  React.useEffect(() => {
-    setLoading(true);
-    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-history/${player.id}`)
-      .then(res => res.json())
-      .then(data => {
-        setHistory(data.history || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [player.id]);
-
-  const mergedRows = React.useMemo(() => {
-    const historyMap = new Map<number, any>();
+  // Map history by gameweek
+  const historyMap = React.useMemo(() => {
+    const map = new Map<number, any>();
     history.forEach(h => {
-      if (h.round != null) historyMap.set(h.round, h);
+      if (h.round != null) map.set(h.round, h);
     });
+    return map;
+  }, [history]);
 
-    const fixturesMap = new Map<number, any>();
-    fixtures.forEach(fix => {
-      if (fix.event != null) fixturesMap.set(fix.event, fix);
-    });
+  // Find all fixtures for the player's team
+  const playerTeamFixtures = React.useMemo(() => {
+    return allFixtures.filter(
+      (fix: any) => fix.team_h === player.team || fix.team_a === player.team
+    );
+  }, [allFixtures, player.team]);
 
-    const allGameweeks = Array.from(
-      new Set([
-        ...Array.from(historyMap.keys()),
-        ...Array.from(fixturesMap.keys()),
-      ])
-    ).sort((a, b) => a - b);
-
-    return allGameweeks.map(gw => {
+  // Merge history and fixtures
+  const mergedRows = React.useMemo(() => {
+    const rows: any[] = [];
+    playerTeamFixtures.forEach(fix => {
+      const gw = fix.event;
       const hist = historyMap.get(gw);
-      const fix = fixturesMap.get(gw);
       const predicted_points = player[`pp_gw_${gw}` as keyof Element];
       const predicted_xmins = player[`xmins_gw_${gw}` as keyof Element];
+      let team_h = fix.team_h;
+      let team_a = fix.team_a;
 
       if (hist) {
-        let opponentTeamId = hist.opponent_team;
-        let isHome = hist.was_home;
-        let team_h = isHome ? player.team : opponentTeamId;
-        let team_a = isHome ? opponentTeamId : player.team;
-
-        return {
+        rows.push({
           ...fix,
           ...hist,
-          event: hist.round,
+          event: gw,
           team_h,
           team_a,
           team_h_score: hist.team_h_score,
           team_a_score: hist.team_a_score,
-          difficulty: fix?.difficulty ?? 3,
+          difficulty: fix.difficulty ?? 3,
           predicted_points,
           predicted_xmins,
           total_points: hist.total_points,
           minutes: hist.minutes,
           isHistory: true,
-        };
-      } else if (fix) {
-        return {
+        });
+      } else {
+        rows.push({
           ...fix,
+          event: gw,
+          team_h,
+          team_a,
+          team_h_score: fix.team_h_score,
+          team_a_score: fix.team_a_score,
+          difficulty: fix.difficulty ?? 3,
           predicted_points,
           predicted_xmins,
           isHistory: false,
-        };
+        });
       }
-      return { event: gw, predicted_points, predicted_xmins };
     });
-  }, [fixtures, history, player]);
+    // Sort by gameweek
+    return rows.sort((a, b) => a.event - b.event);
+  }, [playerTeamFixtures, historyMap, player]);
 
   const getTeamBadge = (id: number) => {
     const team = teams?.find(t => t.id === id);
@@ -109,7 +109,6 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
     return '';
   };
 
-  // Simple chevron icon
   const Chevron = ({ open }: { open: boolean }) => (
     <svg
       width="16"
@@ -141,27 +140,25 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
         <div className={styles['fixtures-results-container']}>
           <table className={styles['fixtures-results-table']}>
             <colgroup>
-              <col style={{ width: '5%' }} />    {/* GW */}
-              <col style={{ width: '8%' }} />    {/* Home - reduced */}
-              <col style={{ width: '3%' }} />    {/* Home Score */}
-              <col style={{ width: '2%' }} />    {/* Separator */}
-              <col style={{ width: '3%' }} />    {/* Away Score */}
-              <col style={{ width: '8%' }} />    {/* Away - reduced */}
-              <col style={{ width: '8%' }} />    {/* Difficulty */}
-              <col style={{ width: '8%' }} />    {/* xPoints */}
-              <col style={{ width: '8%' }} />    {/* Points */}
-              <col style={{ width: '8%' }} />    {/* xMinutes */}
-              <col style={{ width: '8%' }} />    {/* Minutes */}
-              <col style={{ width: '6%' }} />    {/* Chevron/Expand */}
+              <col style={{ width: '5%' }} />
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '3%' }} />
+              <col style={{ width: '2%' }} />
+              <col style={{ width: '3%' }} />
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '8%' }} />
+              <col style={{ width: '6%' }} />
             </colgroup>
             <thead>
               <tr>
                 <th className={styles['fixtures-results-cell']}>GW</th>
                 <th className={styles['fixtures-results-cell']}>Home</th>
                 <th className={`${styles['fixtures-results-cell']} ${styles['h-col']}`}></th>
-                <th className={styles['fixtures-results-cell']}>
-                  {/* <-- New column header for separator */}
-                </th>
+                <th className={styles['fixtures-results-cell']}></th>
                 <th className={`${styles['fixtures-results-cell']} ${styles['a-col']}`}></th>
                 <th className={styles['fixtures-results-cell']}>Away</th>
                 <th className={styles['fixtures-results-cell']}>Difficulty</th>
@@ -176,10 +173,10 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
               <tr>
                 <td colSpan={12} style={{ height: 4, background: 'transparent', border: 'none', padding: 0 }} />
               </tr>
-              {mergedRows.slice(0, 38).map((fix, idx) => {
+              {mergedRows.map((fix, idx) => {
                 const gw = fix.event;
-                const predicted_points = player[`pp_gw_${gw}` as keyof Element];
-                const predicted_xmins = player[`xmins_gw_${gw}` as keyof Element];
+                const predicted_points = fix.predicted_points;
+                const predicted_xmins = fix.predicted_xmins;
                 const isOpen = openRow === idx;
                 return (
                   <React.Fragment key={fix.id || `${gw}-${idx}`}>

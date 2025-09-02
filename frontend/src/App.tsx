@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import type { FPLBootstrapResponse } from './types/fpl';
 import FixtureTable from './components/FixtureTable'; 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -8,11 +7,15 @@ import Box from '@mui/material/Box';
 import Fade from '@mui/material/Fade';
 import PlayerData from './components/PlayerData'; 
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const fetchJson = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+  return res.json();
+};
 
 export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
-    const res = await fetch(`${apiBaseUrl}/api/fpl_data/events`);
+    const res = await fetch('/static_json/events.json');
     const events = await res.json();
     const nextEvent = events.find((ev: { is_next: number }) => ev.is_next === 1);
     return nextEvent ? nextEvent.id : undefined;
@@ -23,39 +26,41 @@ export async function getCurrentGameweek(): Promise<number | undefined> {
 }
 
 function App() {
-  const [fplData, setFplData] = useState<FPLBootstrapResponse | null>(null);
+  const [fplData, setFplData] = useState<any>(null);
   const [fixtures, setFixtures] = useState<any[]>([]);
   const [tabIndex, setTabIndex] = useState(0);
   const [showSplash, setShowSplash] = useState(true);
   const [fadeSplash, setFadeSplash] = useState(false);
-
-  // Track loading state
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      Promise.all([
-        fetch(`${apiBaseUrl}/api/fpl_data/bootstrap-static`).then(res => res.json()),
-        fetch(`${apiBaseUrl}/api/fpl_data/fixtures`).then(res => res.json())
-      ])
-        .then(([bootstrapData, fixturesData]) => {
-          setFplData(bootstrapData);
-          setFixtures(fixturesData);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setLoading(false);
+      try {
+        const [teams, elements, events, fixturesData] = await Promise.all([
+          fetchJson('/static_json/teams.json'),
+          fetchJson('/static_json/elements.json'),
+          fetchJson('/static_json/events.json'),
+          fetchJson('/static_json/fixtures.json'),
+        ]);
+        setFplData({
+          teams,
+          elements,
+          events,
         });
+        setFixtures(fixturesData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error loading static_json:', err);
+        setLoading(false);
+      }
     };
     loadData();
   }, []);
 
   useEffect(() => {
-    // Only start fade out when data is loaded
     if (!loading) {
-      const fadeTimer = setTimeout(() => setFadeSplash(true), 1000); // Start fade after 1s
-      const hideTimer = setTimeout(() => setShowSplash(false), 1400); // Hide after fade
+      const fadeTimer = setTimeout(() => setFadeSplash(true), 1000);
+      const hideTimer = setTimeout(() => setShowSplash(false), 1400);
       return () => {
         clearTimeout(fadeTimer);
         clearTimeout(hideTimer);
@@ -86,6 +91,10 @@ function App() {
         <CircularProgress size={48} thickness={4} style={{ color: '#fff' }} />
       </div>
     );
+  }
+
+  if (!fplData) {
+    return <div style={{ color: '#fff', padding: 32 }}>Failed to load data. Check your static_json files.</div>;
   }
 
   return (

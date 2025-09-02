@@ -7,26 +7,25 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts';
-import { getCurrentGameweek } from '../App';
 import styles from './LineChart.module.css';
 import Slider from '@mui/material/Slider';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-interface LineChartProps {
-  players: {
-    web_name: string;
-    predicted_points_gw: number[];
-    predicted_xmins_gw?: number[];
-  }[];
-  gwLabels?: string[];
-  mode?: 'xPoints' | 'xMins';
-  onRefresh?: () => void;
+export async function getCurrentGameweek(): Promise<number | undefined> {
+  try {
+    const res = await fetch('/static_json/events.json');
+    const events = await res.json();
+    const nextEvent = events.find((ev: { is_next: number }) => ev.is_next === 1);
+    return nextEvent ? nextEvent.id : undefined;
+  } catch (e) {
+    console.error('Failed to fetch events:', e);
+    return undefined;
+  }
 }
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 export async function getLastPredictedGw(): Promise<number | undefined> {
   try {
-    const res = await fetch(`${apiBaseUrl}/api/fpl_data/last_predicted_gw`);
+    const res = await fetch('/static_json/last_predicted_gw.json');
     const data = await res.json();
     return data?.last_predicted_gw;
   } catch (e) {
@@ -53,13 +52,24 @@ function CustomDot(props: any) {
   );
 }
 
+interface LineChartProps {
+  players: {
+    web_name: string;
+    predicted_points_gw: number[];
+    predicted_xmins_gw?: number[];
+  }[];
+  gwLabels?: string[];
+  mode?: 'xPoints' | 'xMins';
+  onRefresh?: () => void;
+}
+
 export default function LineChart({
   players,
   gwLabels,
   mode = 'xPoints',
 }: LineChartProps) {
   const [gwRange, setGwRange] = useState<[number, number]>([1, 38]);
-  const [sliderMax, setSliderMax] = useState<number>(38); // <-- Track the true max for the slider
+  const [sliderMax, setSliderMax] = useState<number>(38);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isChartHovered, setIsChartHovered] = useState(false);
 
@@ -74,7 +84,7 @@ export default function LineChart({
         getLastPredictedGw(),
       ]);
       if (currentGw && lastPredGw && lastPredGw >= currentGw) {
-        setSliderMax(lastPredGw); // Always set the slider max to lastPredGw
+        setSliderMax(lastPredGw);
         const rightThumb = isSmallScreen
           ? Math.min(lastPredGw, currentGw + 5)
           : lastPredGw;
@@ -82,7 +92,6 @@ export default function LineChart({
       }
     }
     fetchGwRange();
-    // Add isSmallScreen as a dependency if you want it to update on resize
   }, [isSmallScreen]);
 
   const gwCount = gwRange[1] - gwRange[0] + 1;
@@ -92,7 +101,6 @@ export default function LineChart({
   );
   const labels = computedGwLabels ?? gwLabels;
 
-  // Prepare data for recharts: one object per GW, with each player's value as a key
   const data = labels.map((label, idx) => {
     const gwIdx = gwRange[0] + idx - 1;
     const obj: { name: string; [key: string]: number | string } = { name: label };
@@ -103,15 +111,15 @@ export default function LineChart({
     return obj;
   });
 
-  // Always use the fixed sliderMax for the slider's max value
   const minGameweek = 1;
 
-  // Limit to 20 players for large screens and 10 for small screens, show message if more
-  if( isSmallScreen && players.length > 10 )
-    return( <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
+  if (isSmallScreen && players.length > 10)
+    return (
+      <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
         Please select no more than 10 players for the expected data chart.
-      </div>)
-  else if ( !isSmallScreen && players.length > 20) {
+      </div>
+    );
+  else if (!isSmallScreen && players.length > 20) {
     return (
       <div style={{ color: '#c70000ff', textAlign: 'center', padding: 24 }}>
         Please select no more than 20 players for the expected data chart.
@@ -175,8 +183,8 @@ export default function LineChart({
                       <div className={styles['line-chart-tooltip-label']}>{label}</div>
                       <div className={styles['line-chart-tooltip-items']}>
                         {payload
-                          .slice() // Make a copy so we don't mutate the original
-                          .sort((a, b) => (b.value ?? 0) - (a.value ?? 0)) // Descending order
+                          .slice()
+                          .sort((a, b) => (b.value ?? 0) - (a.value ?? 0))
                           .map((entry, idx) => (
                             <div key={idx} className={styles['line-chart-tooltip-item']}>
                               <div
@@ -231,7 +239,6 @@ export default function LineChart({
           </ResponsiveContainer>
         </div>
       </div>
-      {/* Range slider for min/max gameweek */}
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -250,12 +257,12 @@ export default function LineChart({
             mx: 2, 
             color: '#7768f6',
             '& .MuiSlider-rail': {
-              height: 22, // Increase rail thickness here (default is 4)
+              height: 22,
               borderRadius: 4,
               color: '#000000ff'
             },
             '& .MuiSlider-track': {
-              height: 22, // Match the rail thickness
+              height: 22,
               borderRadius: 4,
             },
             '& .MuiSlider-thumb': {
@@ -264,14 +271,12 @@ export default function LineChart({
               height: 8,
               width: 8,
             },
-            // Left thumb (first thumb)
             '& .MuiSlider-thumb[data-index="0"]': {
               borderTopLeftRadius: '50%',
               borderBottomLeftRadius: '50%',
               borderTopRightRadius: '0',
               borderBottomRightRadius: '0',
             },
-            // Right thumb (second thumb)
             '& .MuiSlider-thumb[data-index="1"]': {
               borderTopLeftRadius: '0',
               borderBottomLeftRadius: '0',

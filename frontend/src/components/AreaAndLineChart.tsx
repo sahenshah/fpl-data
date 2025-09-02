@@ -54,25 +54,26 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
     ]);
   }, [gwEnd]);
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  // Fetch from static_json instead of backend API
   useEffect(() => {
-    // Fetch the element summary history for this player
-    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-history/${player.id}`)
+    fetch('/static_json/element_summary_history.json')
       .then(res => res.json())
       .then(data => {
+        // If data is an array of histories, filter for this player
+        const playerHistory = Array.isArray(data)
+          ? data.filter((row: any) => row.element === player.id || row.player_id === player.id)
+          : [];
         const pointsMap: { [gw: number]: number } = {};
         const minutesMap: { [gw: number]: number } = {};
-        if (data && Array.isArray(data.history)) {
-          data.history.forEach((row: any) => {
-            const gw = row.round ?? row.fixture;
-            if (gw && typeof row.total_points === 'number') {
-              pointsMap[gw] = row.total_points;
-            }
-            if (gw && typeof row.minutes === 'number') {
-              minutesMap[gw] = row.minutes;
-            }
-          });
-        }
+        playerHistory.forEach((row: any) => {
+          const gw = row.round ?? row.fixture;
+          if (gw && typeof row.total_points === 'number') {
+            pointsMap[gw] = row.total_points;
+          }
+          if (gw && typeof row.minutes === 'number') {
+            minutesMap[gw] = row.minutes;
+          }
+        });
         setHistoryPoints(pointsMap);
         setHistoryMinutes(minutesMap);
       });
@@ -145,7 +146,7 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
               fontSize: isSmallScreen ? '0.75rem' : '1rem',
               display: 'flex',
               left: 0,
-              justifyContent: 'center', // Center the legend
+              justifyContent: 'center',
               width: '100%',
               marginBottom: 8,
             }}
@@ -156,7 +157,7 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
                 color: '#dfdfdfff',
                 fontSize: isSmallScreen ? '0.65rem' : '0.8rem',
                 width: '100%',
-                justifyContent: 'center', // Center the legend
+                justifyContent: 'center',
                 marginBottom: 8,
               }}>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
@@ -247,9 +248,6 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
       </ResponsiveContainer>
       {/* Slider moved below the chart */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 16 }}>
-        {/* <span style={{ color: "#fff", fontSize: 13, minWidth: 40, textAlign: "right" }}>
-          GW {gwRange[0]}
-        </span> */}
         <Slider
           value={gwRange}
           min={1}
@@ -263,12 +261,12 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
             paddingTop: '24px',
             color: '#7768f6',
             '& .MuiSlider-rail': {
-              height: 22, // Increase rail thickness here (default is 4)
+              height: 22,
               borderRadius: 4,
               color: '#000000ff'
             },
             '& .MuiSlider-track': {
-              height: 22, // Match the rail thickness
+              height: 22,
               borderRadius: 4,
             },
             '& .MuiSlider-thumb': {
@@ -277,14 +275,12 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
               height: 8,
               width: 8,
             },
-            // Left thumb (first thumb)
             '& .MuiSlider-thumb[data-index="0"]': {
               borderTopLeftRadius: '50%',
               borderBottomLeftRadius: '50%',
               borderTopRightRadius: '0',
               borderBottomRightRadius: '0',
             },
-            // Right thumb (second thumb)
             '& .MuiSlider-thumb[data-index="1"]': {
               borderTopLeftRadius: '0',
               borderBottomLeftRadius: '0',
@@ -294,9 +290,6 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
           }}
           disableSwap
         />
-        {/* <span style={{ color: "#fff", fontSize: 13, minWidth: 40, textAlign: "left" }}>
-          GW {gwRange[1]}
-        </span> */}
       </div>
     </div>
   );

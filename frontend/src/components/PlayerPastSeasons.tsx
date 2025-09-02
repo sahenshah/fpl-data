@@ -43,20 +43,22 @@ const columns = [
 const PlayerPastSeasons: React.FC<{ player: Element }> = ({ player }) => {
   const [historyPast, setHistoryPast] = React.useState<any[]>([]);
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   React.useEffect(() => {
-    fetch(`${apiBaseUrl}/api/fpl_data/element-summary-history-past/${player.id}`)
+    fetch('/static_json/element_summary_history_past.json')
       .then(res => res.json())
       .then(data => {
-        setHistoryPast(data.history_past || []);
+        const filtered = Array.isArray(data)
+          ? data.filter((row: any) => row.element_id === player.id)
+          : [];
+        setHistoryPast(filtered);
       })
-      .catch(() => {});
+      .catch((err) => { console.error('Fetch error:', err); });
   }, [player.id]);
 
   // Remove duplicates
   const rows = historyPast.filter((row, idx, arr) =>
     arr.findIndex(
-      r => r.season_name === row.season_name && r.id === row.id
+      r => r.season_name === row.season_name && r.element_id === row.element_id
     ) === idx
   );
 
