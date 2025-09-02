@@ -175,6 +175,17 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
               </tr>
               {mergedRows.map((fix, idx) => {
                 const gw = fix.event;
+                const isHome = fix.team_h === player.team;
+                const playerScore = isHome ? fix.team_h_score : fix.team_a_score;
+                const opponentScore = isHome ? fix.team_a_score : fix.team_h_score;
+
+                let resultClass = '';
+                if (playerScore != null && opponentScore != null) {
+                  if (playerScore > opponentScore) resultClass = 'result-win';
+                  else if (playerScore < opponentScore) resultClass = 'result-loss';
+                  else resultClass = 'result-draw';
+                }
+
                 const predicted_points = fix.predicted_points;
                 const predicted_xmins = fix.predicted_xmins;
                 const isOpen = openRow === idx;
@@ -230,16 +241,16 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                                     />
                                   ) : fix.team_h}
                                 </td>
-                                <td className={`${styles['fixtures-results-cell']} ${styles['h-col']}`}>
+                                <td className={`${styles['fixtures-results-cell']} ${styles['h-col']} ${styles[resultClass]}`}>
                                   {fix.team_h_score !== null && fix.team_h_score !== undefined ? fix.team_h_score : '-'}
                                 </td>
-                                <td className={styles['fixtures-results-cell']}>
+                                <td className={`${styles['fixtures-results-cell']} ${styles[resultClass]}`}>
                                   {(
                                     (fix.team_h_score !== null && fix.team_h_score !== undefined && fix.team_a_score !== null && fix.team_a_score !== undefined)
                                       ? '-' : 'vs'
                                   )}
                                 </td>
-                                <td className={`${styles['fixtures-results-cell']} ${styles['a-col']}`}>
+                                <td className={`${styles['fixtures-results-cell']} ${styles['a-col']} ${styles[resultClass]}`}>
                                   {fix.team_a_score !== null && fix.team_a_score !== undefined ? fix.team_a_score : '-'}
                                 </td>
                                 <td className={styles['fixtures-results-cell']}>

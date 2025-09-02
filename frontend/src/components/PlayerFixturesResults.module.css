@@ -123,6 +123,19 @@
   cursor: pointer;
 }
 
+.result-win {
+  background-color: #40c46e !important; /* green */
+  color: #fff;
+}
+.result-loss {
+  background-color: #c93535 !important; /* red */
+  color: #fff;
+}
+.result-draw {
+  background-color: #999999 !important; /* grey */
+  color: #fff;
+}
+
 @media (max-width: 600px) {
   .fixtures-results-container {
     width: 100% !important;
