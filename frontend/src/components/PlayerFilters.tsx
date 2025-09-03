@@ -244,19 +244,19 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               color: '#7768f6', 
               flex: 1,
               '& .MuiSlider-rail': {
-                height: 12, // Increase rail thickness here (default is 4)
+                height: 16, // Increase rail thickness here (default is 4)
                 borderRadius: 4,
                 color: '#000000ff'
               },
               '& .MuiSlider-track': {
-                height: 12, // Match the rail thickness
+                height: 16, // Match the rail thickness
                 borderRadius: 0,
               },
               '& .MuiSlider-thumb': {
                 color: '#000000ff',
-                outline: '2px solid #7768f6',
-                height: 10,
-                width: 10,
+                outline: '3px solid #7768f6',
+                height: 12,
+                width: 12,
               },
             }}
           />
