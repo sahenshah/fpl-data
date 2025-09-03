@@ -337,7 +337,23 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                                           { label: 'CBI', value: fix.clearances_blocks_interceptions },
                                           { label: 'Recoveries', value: fix.recoveries },
                                           { label: 'Tackles', value: fix.tackles },
-                                          { label: 'Def Con', value: fix.defensive_contribution },
+                                          {
+                                            label:
+                                              player.element_type === 2
+                                                ? 'DefCon (CBIT)'
+                                                : 'DefCon (CBIRT)',
+                                            value: (
+                                              <>
+                                                {fix.defensive_contribution}
+                                                {' '}
+                                                (
+                                                {player.element_type === 2
+                                                  ? Number(fix.defensive_contribution) > 10 ? 2 : 0
+                                                  : Number(fix.defensive_contribution) > 12 ? 2 : 0}
+                                                )
+                                              </>
+                                            )
+                                          },
                                           { label: 'xG', value: fix.expected_goals },
                                           { label: 'xA', value: fix.expected_assists },
                                           { label: 'xGI', value: fix.expected_goal_involvements },
