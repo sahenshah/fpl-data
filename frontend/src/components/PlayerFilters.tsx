@@ -250,27 +250,13 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               },
               '& .MuiSlider-track': {
                 height: 12, // Match the rail thickness
-                borderRadius: 4,
+                borderRadius: 0,
               },
               '& .MuiSlider-thumb': {
                 color: '#000000ff',
-                outline: '4px solid #7768f6',
-                height: 7,
-                width: 7,
-              },
-              // Left thumb (first thumb)
-              '& .MuiSlider-thumb[data-index="0"]': {
-                borderTopRightRadius: '0',
-                borderBottomRightRadius: '0',
-                borderTopLeftRadius: '50%',
-                borderBottomLeftRadius: '50%',
-              },
-              // Right thumb (second thumb)
-              '& .MuiSlider-thumb[data-index="1"]': {
-                borderTopRightRadius: '50%',
-                borderBottomRightRadius: '50%',
-                borderTopLeftRadius: '0',
-                borderBottomLeftRadius: '0',
+                outline: '2px solid #7768f6',
+                height: 10,
+                width: 10,
               },
             }}
           />

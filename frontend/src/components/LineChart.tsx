@@ -263,25 +263,14 @@ export default function LineChart({
             },
             '& .MuiSlider-track': {
               height: 22,
-              borderRadius: 4,
+              color: '#7768f6',
+               borderRadius: 0,
             },
             '& .MuiSlider-thumb': {
               color: '#000000ff',
-              outline: '8px solid #7768f6',
-              height: 8,
-              width: 8,
-            },
-            '& .MuiSlider-thumb[data-index="0"]': {
-              borderTopLeftRadius: '50%',
-              borderBottomLeftRadius: '50%',
-              borderTopRightRadius: '0',
-              borderBottomRightRadius: '0',
-            },
-            '& .MuiSlider-thumb[data-index="1"]': {
-              borderTopLeftRadius: '0',
-              borderBottomLeftRadius: '0',
-              borderTopRightRadius: '50%',
-              borderBottomRightRadius: '50%',
+              outline: '3px solid #7768f6',
+              height: 18,
+              width: 18,
             },
           }}
           disableSwap
