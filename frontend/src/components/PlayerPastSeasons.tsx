@@ -11,33 +11,33 @@ const RCIcon = () => (
 );
 
 const columns = [
-  { label: 'Season', key: 'season_name', align: 'left' },
-  { label: 'Start Cost', key: 'start_cost', align: 'right', format: (v: number) => (v / 10).toFixed(1) },
-  { label: 'End Cost', key: 'end_cost', align: 'right', format: (v: number) => (v / 10).toFixed(1) },
-  { label: 'Points', key: 'total_points', align: 'right' },
-  { label: 'Minutes', key: 'minutes', align: 'right' },
-  { label: 'Goals', key: 'goals_scored', align: 'right' },
-  { label: 'Assists', key: 'assists', align: 'right' },
-  { label: 'Clean Sheets', key: 'clean_sheets', align: 'right' },
-  { label: 'Goals Conceded', key: 'goals_conceded', align: 'right' },
-  { label: 'Own Goals', key: 'own_goals', align: 'right' },
-  { label: 'Pens Saved', key: 'penalties_saved', align: 'right' },
-  { label: 'Pens Missed', key: 'penalties_missed', align: 'right' },
-  { label: <YCIcon />, key: 'yellow_cards', align: 'right' }, // Use icon
-  { label: <RCIcon />, key: 'red_cards', align: 'right' },    // Use icon
-  { label: 'Saves', key: 'saves', align: 'right' },
-  { label: 'Bonus', key: 'bonus', align: 'right' },
-  { label: 'BPS', key: 'bps', align: 'right' },
-  { label: 'Influence', key: 'influence', align: 'right' },
-  { label: 'Creativity', key: 'creativity', align: 'right' },
-  { label: 'Threat', key: 'threat', align: 'right' },
-  { label: 'ICT Index', key: 'ict_index', align: 'right' },
-  { label: 'Def Con', key: 'defensive_contribution', align: 'right' },
-  { label: 'Starts', key: 'starts', align: 'right' },
-  { label: 'xG', key: 'expected_goals', align: 'right' },
-  { label: 'xA', key: 'expected_assists', align: 'right' },
-  { label: 'xGI', key: 'expected_goal_involvements', align: 'right' },
-  { label: 'xGC', key: 'expected_goals_conceded', align: 'right' },
+  { label: 'Season', key: 'season_name', align: 'center' },
+  { label: 'Start Cost', key: 'start_cost', align: 'center', format: (v: number) => (v / 10).toFixed(1) },
+  { label: 'End Cost', key: 'end_cost', align: 'center', format: (v: number) => (v / 10).toFixed(1) },
+  { label: 'Points', key: 'total_points', align: 'center' },
+  { label: 'Minutes', key: 'minutes', align: 'center' },
+  { label: 'Goals', key: 'goals_scored', align: 'center' },
+  { label: 'Assists', key: 'assists', align: 'center' },
+  { label: 'Clean Sheets', key: 'clean_sheets', align: 'center' },
+  { label: 'Goals Conceded', key: 'goals_conceded', align: 'center' },
+  { label: 'Own Goals', key: 'own_goals', align: 'center' },
+  { label: 'Pens Saved', key: 'penalties_saved', align: 'center' },
+  { label: 'Pens Missed', key: 'penalties_missed', align: 'center' },
+  { label: <YCIcon />, key: 'yellow_cards', align: 'center' },
+  { label: <RCIcon />, key: 'red_cards', align: 'center' },
+  { label: 'Saves', key: 'saves', align: 'center' },
+  { label: 'Bonus', key: 'bonus', align: 'center' },
+  { label: 'BPS', key: 'bps', align: 'center' },
+  { label: 'Influence', key: 'influence', align: 'center' },
+  { label: 'Creativity', key: 'creativity', align: 'center' },
+  { label: 'Threat', key: 'threat', align: 'center' },
+  { label: 'ICT Index', key: 'ict_index', align: 'center' },
+  { label: 'Def Con', key: 'defensive_contribution', align: 'center' },
+  { label: 'Starts', key: 'starts', align: 'center' },
+  { label: 'xG', key: 'expected_goals', align: 'center' },
+  { label: 'xA', key: 'expected_assists', align: 'center' },
+  { label: 'xGI', key: 'expected_goal_involvements', align: 'center' },
+  { label: 'xGC', key: 'expected_goals_conceded', align: 'center' },
 ];
 
 const PlayerPastSeasons: React.FC<{ player: Element }> = ({ player }) => {
@@ -86,6 +86,7 @@ const PlayerPastSeasons: React.FC<{ player: Element }> = ({ player }) => {
                       colIdx === 0 ? styles['first'] : '',
                       colIdx === columns.length - 1 ? styles['last'] : ''
                     ].filter(Boolean).join(' ')}
+                    style={{ textAlign: col.align as React.CSSProperties['textAlign'] }}
                   >
                     {col.format
                       ? col.format(row[col.key])
