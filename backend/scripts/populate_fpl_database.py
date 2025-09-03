@@ -627,12 +627,15 @@ def update_player_from_csv(conn, row):
         'pp_next5_per_m': row['/£M'],
         'elite_selected_percent': row['Elite%'],
     }
-    for i in range(1, 6):
-        gw_col = f'GW{i}'
-        db_col = f'pp_gw_{i}'
-        if gw_col in row:
-            update_fields[db_col] = row[gw_col]
-
+    for k in row:
+        if k.startswith('GW') and row[k] != '':
+            try:
+                gw_num = int(k[2:])
+                db_col = f'pp_gw_{gw_num}'
+                update_fields[db_col] = row[k]
+            except ValueError:
+                continue
+    
     set_clause = ', '.join([f"{col} = ?" for col in update_fields])
     values = list(update_fields.values())
     values.append(player_id)
@@ -660,12 +663,16 @@ def update_player_xmins_from_csv(conn, row):
         'pxm_next5_per_m': row['/£M'],
         # 'elite_selected_percent': row['Elite%'],
     }
-    for i in range(1, 6):
-        gw_col = f'GW{i}'
-        db_col = f'xmins_gw_{i}'
-        if gw_col in row:
-            update_fields[db_col] = row[gw_col]
 
+    for k in row:
+        if k.startswith('GW') and row[k] != '':
+            try:
+                gw_num = int(k[2:])
+                db_col = f'xmins_gw_{gw_num}'
+                update_fields[db_col] = row[k]
+            except ValueError:
+                continue 
+    
     set_clause = ', '.join([f"{col} = ?" for col in update_fields])
     values = list(update_fields.values())
     values.append(player_id)

@@ -314,13 +314,13 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                                       }}>
                                         {[
                                           { label: 'Date', value: fix.kickoff_time ? new Date(fix.kickoff_time).toLocaleDateString() : null },
-                                          { label: 'Minutes played', value: fix.minutes },
+                                          { label: 'Mins played', value: fix.minutes },
                                           { label: 'Goals', value: fix.goals_scored },
                                           { label: 'Assists', value: fix.assists },
                                           { label: 'Clean Sheets', value: fix.clean_sheets },
                                           { label: 'Own Goals', value: fix.own_goals },
-                                          { label: 'Penalties Saved', value: fix.penalties_saved },
-                                          { label: 'Penalties Missed', value: fix.penalties_missed },
+                                          { label: 'Pens Saved', value: fix.penalties_saved },
+                                          { label: 'Pens Missed', value: fix.penalties_missed },
                                           { label: <img src="/YC.svg" alt="Yellow Cards" title="Yellow Cards" style={{ width: 18, height: 18, verticalAlign: 'middle' }} />, value: fix.yellow_cards },
                                           { label: <img src="/RC.svg" alt="Red Cards" title="Red Cards" style={{ width: 18, height: 18, verticalAlign: 'middle' }} />, value: fix.red_cards },
                                           { label: 'Saves', value: fix.saves },
