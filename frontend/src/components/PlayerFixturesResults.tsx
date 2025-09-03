@@ -58,6 +58,10 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
       let team_h = fix.team_h;
       let team_a = fix.team_a;
 
+      // Determine if player is home or away, and get opponent difficulty
+      const isHome = player.team === fix.team_h;
+      const difficulty = isHome ? fix.team_h_difficulty : fix.team_a_difficulty;
+
       if (hist) {
         rows.push({
           ...fix,
@@ -67,7 +71,7 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
           team_a,
           team_h_score: hist.team_h_score,
           team_a_score: hist.team_a_score,
-          difficulty: fix.difficulty ?? 3,
+          difficulty, // use opponent difficulty
           predicted_points,
           predicted_xmins,
           total_points: hist.total_points,
@@ -82,7 +86,7 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
           team_a,
           team_h_score: fix.team_h_score,
           team_a_score: fix.team_a_score,
-          difficulty: fix.difficulty ?? 3,
+          difficulty, // use opponent difficulty
           predicted_points,
           predicted_xmins,
           isHistory: false,
