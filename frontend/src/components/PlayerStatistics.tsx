@@ -29,7 +29,7 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ player }) => {
             display: 'flex',
             flexDirection: 'row',
             flexWrap: 'nowrap',
-            gap: 30,
+            gap: 15,
             minWidth: 400,
             justifyContent: 'flex-start',
             alignItems: 'center',
@@ -72,7 +72,7 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ player }) => {
                 className="player-detail-data-label"
                 style={{
                   display: 'block',
-                  fontSize: window.innerWidth < 600 ? '0.72rem' : '0.92rem',
+                  fontSize: window.innerWidth < 600 ? '0.42rem' : '0.62rem',
                   fontWeight: 400,
                   color: '#9e9d9dff',
                   marginBottom: 2,
@@ -84,7 +84,7 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ player }) => {
                 className="player-detail-data-value"
                 style={{
                   fontWeight: 600,
-                  fontSize: window.innerWidth < 600 ? '1rem' : '1.15rem',
+                  fontSize: window.innerWidth < 600 ? '0.62rem' : '0.82rem',
                 }}
               >
                 {item.value}
@@ -107,19 +107,8 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ player }) => {
           width: '100%',
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: 500,
-            background: '#1c1c20',
-            borderRadius: 24,
-            padding: '24px 12px',
-            boxShadow: '0 2px 16px rgba(0,0,0,0.12)',
-          }}
-        >
+        {/* Attacking Summary */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
           <h3
             style={{
               color: '#fff',
@@ -132,21 +121,21 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ player }) => {
           >
             Attacking Summary
           </h3>
-          <MultiAreaRadarAttack player={player} showTitle={false} height={400}/>
+          <div
+            style={{
+              width: '100%',
+              background: '#1c1c20',
+              borderRadius: 24,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <MultiAreaRadarAttack player={player} showTitle={false} height={400}/>
+          </div>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: 500,
-            background: '#1c1c20',
-            borderRadius: 24,
-            padding: '24px 12px',
-            boxShadow: '0 2px 16px rgba(0,0,0,0.12)',
-          }}
-        >
+        {/* Defensive Summary */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
           <h3
             style={{
               color: '#fff',
@@ -159,26 +148,26 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ player }) => {
           >
             Defensive Summary
           </h3>
-          <MultiAreaRadarDefence player={player} showTitle={false} height={400}/>
+          <div
+            style={{
+              width: '100%',
+              background: '#1c1c20',
+              borderRadius: 24,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <MultiAreaRadarDefence player={player} showTitle={false} height={400}/>
+          </div>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: 500,
-            background: '#1c1c20',
-            borderRadius: 24,
-            padding: '24px 12px',
-            boxShadow: '0 2px 16px rgba(0,0,0,0.12)',
-          }}
-        >
+        {/* Summary */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 500 }}>
           <h3
             style={{
               color: '#fff',
               marginBottom: 8,
-              marginTop: 0,
+              marginTop: 8,
               textAlign: window.innerWidth < 600 ? 'left' : 'center',
               width: '100%',
               paddingLeft: window.innerWidth < 600 ? 8 : 0,
@@ -186,7 +175,18 @@ const PlayerStatistics: React.FC<PlayerStatisticsProps> = ({ player }) => {
           >
             Summary
           </h3>
-          <MultiAreaRadar player={player} showTitle={false} height={400}/>
+          <div
+            style={{
+              width: '100%',
+              background: '#1c1c20',
+              borderRadius: 24,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <MultiAreaRadar player={player} showTitle={false} height={400}/>
+          </div>
         </div>
       </div>
     </div>

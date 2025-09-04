@@ -303,17 +303,15 @@ function PlayerData() {
 			</section>
 
 			{/* Filters Section */}
-			<section className="player-data-section">
-				<div className="player-data-filters">
-					<PlayerFilters
-						players={players}
-						teams={teams}
-						onFilteredPlayers={setFilteredPlayers}
-						costRange={costRange}
-						setCostRange={setCostRange}
-					/>
-				</div>
-			</section>
+			<div className="player-data-filters">
+				<PlayerFilters
+					players={players}
+					teams={teams}
+					onFilteredPlayers={setFilteredPlayers}
+					costRange={costRange}
+					setCostRange={setCostRange}
+				/>
+			</div>
 
 			{/* Table Section */}
 			<section>

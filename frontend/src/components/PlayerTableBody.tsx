@@ -320,7 +320,7 @@ export default function PlayerTableBody({ players, teams, checked, setChecked }:
                         <div> 
                           {player.web_name}
                         </div>
-                        <div style={{ fontWeight: 400, fontSize: 13, color: '#aaa', lineHeight: 1.2 }}>
+                        <div style={{ fontWeight: 400, fontSize: 11, color: '#f0eeeeff', lineHeight: 1.2 }}>
                           {teamFullNameMap[player.team]}
                         </div>
                       </td>

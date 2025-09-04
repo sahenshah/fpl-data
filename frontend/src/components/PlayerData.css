@@ -8,14 +8,14 @@
   }
 }
 .player-data-section {
-  margin-bottom: 32px;
+  margin-bottom: 72px;
   width: 100%;
   box-sizing: border-box;
 }
 @media (max-width: 600px) {
   .player-data-section {
     margin-top: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
   }
 }
 
@@ -70,6 +70,7 @@
   color: #fff;
   font-weight: 500;
   font-size: 18px;
+  margin-bottom: 28px;
 }
 @media (max-width: 600px) {
   .player-data-filters {
@@ -77,7 +78,7 @@
   }
 }
 .player-data-table {
-  background: #1a1c22;
+  background: #212027;
   border-radius: 60px;
   padding: 24px;
   color: #fff;

@@ -100,7 +100,7 @@
 .player-table-th.sticky-badge,
 .player-table td.sticky-badge {
   position: sticky;
-  left: 70px; /* select column total width (30px + 40px padding) */
+  left: 60px; /* select column total width (30px + 40px padding) */
   z-index: 4;
   background-color: #1c1c20;
 }
@@ -108,7 +108,7 @@
 .player-table-th.sticky-name,
 .player-table td.sticky-name {
   position: sticky;
-  left: 150px; /* select+badge total width (70px + 80px) */
+  left: 140px; /* select+badge total width (70px + 80px) */
   z-index: 4;
   background-color: #1c1c20;
 }
@@ -116,7 +116,7 @@
 .player-table-th.sticky-name,
 .player-table-th.sticky-badge,
 .player-table-th.sticky-select {
-  background-color: #1a1c22;
+  background-color: #212027;
 }
 
 .player-table input[type="checkbox"] {

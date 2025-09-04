@@ -19,10 +19,10 @@ interface PlayerDetailProps {
 }
 
 const positionMap: Record<number, string> = {
-  1: 'GK',
-  2: 'DEF',
-  3: 'MID',
-  4: 'FWD',
+  1: 'Goalkeeper',
+  2: 'Defender',
+  3: 'Midfielder',
+  4: 'Forward',
 };
 
 const StyledTabsBar = styled('div')({
@@ -51,8 +51,8 @@ const StyledTabs = styled(Tabs)({
 
 const StyledTab = styled(Tab)(() => ({
   color: '#fff',
-  fontWeight: 500,
-  fontSize: '0.7rem',
+  fontWeight: 400,
+  fontSize: '0.75rem',
   borderRadius: 24,
   minHeight: 44, // Match the bar and tab height
   height: 44,
@@ -63,6 +63,7 @@ const StyledTab = styled(Tab)(() => ({
   zIndex: 1,
   '&.Mui-selected': {
     background: '#7768f6',
+    fontWeight: 600,
     color: '#fff',
     borderRadius: 24,
     zIndex: 2,
@@ -112,8 +113,8 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
         minHeight: '600px', // Optional: set a minimum height for usability
         borderRadius: '32px',
         overflowY: 'auto',
-        scrollbarWidth: 'auto',
-        scrollbarColor: '#888 #212027',
+        scrollbarWidth: 'thin',
+        scrollbarColor: '#484852 #212027',
         boxSizing: 'border-box',
       }}
     >
@@ -131,16 +132,21 @@ const PlayerDetail: React.FC<PlayerDetailProps> = ({ player, team, onClose, team
             />
           )}
           <div className="player-detail-header-text">
-            <h2 className="player-detail-web-name">{player.web_name}</h2>
             <div className="player-names-row">
-              <span className="player-detail-name">{player.first_name} {player.second_name}</span>
+              <span className="player-detail-name">{player.first_name}</span>
+              <span className="player-detail-name">{player.second_name}</span>
             </div>
             <span className="player-detail-position">
-              <strong>{positionMap[player.element_type] || player.element_type}</strong>
+              {positionMap[player.element_type] || player.element_type}
               <span className="player-detail-separator"> | </span>
-              <span className="player-detail-value" style={{ fontWeight: 400 }}>
-                <strong>£{(player.now_cost / 10).toFixed(1)}</strong>
+              <span className="player-detail-value">
+                £{(player.now_cost / 10).toFixed(1)}
               </span>
+            </span>
+            <span className="player-detail-team">
+              {player.team_code && teams
+                ? teams.find(t => t.code === player.team_code)?.name || ''
+                : ''}
             </span>
           </div>
         </div>

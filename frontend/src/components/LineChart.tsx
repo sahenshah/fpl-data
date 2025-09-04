@@ -97,7 +97,7 @@ export default function LineChart({
   const gwCount = gwRange[1] - gwRange[0] + 1;
   const computedGwLabels = Array.from(
     { length: gwCount },
-    (_, i) => `GW${gwRange[0] + i}`
+    (_, i) => `GW ${gwRange[0] + i}`
   );
   const labels = computedGwLabels ?? gwLabels;
 
@@ -174,8 +174,8 @@ export default function LineChart({
                 setIsChartHovered(false);
               }}
             >
-              <XAxis dataKey="name" tick={{ fill: "#fff" }} />
-              <YAxis tick={{ fill: "#fff" }} />
+              <XAxis dataKey="name" tick={{ fill: "#fff", fontSize: 12 }} />
+              <YAxis tick={{ fill: "#fff", fontSize: 12 }} />
               <Tooltip
                 content={({ label, payload, active }) =>
                   active && payload && payload.length ? (
@@ -269,9 +269,22 @@ export default function LineChart({
             '& .MuiSlider-thumb': {
               color: '#000000ff',
               outline: '3px solid #7768f6',
-              height: 18,
-              width: 18,
-            },
+              height: 20,
+              width: 20,
+              '&:hover, &.Mui-focusVisible': {
+                height: 28,
+                width: 28,
+              },
+              '& .MuiSlider-valueLabel': {
+                background: '#7768f6',
+                borderRadius: '6px',
+                color: '#fff',
+                fontWeight: 400,
+                fontSize: '0.8rem',
+                padding: '2px 6px',
+                boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
+              },
+            }
           }}
           disableSwap
         />

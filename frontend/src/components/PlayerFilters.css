@@ -26,6 +26,7 @@
   background: #23232b;
   color: #fff;
   font-size: 15px;
+  outline: 1px solid #7768f6;
   text-align: left;
   padding: 0 16px;
   display: flex;
@@ -37,7 +38,8 @@
 
 .custom-dropdown-btn:focus,
 .custom-dropdown-btn:hover {
-  border-color: #a259ff;
+  border-color: #7768f6;
+  background: #7768f6;
 }
 
 .custom-dropdown-arrow {
@@ -89,9 +91,16 @@
   transition: background 0.2s;
 }
 
+.custom-dropdown-btn:focus,
+.custom-dropdown-btn:hover {
+  border-color: #7768f6 !important;
+  outline: 1px solid #7768f6 !important;
+  background: #7768f6;
+}
+
 .custom-dropdown-item:hover,
 .custom-dropdown-item input:focus + span {
-  background: #6758ec;
+  background: #7768f6;
 }
 
 .custom-dropdown-item input[type="checkbox"] {
@@ -102,7 +111,6 @@
   border-radius: 50%;
   border: 2px solid #7768f6;
   background: #23232b;
-  outline: none;
   cursor: pointer;
   margin-right: 8px;
   position: relative;
@@ -111,7 +119,7 @@
 }
 
 .custom-dropdown-item input[type="checkbox"]:checked {
-  border-color: #3a8bfd;
+  border-color: #7768f6;
   background: #ffffff;
 }
 
@@ -137,13 +145,15 @@
   background: #23232b;
   color: #fff;
   font-size: 15px;
-  outline: none;
+  outline: 1px solid #7768f6;
   transition: border-color 0.2s;
-  padding-left: 16px;
+  padding-right: 8px;
+  padding-left: 10px;
 }
 
 .xmins-filter-input:focus {
   border-color: #7768f6;
+  background: #7768f6;
 }
 
 .custom-slider-box {

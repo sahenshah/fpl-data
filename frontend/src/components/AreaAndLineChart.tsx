@@ -155,52 +155,52 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
                 display: 'flex',
                 gap: 16,
                 color: '#dfdfdfff',
-                fontSize: isSmallScreen ? '0.65rem' : '0.8rem',
+                fontSize: isSmallScreen ? '0.55rem' : '0.7rem',
                 width: '100%',
                 justifyContent: 'center',
                 marginBottom: 8,
               }}>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{
-                    width: 16,
-                    height: 2,
+                    width: 10,
+                    height: 10,
                     background: '#ea123c',
                     display: 'inline-block',
                     marginRight: 4,
-                    borderRadius: 2
+                    borderRadius: '50%'
                   }}></span>
                   xPoints
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{
-                    width: 16,
-                    height: 8,
+                    width: 10,
+                    height: 10,
                     background: '#722d4a',
                     display: 'inline-block',
                     marginRight: 4,
-                    borderRadius: 2
+                    borderRadius: '50%'
                   }}></span>
                   Points
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{
-                    width: 16,
-                    height: 2,
+                    width: 10,
+                    height: 10,
                     background: '#71abfb',
                     display: 'inline-block',
                     marginRight: 4,
-                    borderRadius: 2
+                    borderRadius: '50%'
                   }}></span>
                   xMins
                 </span>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   <span style={{
-                    width: 16,
-                    height: 8,
+                    width: 10,
+                    height: 10,
                     background: '#174255',
                     display: 'inline-block',
                     marginRight: 4,
-                    borderRadius: 2
+                    borderRadius: '50%'
                   }}></span>
                   Minutes
                 </span>
@@ -272,8 +272,22 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
             '& .MuiSlider-thumb': {
               color: '#000000ff',
               outline: '3px solid #7768f6',
-              height: 18,
-              width: 18,
+              height: 19,
+              width: 19,
+              transition: 'width 0.2s, height 0.2s',
+              '&:hover, &.Mui-focusVisible': {
+                height: 28,
+                width: 28,
+              },
+              '& .MuiSlider-valueLabel': {
+                background: '#7768f6',
+                borderRadius: '6px',
+                color: '#fff',
+                fontWeight: 400,
+                fontSize: '0.8rem',
+                padding: '2px 10px',
+                boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
+              },
             },
           }}
           disableSwap

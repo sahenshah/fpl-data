@@ -6,12 +6,20 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Fade from '@mui/material/Fade';
 import PlayerData from './components/PlayerData'; 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 const fetchJson = async (url: string) => {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
   return res.json();
 };
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "'DM Sans'",
+  },
+});
 
 export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
@@ -98,133 +106,136 @@ function App() {
   }
 
   return (
-    <div
-      style={{
-        padding: 8,
-        width: '100vw',
-        minHeight: '100vh',
-        boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        background: '#14161a',
-        overflowX: 'hidden',
-      }}
-    >
-      {/* Heading section with logo and tabs */}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <div
         style={{
-          width: '95%',
-          maxWidth: '95%',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 24,
-          margin: '24px auto',
-          background: '#212027',
-          borderRadius: 48,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.13)',
-          padding: '12px 24px',
+          padding: 8,
+          width: '100vw',
+          minHeight: '100vh',
           boxSizing: 'border-box',
-          overflow: 'hidden', 
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          background: '#14161a',
+          overflowX: 'hidden',
         }}
       >
-        <img
-          src="/fpl_iq_logo_nb.png"
-          alt="FPL IQ Logo"
-          style={{
-            width: 64,
-            height: 64,
-            objectFit: 'contain',
-            marginRight: 24,
-          }}
-        />
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
-          <Tabs
-            value={tabIndex}
-            onChange={(_, newValue) => setTabIndex(newValue)}
-            centered={false}
-            textColor="inherit"
-            TabIndicatorProps={{ style: { display: 'none' } }}
-            sx={{
-              '& .MuiTab-root': {
-                minWidth: 120,
-                color: '#fff',
-                background: 'transparent',
-                borderRadius: '32px',
-                transition: 'background 0.2s',
-                outline: 'none',
-                fontSize: '0.7rem',
-                fontWeight: 600,
-                textTransform: 'none',
-                '@media (max-width: 500px)': {
-                  minWidth: 70,
-                  fontSize: '0.7rem',
-                  padding: '2px 6px',
-                },
-              },
-              '& .Mui-selected': {
-                background: '#7768f6',
-                color: '#fff',
-              },
-              '& .MuiTab-root:focus': {
-                outline: 'none',
-              },
-            }}
-          >
-            <Tab label="Player Data" />
-            <Tab label="Fixtures" />
-          </Tabs>
-        </Box>
-      </div>
-
-      {fplData && (
+        {/* Heading section with logo and tabs */}
         <div
           style={{
-            width: '100%',
+            width: '95%',
+            maxWidth: '95%',
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            gap: 32,
-            marginBottom: 16,
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 24,
+            margin: '24px auto',
+            background: '#212027',
+            borderRadius: 48,
+            boxShadow: '0 2px 12px rgba(0,0,0,0.13)',
+            padding: '12px 24px',
             boxSizing: 'border-box',
+            overflow: 'hidden', 
           }}
         >
+          <img
+            src="/fpl_iq_logo_nb.png"
+            alt="FPL IQ Logo"
+            style={{
+              width: 64,
+              height: 64,
+              objectFit: 'contain',
+              marginRight: 24,
+            }}
+          />
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            <Tabs
+              value={tabIndex}
+              onChange={(_, newValue) => setTabIndex(newValue)}
+              centered={false}
+              textColor="inherit"
+              TabIndicatorProps={{ style: { display: 'none' } }}
+              sx={{
+                '& .MuiTab-root': {
+                  minWidth: 120,
+                  color: '#fff',
+                  background: 'transparent',
+                  borderRadius: '32px',
+                  transition: 'background 0.2s',
+                  outline: 'none',
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  '@media (max-width: 500px)': {
+                    minWidth: 70,
+                    fontSize: '0.7rem',
+                    padding: '2px 6px',
+                  },
+                },
+                '& .Mui-selected': {
+                  background: '#7768f6',
+                  color: '#fff',
+                },
+                '& .MuiTab-root:focus': {
+                  outline: 'none',
+                },
+              }}
+            >
+              <Tab label="Player Data" />
+              <Tab label="Fixtures" />
+            </Tabs>
+          </Box>
+        </div>
+
+        {fplData && (
           <div
             style={{
-              flex: 1,
-              maxWidth: '95%',
+              width: '100%',
               display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              gap: 32,
+              marginBottom: 16,
               boxSizing: 'border-box',
-              overflow: 'hidden',
             }}
           >
-            <Box style={{ width: '100%', margin: '0 auto' }}>
-              <Fade in={tabIndex === 0} timeout={400} unmountOnExit>
-                <div>
-                  <PlayerData />
-                </div>
-              </Fade>
-              <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
-                <div>
-                  <PlayerData />
-                </div>
-              </Fade>
-              <Fade in={tabIndex === 1} timeout={400} unmountOnExit>
-                <div>
-                  <FixtureTable teams={fplData.teams} fixtures={fixtures} />
-                </div>
-              </Fade>
-            </Box>
+            <div
+              style={{
+                flex: 1,
+                maxWidth: '95%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                boxSizing: 'border-box',
+                overflow: 'hidden',
+              }}
+            >
+              <Box style={{ width: '100%', margin: '0 auto' }}>
+                <Fade in={tabIndex === 0} timeout={400} unmountOnExit>
+                  <div>
+                    <PlayerData />
+                  </div>
+                </Fade>
+                <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
+                  <div>
+                    <PlayerData />
+                  </div>
+                </Fade>
+                <Fade in={tabIndex === 1} timeout={400} unmountOnExit>
+                  <div>
+                    <FixtureTable teams={fplData.teams} fixtures={fixtures} />
+                  </div>
+                </Fade>
+              </Box>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 

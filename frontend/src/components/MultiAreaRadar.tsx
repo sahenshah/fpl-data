@@ -81,8 +81,8 @@ const METRICS = [
 ];
 
 const COLORS = [
-  "#bd56ed", "#8884d8", "#82ca9d", "#ffc658", "#e7e0d9ff", "#00c49f", "#ff4f81", "#d17e7eff",
-  "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
+  "#8373F7", "#bd56ed", "#82ca9d", "#ffc658", "#e7e0d9ff", "#00c49f", "#ff4f81", "#d17e7eff",
+  "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#8c564b", "#e377c2", "#7f7f7f",
   "#bcbd22", "#17becf", "#393b79", "#637939"
 ];
 
@@ -162,8 +162,37 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle, heig
                 dataKey={p.web_name}
                 stroke={COLORS[idx % COLORS.length]}
                 fill={COLORS[idx % COLORS.length]}
-                fillOpacity={0.4}
-                dot={true}
+                fillOpacity={players.length === 1 ? 0.8 : 0.4}
+                dot={
+                  players.length === 1
+                    ? (props) => (
+                        <circle
+                          {...(props as React.SVGProps<SVGCircleElement>)}
+                          r={6}
+                          fill="#fff"
+                          fillOpacity={1}
+                          stroke={COLORS[idx % COLORS.length]}
+                          strokeWidth={2}
+                          style={{ transition: 'r 0.2s, stroke-width 0.2s' }}
+                        />
+                      )
+                    : true
+                }
+                activeDot={
+                  players.length === 1
+                    ? (props) => (
+                        <circle
+                          {...(props as React.SVGProps<SVGCircleElement>)}
+                          r={6}
+                          fill="#8373F7"
+                          fillOpacity={1}
+                          stroke="none"
+                          strokeWidth={0}
+                          style={{ transition: 'r 0.2s, stroke-width 0.2s' }}
+                        />
+                      )
+                    : true
+                }
               />
             ))}
           </RadarChart>

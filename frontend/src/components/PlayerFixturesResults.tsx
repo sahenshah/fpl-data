@@ -12,6 +12,7 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
   const [allFixtures, setAllFixtures] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [openRow, setOpenRow] = React.useState<number | null>(null);
+  const [hoveredChevron, setHoveredChevron] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     setLoading(true);
@@ -31,7 +32,7 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
       .catch(() => setLoading(false));
   }, [player.id]);
 
-  // Map history by gameweek
+  // Map history to gameweeks
   const historyMap = React.useMemo(() => {
     const map = new Map<number, any>();
     history.forEach(h => {
@@ -113,26 +114,38 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
     return '';
   };
 
-  const Chevron = ({ open }: { open: boolean }) => (
-    <svg
-      width="16"
-      height="16"
+  const Chevron = ({ open, hovered }: { open: boolean; hovered: boolean }) => (
+    <span
       style={{
-        display: 'inline-block',
-        transition: 'transform 0.2s',
-        transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
-        verticalAlign: 'middle',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: open || hovered ? '#7768f6' : '#17161aff', // purple when open or hovered, dark otherwise
+        borderRadius: '50%',
+        width: 32,
+        height: 32,
+        transition: 'background 0.2s',
       }}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="#fff"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-label={open ? 'Collapse row' : 'Expand row'}
     >
-      <polyline points="5 3 11 8 5 13" />
-    </svg>
+      <svg
+        width="16"
+        height="16"
+        style={{
+          transition: 'transform 0.2s',
+          transform: open ? 'rotate(-90deg)' : 'rotate(90deg)',
+          verticalAlign: 'middle',
+        }}
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-label={open ? 'Collapse row' : 'Expand row'}
+      >
+        <polyline points="5 3 11 8 5 13" />
+      </svg>
+    </span>
   );
 
   return (
@@ -193,6 +206,7 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                 const predicted_points = fix.predicted_points;
                 const predicted_xmins = fix.predicted_xmins;
                 const isOpen = openRow === idx;
+                const isChevronHovered = hoveredChevron === idx;
                 return (
                   <React.Fragment key={fix.id || `${gw}-${idx}`}>
                     <tr>
@@ -297,8 +311,10 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
                                       setOpenRow(isOpen ? null : idx);
                                     }}
                                     aria-label={isOpen ? 'Collapse row' : 'Expand row'}
+                                    onMouseEnter={() => setHoveredChevron(idx)}
+                                    onMouseLeave={() => setHoveredChevron(null)}
                                   >
-                                    <Chevron open={isOpen} />
+                                    <Chevron open={isOpen} hovered={isChevronHovered} />
                                   </button>
                                 </td>
                               </tr>

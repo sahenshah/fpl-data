@@ -73,7 +73,6 @@
 
 .fixtures-details-row {
   background: #8373f7;           /* Purple background */
-  box-shadow: 0 2px 8px rgba(119,104,246,0.10);
 }
 
 .fixtures-details-row > td {
@@ -118,11 +117,15 @@
 }
 
 .fixtures-results-row:hover {
-  background: #6e61cc; 
+  background: #8373f7; 
   transition: background 0.2s;
   cursor: pointer;
 }
-
+.fixtures-results-row.open {
+  background: #8373f7 !important; /* Purple background when expanded */
+  box-shadow: 0 2px 8px rgba(119,104,246,0.10);
+  outline: 2px solid #8373f7;
+}
 .result-win {
   background-color: #40c46e !important; /* green */
   color: #fff;

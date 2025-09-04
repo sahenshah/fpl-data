@@ -207,7 +207,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
         <div
           className="custom-slider-box"
           style={{
-            width: 400,
+            width: 300,
             display: 'flex',
             alignItems: 'center',
             gap: 12,
@@ -244,19 +244,33 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               color: '#7768f6', 
               flex: 1,
               '& .MuiSlider-rail': {
-                height: 16, // Increase rail thickness here (default is 4)
+                height: 20, // Increase rail thickness here (default is 4)
                 borderRadius: 4,
                 color: '#000000ff'
               },
               '& .MuiSlider-track': {
-                height: 16, // Match the rail thickness
+                height: 20, // Match the rail thickness
                 borderRadius: 0,
               },
               '& .MuiSlider-thumb': {
                 color: '#000000ff',
                 outline: '3px solid #7768f6',
-                height: 12,
-                width: 12,
+                height: 18,
+                width: 18,
+                transition: 'width 0.2s, height 0.2s',
+                '&:hover, &.Mui-focusVisible': {
+                  height: 28,
+                  width: 28,
+                },
+                '& .MuiSlider-valueLabel': {
+                  background: '#7768f6',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontWeight: 400,
+                  fontSize: '0.6rem',
+                  padding: '2px 6px',
+                  boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
+                },
               },
             }}
           />
