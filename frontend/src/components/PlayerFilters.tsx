@@ -24,7 +24,7 @@ const positionOptions: PositionOption[] = [
 ];
 
 const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFilteredPlayers, costRange, setCostRange }) => {
-  const [positionFilter, setPositionFilter] = React.useState<string[]>([]);
+  const [positionFilter, setPositionFilter] = React.useState<string[]>(() => positionOptions.map(p => p.value));
   const [teamFilter, setTeamFilter] = React.useState<string[]>(() => teams.map(t => t.name));
   const [minutesFilter, setMinutesFilter] = React.useState<string>('');
   const [searchTerm, setSearchTerm] = React.useState<string>('');
@@ -86,6 +86,13 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
 
   // Position dropdown logic
   const togglePositionDropdown = () => setShowPositionDropdown(v => !v);
+  const handleAllPositions = () => {
+    if (positionFilter.length === positionOptions.length) {
+      setPositionFilter([]);
+    } else {
+      setPositionFilter(positionOptions.map(p => p.value));
+    }
+  };
   const handlePositionOption = (value: string) => {
     setPositionFilter(prev =>
       prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
@@ -128,16 +135,26 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
             onClick={togglePositionDropdown}
             type="button"
           >
-            {positionFilter.length === 0
+            {positionFilter.length === positionOptions.length
               ? 'Position'
-              : positionOptions
-                  .filter(opt => positionFilter.includes(opt.value))
-                  .map(opt => opt.label)
-                  .join(', ')}
+              : positionFilter.length === 0
+                ? 'No Positions'
+                : positionOptions
+                    .filter(opt => positionFilter.includes(opt.value))
+                    .map(opt => opt.label)
+                    .join(', ')}
             <span className="custom-dropdown-arrow">&#9662;</span>
           </button>
           {showPositionDropdown && (
             <div className="custom-dropdown-menu">
+              <label className="custom-dropdown-item">
+                <input
+                  type="checkbox"
+                  checked={positionFilter.length === positionOptions.length}
+                  onChange={handleAllPositions}
+                />
+                All Positions
+              </label>
               {positionOptions.map(option => (
                 <label key={option.value} className="custom-dropdown-item">
                   <input
