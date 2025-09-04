@@ -133,7 +133,7 @@ export default function LineChart({
         ref={chartContainerRef}
         style={{
           width: '100%',
-          overflowX: 'auto',
+          overflowX: 'hidden',
           overflowY: isChartHovered ? undefined : 'hidden',
           scrollbarWidth: 'thin',
           scrollbarColor: '#7768f6 #1a1c22',
