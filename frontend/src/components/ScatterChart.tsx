@@ -29,7 +29,7 @@ function getRandomColor() {
 const CustomTooltip = ({ active, payload, coordinate }: any) => {
   if (active && payload && payload.length && payload[0].payload) {
     const point = payload[0].payload;
-    const tooltipWidth = 140;
+    const tooltipWidth = 180;
     const tooltipHeight = 90;
     let left = coordinate ? coordinate.x + 10 : 0;
     let top = coordinate ? coordinate.y : 0;
