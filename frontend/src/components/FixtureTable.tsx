@@ -251,7 +251,6 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                     fontWeight: 400,
                     fontSize: '0.8rem',
                     padding: '2px 6px',
-                    boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
                   },
                 }
               }}

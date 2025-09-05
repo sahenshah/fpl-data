@@ -84,12 +84,12 @@ const columns: TableColumn[] = [
   { id: 'expected_goals_per_90', label: 'xG / 90', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'expected_assists_per_90', label: 'xA / 90', minWidth: 80, maxWidth: 79, align: 'center' },
   { id: 'expected_goal_involvements_per_90', label: 'xGI / 90', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'defensive_contribution_per_90', label: 'Def Con / 90', minWidth: 100, maxWidth: 100, align: 'center' },
 
   { id: 'clearances_blocks_interceptions', label: 'CBI', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'recoveries', label: 'Recoveries', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'tackles', label: 'Tackles', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'defensive_contribution', label: 'Def Cons', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'defensive_contribution_per_90', label: 'Def Con / 90', minWidth: 100, maxWidth: 100, align: 'center' },
 
 
   { id: 'influence', label: 'Influence', minWidth: 80, maxWidth: 80, align: 'center' },
