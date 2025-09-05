@@ -139,6 +139,7 @@
   padding: 30px 20px;
   padding-bottom: 30px;
   font-weight: 400;
+  max-width: 105px;
 }
 
 .fixture-table td {
