@@ -166,7 +166,8 @@ function PlayerData() {
 		<div className="player-data-root">
 			{/* Header Section */}
 			<div
-			 style={{fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#fff'}}>
+			 className='player-data-header'
+			>
 				{getChartDisplayLabel()}
 			</div>
 

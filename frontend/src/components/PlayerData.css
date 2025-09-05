@@ -2,6 +2,12 @@
   color: #fff;
   padding: 32px;
 }
+.player-data-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #fff;
+}
 @media (max-width: 600px) {
   .player-data-root {
     padding: 0px;
@@ -16,6 +22,14 @@
   .player-data-section {
     margin-top: 8px;
     margin-bottom: 16px;
+  }
+  .player-data-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
