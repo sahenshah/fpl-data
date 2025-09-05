@@ -201,37 +201,35 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
 
   return (
     <div className="player-filters-root">
-        <div className="player-filters-left">
-        <div className="player-filters-search-container" style={{marginLeft: 'auto'}}>
-          <div className="player-filters-search-container">
-            {!showSearchInput ? (
-              <button
-                className="player-filters-search-icon"
-                onClick={() => setShowSearchInput(true)}
-              tabIndex={0}
-              aria-label="Search by name"
-              type="button"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="7" cy="7" r="5.5" stroke="white" strokeWidth="1.5"/>
-                <line x1="11.25" y1="11.75" x2="15" y2="15.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            </button>
-          ) : (
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              onBlur={() => setShowSearchInput(false)}
-              placeholder="Search by name"
-              className="player-filters-search-input"
-              style={{ minWidth: 180 }}
-            />
-          )}
-          </div>
+      <div className="player-filters-left">
+        <div className="player-filters-search-container">
+          {!showSearchInput ? (
+            <button
+              className="player-filters-search-icon"
+              onClick={() => setShowSearchInput(true)}
+            tabIndex={0}
+            aria-label="Search by name"
+            type="button"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="5.5" stroke="white" strokeWidth="1.5"/>
+              <line x1="11.25" y1="11.75" x2="15" y2="15.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          </button>
+        ) : (
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            onBlur={() => setShowSearchInput(false)}
+            placeholder="Search by name"
+            className="player-filters-search-input"
+            style={{ minWidth: 180 }}
+          />
+        )}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
+        <div className="player-filters-dropdown-input">
           {/* Position filter */}
           <div className="custom-dropdown position">
             <button
@@ -360,7 +358,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
             { value: 150 }
           ]}
           valueLabelDisplay="off"
-          valueLabelFormat={v => (v / 10).toFixed(1)} 
           onChange={(_, value) => setCostRange(value as [number, number])}
           disableSwap
           sx={{ 
@@ -385,15 +382,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
                 height: 28,
                 width: 28,
               },
-              // '& .MuiSlider-valueLabel': {
-              //   background: '#7768f6',
-              //   borderRadius: '6px',
-              //   color: '#fff',
-              //   fontWeight: 400,
-              //   fontSize: '0.6rem',
-              //   padding: '2px 6px',
-              //   boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
-              // },
             },
           }}
         />
@@ -414,15 +402,8 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
       {/* Vertical divider */}
       <div
         className="player-filters-divider"
-        style={{
-          width: '2px',
-          background: '#3a3750',
-          minHeight: 300,
-          alignSelf: 'stretch',
-          borderRadius: '2px',
-        }}
       />
-      <div style={{width: '500px'}}> 
+      <div style={{maxWidth: '500px', minWidth: '350px'}}> 
         {/* Top filter buttons */}
         <div className="player-filters-title">
           Table Column Data:
