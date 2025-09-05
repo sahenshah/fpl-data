@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Team, Fixture } from '../types/fpl';
-import './FixtureTable.css';
+import './FixtureTable.module.css';
 import { getCurrentGameweek } from '../App';
 import Slider from '@mui/material/Slider';
 

@@ -274,7 +274,7 @@
   }
   .player-table-th.sticky-name,
   .player-table td.sticky-name {
-    left: 76px; /* select+badge total width */
+    left: 38px; /* select+badge total width */
   }
 
   /* Smaller badge size */
