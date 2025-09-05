@@ -247,7 +247,12 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
     <div className={styles['fixture-table-outer-container']}>
       <div className={styles['fixture-table-container']}>
         <div className={styles['fixture-controls']}>
-          <div className={styles['fixture-slider']} style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+          <div className={styles['fixture-slider']} 
+               style={{ 
+                display: 'flex', 
+                justifyContent: 'center',
+                alignItems: 'center', 
+                gap: 0 }}>
             <span style={{ 
               color: '#fff', 
               minWidth: 35, 
