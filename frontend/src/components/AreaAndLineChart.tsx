@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useMediaQuery } from '@mui/material';
 import Slider from '@mui/material/Slider';
-import { getCurrentGameweek } from '../App'; // adjust import path as needed
+import { getCurrentGameweek } from '../App';
 
 interface AreaAndLineChartProps {
   player: any;

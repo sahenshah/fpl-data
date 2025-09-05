@@ -25,7 +25,7 @@
 
 .player-data-chart {
   width: 100%;
-  max-width: none;
+  max-width: 100%;
   height: 600px;
   max-height: 600px;
   background: #1a1c22;
@@ -36,9 +36,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: auto;
-  scrollbar-width: thin;                /* Firefox */
-  scrollbar-color: #7768f6 #14161a;     /* Firefox */
+  overflow-x: hidden !important;
   box-sizing: border-box;
 }
 @media (max-width: 600px) {
@@ -74,7 +72,7 @@
 }
 @media (max-width: 600px) {
   .player-data-filters {
-    margin-top: 16px;
+    margin-top: 30px;
   }
 }
 .player-data-table {

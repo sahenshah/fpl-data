@@ -51,6 +51,7 @@ function PlayerData() {
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const gwRange: [number, number] = [1, 38];
 	const [costRange, setCostRange] = useState<[number, number]>([40, 150]); // Example: £4.0m to £15.0m
+	const [activeFilters, setActiveFilters] = React.useState<string[]>(['General']);
 
 	// Get the section that contains the current chart mode
 	const getCurrentSection = () => {
@@ -164,9 +165,10 @@ function PlayerData() {
 	return (
 		<div className="player-data-root">
 			{/* Header Section */}
-			<section className="player-data-section player-data-header">
-				<h2>{getChartDisplayLabel()}</h2>
-			</section>
+			<div
+			 style={{fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#fff'}}>
+				{getChartDisplayLabel()}
+			</div>
 
 			{/* Chart Section */}
 			<section className="player-data-section" style={{ position: 'relative' }}>
@@ -310,6 +312,8 @@ function PlayerData() {
 					onFilteredPlayers={setFilteredPlayers}
 					costRange={costRange}
 					setCostRange={setCostRange}
+					activeFilters={activeFilters}
+					setActiveFilters={setActiveFilters}
 				/>
 			</div>
 
@@ -321,6 +325,7 @@ function PlayerData() {
 						teams={teams}
 						checked={checked}
 						setChecked={setChecked}
+						activeFilters={activeFilters}
 					/>
 				</div>
 			</section>

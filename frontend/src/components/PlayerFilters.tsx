@@ -14,6 +14,8 @@ interface PlayerFiltersProps {
   onFilteredPlayers: (filtered: Element[]) => void;
   costRange: [number, number];
   setCostRange: React.Dispatch<React.SetStateAction<[number, number]>>;
+  activeFilters: string[];
+  setActiveFilters: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const positionOptions: PositionOption[] = [
@@ -23,7 +25,24 @@ const positionOptions: PositionOption[] = [
   { value: '4', label: 'FWD' },
 ];
 
-const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFilteredPlayers, costRange, setCostRange }) => {
+const topFilterButtonLabels = [
+  'General', 
+  'Selected %',
+  'Bonus Points', 
+  'Def Cons', 
+  'ICT', 
+  'Cards',
+  'xData', 
+  'Per 90', 
+];
+
+const bottomFilterButtonLabels = [
+  'Predicted',
+  'xPts',
+  'xMins',
+];
+
+const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFilteredPlayers, costRange, setCostRange, activeFilters, setActiveFilters }) => {
   const [positionFilter, setPositionFilter] = React.useState<string[]>(() => positionOptions.map(p => p.value));
   const [teamFilter, setTeamFilter] = React.useState<string[]>(() => teams.map(t => t.name));
   const [minutesFilter, setMinutesFilter] = React.useState<string>('');
@@ -124,6 +143,61 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
     document.addEventListener('mousedown', closeDropdowns);
     return () => document.removeEventListener('mousedown', closeDropdowns);
   }, []);
+
+  // Filter button click handler
+  const handleFilterButtonClick = (label: string) => {
+    if (topFilterButtonLabels.includes(label)) {
+      if (label === 'General') {
+        setActiveFilters(prev => {
+          const allTopActive = topFilterButtonLabels.every(l => prev.includes(l));
+          // If all top filters are active, deselect all except General
+          // If not all are active, select all top filters
+          return allTopActive ? ['General'] : [...topFilterButtonLabels];
+        });
+      } else {
+        setActiveFilters(prev => {
+          // Remove all bottom row filters
+          let next = prev.filter(l => !bottomFilterButtonLabels.includes(l));
+          // Always include General
+          if (!next.includes('General')) next = ['General', ...next];
+          // Toggle the clicked top filter (except General itself)
+          if (label !== 'General') {
+            if (next.includes(label)) {
+              next = next.filter(l => l !== label);
+            } else {
+              next.push(label);
+            }
+          }
+          return next;
+        });
+      }
+    } else if (bottomFilterButtonLabels.includes(label)) {
+      if (label === 'Predicted') {
+        setActiveFilters(prev => {
+          const allBottomActive = bottomFilterButtonLabels.every(l => prev.includes(l));
+          // If all bottom filters are active, deselect all except Predicted
+          // If not all are active, select all bottom filters
+          return allBottomActive ? ['Predicted'] : [...bottomFilterButtonLabels];
+        });
+      } else {
+        setActiveFilters(prev => {
+          // Remove all top row filters
+          let next = prev.filter(l => !topFilterButtonLabels.includes(l) && l !== 'General');
+          // Always include Predicted
+          if (!next.includes('Predicted')) next = ['Predicted', ...next];
+          // Toggle the clicked bottom filter (except Predicted itself)
+          if (label !== 'Predicted') {
+            if (next.includes(label)) {
+              next = next.filter(l => l !== label);
+            } else {
+              next.push(label);
+            }
+          }
+          return next;
+        });
+      }
+    }
+  };
 
   return (
     <div className="player-filters-root">
@@ -304,34 +378,98 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
             £{(costRange[1] / 10).toFixed(1)}
           </span>
         </div>
+        <div className="player-filters-search-container" style={{marginLeft: 'auto'}}>
+          <div className="player-filters-search-container">
+            {!showSearchInput ? (
+              <button
+                className="player-filters-search-icon"
+                onClick={() => setShowSearchInput(true)}
+              tabIndex={0}
+              aria-label="Search by name"
+              type="button"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="7" cy="7" r="5.5" stroke="white" strokeWidth="1.5"/>
+                <line x1="11.25" y1="11.75" x2="15" y2="15.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </button>
+          ) : (
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              onBlur={() => setShowSearchInput(false)}
+              placeholder="Search by name"
+              className="player-filters-search-input"
+              style={{ minWidth: 180 }}
+            />
+          )}
+          </div>
+        </div>
       </div>
-      <div className="player-filters-search-container">
-        {!showSearchInput ? (
-          <button
-            className="player-filters-search-icon"
-            onClick={() => setShowSearchInput(true)}
-            tabIndex={0}
-            aria-label="Search by name"
-            type="button"
-          >
-            {/* Minimal magnifying glass SVG */}
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="7" cy="7" r="5.5" stroke="white" strokeWidth="1.5"/>
-              <line x1="11.25" y1="11.75" x2="15" y2="15.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>
-          </button>
-        ) : (
-          <input
-            ref={searchInputRef}
-            type="text"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            onBlur={() => setShowSearchInput(false)}
-            placeholder="Search by name"
-            className="player-filters-search-input"
-            style={{ minWidth: 180 }}
-          />
-        )}
+      <div>
+        {/* Top filter buttons */}
+        <div className="player-filters-title">
+          Table Column Data:
+        </div>
+        <div className='player-filters-buttons-container' 
+             style={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              gap: 8,
+              marginTop: 10
+              }}>
+          <div className="player-filters-buttons" style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            {topFilterButtonLabels.map((label) => (
+              <button
+                key={label}
+                type="button"
+                className="player-filter-btn"
+                style={{
+                  background: activeFilters.includes(label) ? '#7768f6' : '#23232b',
+                  color: '#fff',
+                  border: '1px solid #7768f6',
+                  height: 28,
+                  borderRadius: 24,
+                  padding: '6px 14px',
+                  fontWeight: activeFilters.includes(label) ? 600 : 400,
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => handleFilterButtonClick(label)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          {/* Bottom filter buttons */}
+          <div className="player-filters-buttons" style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            {bottomFilterButtonLabels.map((label) => (
+              <button
+                key={label}
+                type="button"
+                className="player-filter-btn"
+                style={{
+                  background: activeFilters.includes(label) ? '#7768f6' : '#23232b',
+                  color: '#fff',
+                  border: '1px solid #7768f6',
+                  height: 28,
+                  borderRadius: 24,
+                  padding: '6px 14px',
+                  fontWeight: activeFilters.includes(label) ? 600 : 400,
+                  fontSize: 13,
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                }}
+                onClick={() => handleFilterButtonClick(label)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
