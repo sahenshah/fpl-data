@@ -201,183 +201,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
 
   return (
     <div className="player-filters-root">
-      <div className="player-filters-left">
-        {/* Position filter */}
-        <div className="custom-dropdown position">
-          <button
-            className="custom-dropdown-btn"
-            onClick={togglePositionDropdown}
-            type="button"
-          >
-            {positionFilter.length === positionOptions.length
-              ? 'Position'
-              : positionFilter.length === 0
-                ? 'No Positions'
-                : positionOptions
-                    .filter(opt => positionFilter.includes(opt.value))
-                    .map(opt => opt.label)
-                    .join(', ')}
-            <span className="custom-dropdown-arrow">&#9662;</span>
-          </button>
-          {showPositionDropdown && (
-            <div className="custom-dropdown-menu">
-              <label className="custom-dropdown-item">
-                <input
-                  type="checkbox"
-                  checked={positionFilter.length === positionOptions.length}
-                  onChange={handleAllPositions}
-                />
-                All Positions
-              </label>
-              {positionOptions.map(option => (
-                <label key={option.value} className="custom-dropdown-item">
-                  <input
-                    type="checkbox"
-                    checked={positionFilter.includes(option.value)}
-                    onChange={() => handlePositionOption(option.value)}
-                  />
-                  {option.label}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-        {/* Team filter */}
-        <div className="custom-dropdown team">
-          <button
-            className="custom-dropdown-btn"
-            onClick={toggleTeamDropdown}
-            type="button"
-          >
-            {teamFilter.length === teams.length
-              ? 'Teams'
-              : teamFilter.length === 0
-                ? 'No Teams'
-                : 'Selected'}
-            <span className="custom-dropdown-arrow">&#9662;</span>
-          </button>
-          {showTeamDropdown && (
-            <div className="custom-dropdown-menu teams-dropdown">
-              <label className="custom-dropdown-item">
-                <input
-                  type="checkbox"
-                  checked={teamFilter.length === teams.length}
-                  onChange={handleAllTeams}
-                />
-                All Teams
-              </label>
-              {teams.map(team => (
-                <label key={team.id} className="custom-dropdown-item">
-                  <input
-                    type="checkbox"
-                    checked={teamFilter.includes(team.name)}
-                    onChange={() => handleTeamOption(team.name)}
-                  />
-                  <img
-                    src={`/team-badges/${team.short_name}.svg`}
-                    alt={team.short_name}
-                    style={{ width: 22, height: 22, marginRight: 8, verticalAlign: 'middle' }}
-                  />
-                  {team.name}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-        {/* Minutes filter */}
-        <input
-          type="number"
-          min={0}
-          value={minutesFilter}
-          onChange={e => setMinutesFilter(e.target.value)}
-          placeholder="Min Minutes"
-          className="xmins-filter-input"
-          step={10}
-        />
-        {/* Add margin-top to the slider box for spacing */}
-        <div
-          className="custom-slider-box"
-          style={{
-            width: 300,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            paddingLeft: 0,
-            paddingRight: 0,
-          }}
-        >
-          <span
-            style={{
-              color: '#fff',
-              fontSize: 13,
-              minWidth: 40,
-              padding: 6,
-              textAlign: 'right',
-              flexShrink: 0,
-            }}
-          >
-            £{(costRange[0] / 10).toFixed(1)}
-          </span>
-          <Slider
-            value={costRange}
-            min={40}
-            max={150}
-            step={1}
-            marks={[
-              { value: 40 },
-              { value: 150 }
-            ]}
-            valueLabelDisplay="auto"
-            valueLabelFormat={v => (v / 10).toFixed(1)} 
-            onChange={(_, value) => setCostRange(value as [number, number])}
-            disableSwap
-            sx={{ 
-              color: '#7768f6', 
-              flex: 1,
-              '& .MuiSlider-rail': {
-                height: 20, // Increase rail thickness here (default is 4)
-                borderRadius: 4,
-                color: '#000000ff'
-              },
-              '& .MuiSlider-track': {
-                height: 20, // Match the rail thickness
-                borderRadius: 0,
-              },
-              '& .MuiSlider-thumb': {
-                color: '#000000ff',
-                outline: '3px solid #7768f6',
-                height: 18,
-                width: 18,
-                transition: 'width 0.2s, height 0.2s',
-                '&:hover, &.Mui-focusVisible': {
-                  height: 28,
-                  width: 28,
-                },
-                '& .MuiSlider-valueLabel': {
-                  background: '#7768f6',
-                  borderRadius: '6px',
-                  color: '#fff',
-                  fontWeight: 400,
-                  fontSize: '0.6rem',
-                  padding: '2px 6px',
-                  boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
-                },
-              },
-            }}
-          />
-          <span
-            style={{
-              color: '#fff',
-              fontSize: 13,
-              padding: 6,
-              minWidth: 40,
-              textAlign: 'left',
-              flexShrink: 0,
-            }}
-          >
-            £{(costRange[1] / 10).toFixed(1)}
-          </span>
-        </div>
+        <div className="player-filters-left">
         <div className="player-filters-search-container" style={{marginLeft: 'auto'}}>
           <div className="player-filters-search-container">
             {!showSearchInput ? (
@@ -407,8 +231,198 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
           )}
           </div>
         </div>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
+          {/* Position filter */}
+          <div className="custom-dropdown position">
+            <button
+              className="custom-dropdown-btn"
+              onClick={togglePositionDropdown}
+              type="button"
+            >
+              {positionFilter.length === positionOptions.length
+                ? 'Position'
+                : positionFilter.length === 0
+                  ? 'No Positions'
+                  : positionOptions
+                      .filter(opt => positionFilter.includes(opt.value))
+                      .map(opt => opt.label)
+                      .join(', ')}
+              <span className="custom-dropdown-arrow">&#9662;</span>
+            </button>
+            {showPositionDropdown && (
+              <div className="custom-dropdown-menu">
+                <label className="custom-dropdown-item">
+                  <input
+                    type="checkbox"
+                    checked={positionFilter.length === positionOptions.length}
+                    onChange={handleAllPositions}
+                  />
+                  All Positions
+                </label>
+                {positionOptions.map(option => (
+                  <label key={option.value} className="custom-dropdown-item">
+                    <input
+                      type="checkbox"
+                      checked={positionFilter.includes(option.value)}
+                      onChange={() => handlePositionOption(option.value)}
+                    />
+                    {option.label}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Team filter */}
+          <div className="custom-dropdown team">
+            <button
+              className="custom-dropdown-btn"
+              onClick={toggleTeamDropdown}
+              type="button"
+            >
+              {teamFilter.length === teams.length
+                ? 'Teams'
+                : teamFilter.length === 0
+                  ? 'No Teams'
+                  : 'Selected'}
+              <span className="custom-dropdown-arrow">&#9662;</span>
+            </button>
+            {showTeamDropdown && (
+              <div className="custom-dropdown-menu teams-dropdown">
+                <label className="custom-dropdown-item">
+                  <input
+                    type="checkbox"
+                    checked={teamFilter.length === teams.length}
+                    onChange={handleAllTeams}
+                  />
+                  All Teams
+                </label>
+                {teams.map(team => (
+                  <label key={team.id} className="custom-dropdown-item">
+                    <input
+                      type="checkbox"
+                      checked={teamFilter.includes(team.name)}
+                      onChange={() => handleTeamOption(team.name)}
+                    />
+                    <img
+                      src={`/team-badges/${team.short_name}.svg`}
+                      alt={team.short_name}
+                      style={{ width: 22, height: 22, marginRight: 8, verticalAlign: 'middle' }}
+                    />
+                    {team.name}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Minutes filter */}
+          <input
+            type="number"
+            min={0}
+            value={minutesFilter}
+            onChange={e => setMinutesFilter(e.target.value)}
+            placeholder="Min Minutes"
+            className="xmins-filter-input"
+            step={10}
+          />
+        </div>
+      {/* Add margin-top to the slider box for spacing */}
+      <div
+        className="custom-slider-box"
+        style={{
+          width: 450,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          paddingLeft: 0,
+          paddingRight: 0,
+          
+        }}
+      >
+        <span
+          style={{
+            color: '#fff',
+            fontSize: 13,
+            minWidth: 40,
+            padding: 6,
+            textAlign: 'right',
+            flexShrink: 0,
+          }}
+        >
+          £{(costRange[0] / 10).toFixed(1)}
+        </span>
+        <Slider
+          value={costRange}
+          min={38}
+          max={150}
+          step={1}
+          marks={[
+            { value: 38 },
+            { value: 150 }
+          ]}
+          valueLabelDisplay="auto"
+          valueLabelFormat={v => (v / 10).toFixed(1)} 
+          onChange={(_, value) => setCostRange(value as [number, number])}
+          disableSwap
+          sx={{ 
+            color: '#7768f6', 
+            flex: 1,
+            '& .MuiSlider-rail': {
+              height: 20, // Increase rail thickness here (default is 4)
+              borderRadius: 4,
+              color: '#000000ff'
+            },
+            '& .MuiSlider-track': {
+              height: 20, // Match the rail thickness
+              borderRadius: 0,
+            },
+            '& .MuiSlider-thumb': {
+              color: '#000000ff',
+              outline: '3px solid #7768f6',
+              height: 18,
+              width: 18,
+              transition: 'width 0.2s, height 0.2s',
+              '&:hover, &.Mui-focusVisible': {
+                height: 28,
+                width: 28,
+              },
+              '& .MuiSlider-valueLabel': {
+                background: '#7768f6',
+                borderRadius: '6px',
+                color: '#fff',
+                fontWeight: 400,
+                fontSize: '0.6rem',
+                padding: '2px 6px',
+                boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
+              },
+            },
+          }}
+        />
+        <span
+          style={{
+            color: '#fff',
+            fontSize: 13,
+            padding: 6,
+            minWidth: 40,
+            textAlign: 'left',
+            flexShrink: 0,
+          }}
+        >
+          £{(costRange[1] / 10).toFixed(1)}
+        </span>
       </div>
-      <div>
+      </div>
+      {/* Vertical divider */}
+      <div
+        className="player-filters-divider"
+        style={{
+          width: '2px',
+          background: '#3a3750',
+          minHeight: 300,
+          alignSelf: 'stretch',
+          borderRadius: '2px',
+        }}
+      />
+      <div style={{width: '500px'}}> 
         {/* Top filter buttons */}
         <div className="player-filters-title">
           Table Column Data:

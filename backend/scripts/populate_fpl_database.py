@@ -725,10 +725,15 @@ def fill_null_gw_fields_from_backup(conn, db_dir):
 
 def update_elements_from_projection_csv(conn, projection_csv_path):
     """
-    For each player in projection.csv, if any pp_gw_* or xmins_gw_* column is NULL,
-    fill it with the value from the CSV. Match by Name and Position.
+    For each player in projection.csv, update pp_gw_* and xmins_gw_* columns with the value from the CSV.
+    Match by Name and Position.
     """
     position_map = {'G': 1, 'D': 2, 'M': 3, 'F': 4}
+    cur = conn.cursor()
+
+    def normalize_name(name):
+        return name.lower().replace('.', '').replace('-', ' ').replace('  ', ' ').strip()
+
     with open(projection_csv_path, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -739,37 +744,45 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
                 print(f"Unknown position: {pos} for {name}")
                 continue
 
-            # Find player by name and position
-            cur = conn.cursor()
+            # Try matching by web_name first
             cur.execute("""
-                SELECT id FROM elements WHERE web_name = ? AND element_type = ?
-            """, (name, element_type))
-            result = cur.fetchone()
-            if not result:
+                SELECT id, web_name, first_name, second_name FROM elements WHERE element_type = ?
+            """, (element_type,))
+            candidates = cur.fetchall()
+            player_id = None
+            for cid, c_web, c_first, c_second in candidates:
+                names_to_try = [
+                    c_web,
+                    c_first,
+                    c_second,
+                    f"{c_first} {c_second}".strip(),
+                    f"{c_first[0]}. {c_second}".strip() if c_first else None
+                ]
+                for candidate_name in names_to_try:
+                    if candidate_name and normalize_name(candidate_name) == normalize_name(name):
+                        player_id = cid
+                        break
+                if player_id:
+                    break
+
+            if not player_id:
                 print(f"No match for {name} ({pos}) in projection.csv")
                 continue
-            player_id = result[0]
 
             # Prepare update fields for xmins_gw_* and pp_gw_*
             update_fields = {}
-            for gw in range(2, 39):  # GW2 to GW38 as per your CSV columns
+            for gw in range(1, 39):  # GW1 to GW38
                 xmins_col = f"{gw}_xMins"
                 pts_col = f"{gw}_Pts"
                 db_xmins_col = f"xmins_gw_{gw}"
                 db_pp_col = f"pp_gw_{gw}"
 
-                # Only update if NULL in DB and value exists in CSV
-                if xmins_col in row and row[xmins_col]:
-                    cur.execute(f"SELECT {db_xmins_col} FROM elements WHERE id = ?", (player_id,))
-                    db_val = cur.fetchone()
-                    if db_val and db_val[0] is None:
-                        update_fields[db_xmins_col] = row[xmins_col]
+                # Always update if value exists in CSV
+                if xmins_col in row and row[xmins_col].strip() != '':
+                    update_fields[db_xmins_col] = row[xmins_col]
 
-                if pts_col in row and row[pts_col]:
-                    cur.execute(f"SELECT {db_pp_col} FROM elements WHERE id = ?", (player_id,))
-                    db_val = cur.fetchone()
-                    if db_val and db_val[0] is None:
-                        update_fields[db_pp_col] = row[pts_col]
+                if pts_col in row and row[pts_col].strip() != '':
+                    update_fields[db_pp_col] = row[pts_col]
 
             if update_fields:
                 set_clause = ', '.join([f"{col} = ?" for col in update_fields])
@@ -778,6 +791,8 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
                 sql = f"UPDATE elements SET {set_clause} WHERE id = ?"
                 cur.execute(sql, values)
                 conn.commit()
+            else:
+                print(f"No GW updates for {name} ({pos})")
 
 def update_team_stats_from_fixtures(conn):
     c = conn.cursor()
@@ -884,6 +899,16 @@ def main():
     conn.close()
     print(f"Database created and populated at {db_path}.")
 
+    # Update elements from projection CSV
+    projection_csv_path = os.path.join(os.path.dirname(__file__), '..', 'expected_data', 'projection.csv')
+    if os.path.exists(projection_csv_path):
+        conn = sqlite3.connect(DB_PATH)
+        update_elements_from_projection_csv(conn, projection_csv_path)
+        conn.close()
+        print("Elements updated from projection CSV.")
+    else:
+        print("Projection CSV not found, skipping update.")
+
     # Update player data from scout_table.csv
     conn = sqlite3.connect(DB_PATH)
     with open(CSV_PATH, newline='') as csvfile:
@@ -904,16 +929,6 @@ def main():
     conn = sqlite3.connect(DB_PATH)
     fill_null_gw_fields_from_backup(conn, db_dir)
     conn.close()
-
-    # Update elements from projection CSV
-    projection_csv_path = os.path.join(os.path.dirname(__file__), '..', 'expected_data', 'projection.csv')
-    if os.path.exists(projection_csv_path):
-        conn = sqlite3.connect(DB_PATH)
-        update_elements_from_projection_csv(conn, projection_csv_path)
-        conn.close()
-        print("Elements updated from projection CSV.")
-    else:
-        print("Projection CSV not found, skipping update.")
 
     # Update team stats from fixtures
     conn = sqlite3.connect(DB_PATH)

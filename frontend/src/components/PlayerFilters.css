@@ -1,16 +1,9 @@
 .player-filters-root {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: flex-start; 
+  justify-content: center;
   gap: 24px;
-}
-
-.player-filters-left {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
 }
 
 .custom-dropdown {
@@ -137,7 +130,7 @@
 }
 
 .xmins-filter-input {
-  width: 120px;
+  width: 140px;
   height: 36px;
   border-radius: 18px;
   text-align: left;
@@ -161,7 +154,7 @@
   align-items: center;
   gap: 8px;
   width: 250px;
-  max-width: 400px;
+  max-width: 450px;
 }
 
 .custom-slider {
@@ -171,12 +164,23 @@
 }
 
 .player-filters-search-container {
-  align-self: flex-start;
+  align-self: center;
   margin-top: 0;
-  justify-content: flex-end;
+  justify-content: center;
   height: 40px;
   display: flex;
+  margin-left: 0 !important;
 }
+.player-filters-left {
+  display: flex;
+  max-width: 500px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+}
+
 
 .player-filters-search-icon {
   color: #fff;
@@ -233,36 +237,56 @@
 
 .player-filters-buttons {
   flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-start;
+}
+.player-filters-buttons {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: 100%;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.player-filters-buttons-container {
+  width: 100%;
+  max-width: 500px;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: row !important;
+  gap: 8px;
+  margin-top: 10px;
+  order: -1 !important;
 }
 
 .player-filter-btn {
   margin-bottom: 6px;
 }
-.player-filters-search-container {
-  display: flex;
-  margin-left: auto !important;
+.player-filter-btn {
+  font-size: 12px;
+  padding: 5px 10px;
+  min-width: 80px;
+  height: 32px;
+  border-radius: 18px;
+}
+.player-filter-btn {
+  width: 90vw;
+  min-width: 120px;
+  max-width: 140px;
+  margin: 0 auto;
+  font-size: 14px;
+  height: 36px;
+  padding: 8px 0;
+  border-radius: 24px;
 }
 .player-filters-title {
   color: #d8d7d7;
-  font-size: 12px !important;
-  margin-bottom: 8px;
-  text-align: left;
+  font-size: 16px !important;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
 /* Responsive styles for small screens */
-@media (max-width: 700px) {
-  .player-filters-buttons {
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: flex-start;
-  }
-  .player-filter-btn {
-    font-size: 12px;
-    padding: 5px 10px;
-    min-width: 80px;
-    height: 32px;
-    border-radius: 18px;
-  }
+@media (max-width: 999px) {
   .player-filters-buttons-container {
     gap: 6px;
     margin-top: 6px;
@@ -279,22 +303,9 @@
   }
   .player-filters-left {
     width: 100%;
-  }
-}
-
-/* Media query for screens below 1000px */
-@media (max-width: 999px) {
-  .player-filters-root {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 20px;
-  }
-  
-  .player-filters-left {
     justify-content: center;
     width: 100%;
   }
-  
   .custom-slider-box {
     order: 10; /* Move sliders to the bottom */
     width: 100%;
@@ -308,9 +319,6 @@
     justify-content: center;
     width: 100%;
   }
-}
-
-@media (max-width: 700px) {
   .player-filters-root {
     flex-direction: column !important;
     align-items: center !important;
@@ -320,31 +328,6 @@
     flex-direction: column !important;
     align-items: center !important;
     width: 100%;
-  }
-  .player-filters-buttons-container {
-    width: 100%;
-    align-items: flex-start;
-    display: flex;
-    flex-direction: row !important;
-    gap: 8px;
-    margin-top: 10px;
-  }
-  .player-filters-buttons {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    width: 100%;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-  .player-filter-btn {
-    width: 90vw;
-    min-width: 120px;
-    max-width: 140px;
-    margin: 0 auto;
-    font-size: 14px;
-    height: 36px;
-    padding: 8px 0;
-    border-radius: 24px;
   }
   .player-filters-search-container {
     width: 100%;
@@ -383,5 +366,6 @@
   }
   .player-filters-title {
     text-align: center;
+    margin-top: 20px;
   }
 }
