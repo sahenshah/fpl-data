@@ -56,8 +56,6 @@
 .player-table tbody tr {
   background: #1c1c20;
   border-radius: 48px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
-  transition: box-shadow 0.2s;
   height: 72px; 
 }
 
@@ -319,6 +317,11 @@
     width: 14px;
     height: 14px;
   }
+.player-table td.sticky-select {
+  background-color: #1c1c20;
+  box-shadow: -20px 0 0 6px #212027;
+  z-index: 5;
+}
 }
 
 
