@@ -359,7 +359,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
             { value: 38 },
             { value: 150 }
           ]}
-          valueLabelDisplay="auto"
+          valueLabelDisplay="off"
           valueLabelFormat={v => (v / 10).toFixed(1)} 
           onChange={(_, value) => setCostRange(value as [number, number])}
           disableSwap
@@ -385,15 +385,15 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
                 height: 28,
                 width: 28,
               },
-              '& .MuiSlider-valueLabel': {
-                background: '#7768f6',
-                borderRadius: '6px',
-                color: '#fff',
-                fontWeight: 400,
-                fontSize: '0.6rem',
-                padding: '2px 6px',
-                boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
-              },
+              // '& .MuiSlider-valueLabel': {
+              //   background: '#7768f6',
+              //   borderRadius: '6px',
+              //   color: '#fff',
+              //   fontWeight: 400,
+              //   fontSize: '0.6rem',
+              //   padding: '2px 6px',
+              //   boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
+              // },
             },
           }}
         />

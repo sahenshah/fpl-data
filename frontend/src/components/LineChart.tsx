@@ -280,8 +280,8 @@ export default function LineChart({
                 borderRadius: '6px',
                 color: '#fff',
                 fontWeight: 400,
-                fontSize: '0.8rem',
-                padding: '2px 6px',
+                fontSize: '1rem',
+                padding: '4px 16px',
                 boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
               },
             }

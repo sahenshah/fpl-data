@@ -256,10 +256,12 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
             <span style={{ 
               color: '#fff', 
               minWidth: 35, 
+              marginTop: 30,
               padding: 0, 
               textAlign: 'right', 
-              fontSize: 14, 
-              fontWeight: 500 
+              justifyContent: 'center',
+              fontSize: 22, 
+              fontWeight: 600 
             }}>
               GW {gwRange[0]}
             </span>
@@ -291,16 +293,16 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                   height: 20,
                   width: 20,
                   '&:hover, &.Mui-focusVisible': {
-                    height: 28,
-                    width: 28,
+                    height: 36,
+                    width: 36,
                   },
                   '& .MuiSlider-valueLabel': {
                     background: '#7768f6',
                     borderRadius: '6px',
                     color: '#fff',
                     fontWeight: 400,
-                    fontSize: '0.8rem',
-                    padding: '2px 6px',
+                    fontSize: '1.2rem',
+                    padding: '4px 20px',
                   },
                 }
               }}
@@ -309,9 +311,10 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
               color: '#fff', 
               minWidth: 48, 
               padding: 0, 
-              fontSize: 14, 
+              fontSize: 22, 
               textAlign: 'left', 
-              fontWeight: 500 
+              justifyContent: 'center',
+              fontWeight: 600 
             }}>
               GW {gwRange[1]}
             </span>
