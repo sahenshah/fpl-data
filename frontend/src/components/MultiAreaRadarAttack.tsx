@@ -108,7 +108,7 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
   });
 
   // Responsive legend position
-  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 550;
+  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 700;
   // Use height and width from props, fallback to responsive defaults
   const chartHeight = typeof height === 'number'
     ? height

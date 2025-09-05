@@ -5,7 +5,7 @@
   padding: 0;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .multi-area-radar-container {
     max-width: 320px;
   }

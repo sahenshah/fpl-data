@@ -90,7 +90,7 @@ const MultiAreaRadar: React.FC<MultiAreaRadarProps> = ({ player, showTitle, heig
   const players: Element[] = Array.isArray(player) ? player : [player];
 
   // Responsive settings
-  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
+  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 700;
   const chartHeight = typeof height === 'number'
     ? height
     : (isSmallScreen ? 260 : 550);

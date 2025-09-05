@@ -170,7 +170,7 @@ const ScatterChartComponent = ({ players, yKey, yLabel = 'Value', costRange }: S
   }
 
   // Add this line to detect small screens
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const isSmallScreen = useMediaQuery('(max-width:700px)');
 
   return (
     <ResponsiveContainer width="100%" height={isSmallScreen ? 380 : 500}>

@@ -16,7 +16,7 @@
   font-size: 1.3rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .player-table-ppchart-header {
     font-size: 1rem !important;
   }
@@ -83,7 +83,7 @@
   column-gap: 18px;
   max-height: inherit;
 }
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .line-chart-tooltip {
     max-width: 220px;
     font-size: 0.85em;

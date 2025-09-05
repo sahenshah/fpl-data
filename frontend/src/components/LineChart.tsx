@@ -75,7 +75,7 @@ export default function LineChart({
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const isSmallScreen = useMediaQuery('(max-width:700px)');
 
   useEffect(() => {
     async function fetchGwRange() {

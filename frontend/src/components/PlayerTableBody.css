@@ -231,7 +231,7 @@
   color: #222 !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .player-table {
     min-width: 900px;
     border-spacing: 0 8px; /* less vertical space between rows */

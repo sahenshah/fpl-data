@@ -89,7 +89,7 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
   const players: Element[] = Array.isArray(player) ? player : [player];
 
   // Responsive settings
-  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 600;
+  const isSmallScreen = typeof window !== "undefined" && window.innerWidth < 700;
   const chartHeight = typeof height === 'number' ? height : (isSmallScreen ? 260 : 550);
   const chartWidth = width ?? '100%';
   const chartCx = isSmallScreen ? "53%" : "50%";
