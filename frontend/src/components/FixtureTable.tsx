@@ -44,6 +44,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
     gw: i + 1,
   }));
 
+  // Add a new column definition after 'points'
   const columns = [
     { label: '#', key: 'position' },
     { label: '', key: 'badge' },
@@ -54,13 +55,9 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
     { label: 'Draw', key: 'draw' },
     { label: 'Loss', key: 'loss' },
     { label: 'Points', key: 'points' },
-    // { label: 'Strength Overall (H)', key: 'strength_overall_home' },
-    // { label: 'Strength Overall (A)', key: 'strength_overall_away' },
-    // { label: 'Strength Attack (H)', key: 'strength_attack_home' },
-    // { label: 'Strength Attack (A)', key: 'strength_attack_away' },
-    // { label: 'Strength Defence (H)', key: 'strength_defence_home' },
-    // { label: 'Strength Defence (A)', key: 'strength_defence_away' },
-    // { label: 'Form', key: 'form' },
+    { label: 'Avg FDR', key: 'avg_fdr' },
+    { label: 'Avg FDR (Attack)', key: 'avg_fdr_attack' },   // <-- new column
+    { label: 'Avg FDR (Defence)', key: 'avg_fdr_defence' }, // <-- new column
     ...gwColumns.slice(gwRange[0] - 1, gwRange[1]),
   ];
 
@@ -99,16 +96,87 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
     return total;
   }
 
+  // Helper to calculate average fixture difficulty for a team over selected GWs
+  function getAverageFDR(team: Team) {
+    let totalDifficulty = 0;
+    let count = 0;
+    for (let gw = gwRange[0]; gw <= gwRange[1]; gw++) {
+      const fixture = teamFixturesMap[team.id][gw];
+      if (fixture && fixture.difficulty) {
+        totalDifficulty += fixture.difficulty;
+        count++;
+      }
+    }
+    return count > 0 ? (totalDifficulty / count).toFixed(2) : '-';
+  }
+
+  function getAverageAttackFDR(team: Team) {
+    let totalAttack = 0;
+    let count = 0;
+    for (let gw = gwRange[0]; gw <= gwRange[1]; gw++) {
+      const fixture = fixtures.find(fix =>
+        (fix.team_h === team.id || fix.team_a === team.id) && fix.event === gw
+      );
+      if (fixture) {
+        let opponent: Team | undefined;
+        let opponentStrength = 0;
+        let difficulty = 0;
+        if (fixture.team_h === team.id) {
+          opponent = teams.find(t => t.id === fixture.team_a);
+          opponentStrength = opponent ? Number(opponent.strength_defence_away) || 0 : 0;
+          difficulty = fixture.team_h_difficulty;
+        } else if (fixture.team_a === team.id) {
+          opponent = teams.find(t => t.id === fixture.team_h);
+          opponentStrength = opponent ? Number(opponent.strength_defence_home) || 0 : 0;
+          difficulty = fixture.team_a_difficulty;
+        }
+        if (opponentStrength && difficulty) {
+          totalAttack += (opponentStrength / 1000) * difficulty;
+          count++;
+        }
+      }
+    }
+    return count > 0 ? (totalAttack / count).toFixed(2) : '-';
+  }
+
+  function getAverageDefenceFDR(team: Team) {
+    let totalDefence = 0;
+    let count = 0;
+    for (let gw = gwRange[0]; gw <= gwRange[1]; gw++) {
+      const fixture = fixtures.find(fix =>
+        (fix.team_h === team.id || fix.team_a === team.id) && fix.event === gw
+      );
+      if (fixture) {
+        let opponent: Team | undefined;
+        let opponentStrength = 0;
+        let difficulty = 0;
+        if (fixture.team_h === team.id) {
+          opponent = teams.find(t => t.id === fixture.team_a);
+          opponentStrength = opponent ? Number(opponent.strength_attack_away) || 0 : 0;
+          difficulty = fixture.team_h_difficulty;
+        } else if (fixture.team_a === team.id) {
+          opponent = teams.find(t => t.id === fixture.team_h);
+          opponentStrength = opponent ? Number(opponent.strength_attack_home) || 0 : 0;
+          difficulty = fixture.team_a_difficulty;
+        }
+        if (opponentStrength && difficulty) {
+          totalDefence += (opponentStrength / 1000) * difficulty;
+          count++;
+        }
+      }
+    }
+    return count > 0 ? (totalDefence / count).toFixed(2) : '-';
+  }
+
   // Sorting logic
   const sortedTeams = (() => {
     let arr = sortByDifficulty
       ? [...teams]
           .map(team => {
-            const difficulty = getTeamDifficulty(team, 'overall');
-            // Log the calculated difficulty for each team
-            return { team, difficulty };
+            const avgFDR = Number(getAverageFDR(team));
+            return { team, avgFDR: isNaN(avgFDR) ? Infinity : avgFDR };
           })
-          .sort((a, b) => a.difficulty - b.difficulty) // Ascending order
+          .sort((a, b) => a.avgFDR - b.avgFDR) // Ascending order
           .map(obj => obj.team)
       : sortByAttackDifficulty
       ? [...teams]
@@ -130,12 +198,23 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
 
     if (sortColumn && !sortByDifficulty && !sortByAttackDifficulty && !sortByDefenceDifficulty) {
       arr = arr.sort((a, b) => {
-        let aValue = a[sortColumn as keyof Team];
-        let bValue = b[sortColumn as keyof Team];
+        let aValue, bValue;
 
-        // Try to convert to number if possible
-        if (typeof aValue === 'string' && !isNaN(Number(aValue))) aValue = Number(aValue);
-        if (typeof bValue === 'string' && !isNaN(Number(bValue))) bValue = Number(bValue);
+        if (sortColumn === 'avg_fdr') {
+          aValue = Number(getAverageFDR(a));
+          bValue = Number(getAverageFDR(b));
+        } else if (sortColumn === 'avg_fdr_attack') {
+          aValue = Number(getAverageAttackFDR(a));
+          bValue = Number(getAverageAttackFDR(b));
+        } else if (sortColumn === 'avg_fdr_defence') {
+          aValue = Number(getAverageDefenceFDR(a));
+          bValue = Number(getAverageDefenceFDR(b));
+        } else {
+          aValue = a[sortColumn as keyof Team];
+          bValue = b[sortColumn as keyof Team];
+          if (typeof aValue === 'string' && !isNaN(Number(aValue))) aValue = Number(aValue);
+          if (typeof bValue === 'string' && !isNaN(Number(bValue))) bValue = Number(bValue);
+        }
 
         if (aValue == null) return 1;
         if (bValue == null) return -1;
@@ -162,40 +241,6 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
       setSortColumn(colKey);
       setSortDirection('asc');
     }
-  };
-
-  // --- Button handlers: only allow one sort at a time ---
-  const handleOverallSort = () => {
-    setSortByDifficulty(s => {
-      if (!s) {
-        setSortByAttackDifficulty(false);
-        setSortByDefenceDifficulty(false);
-        setSortColumn('position');
-      }
-      return !s;
-    });
-  };
-
-  const handleAttackSort = () => {
-    setSortByAttackDifficulty(s => {
-      if (!s) {
-        setSortByDifficulty(false);
-        setSortByDefenceDifficulty(false);
-        setSortColumn('position');
-      }
-      return !s;
-    });
-  };
-
-  const handleDefenceSort = () => {
-    setSortByDefenceDifficulty(s => {
-      if (!s) {
-        setSortByDifficulty(false);
-        setSortByAttackDifficulty(false);
-        setSortColumn('position');
-      }
-      return !s;
-    });
   };
 
   return (
@@ -266,27 +311,6 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
               GW {gwRange[1]}
             </span>
           </div>
-          <span style={{ color: '#fff', fontSize: 14, fontWeight: 500, paddingRight: 14, textAlign: 'right' }}> 
-            Sort by Fixture Difficulty Rating (FDR) 
-          </span>
-          <button
-            className={`${styles['fixture-sort-btn']}${sortByDifficulty ? ' ' + styles['active'] : ''}`}
-            onClick={handleOverallSort}
-          >
-            Overall 
-          </button>
-          <button
-            className={`${styles['fixture-sort-btn']}${sortByAttackDifficulty ? ' ' + styles['active'] : ''}`}
-            onClick={handleAttackSort}
-          >
-            Attack 
-          </button>
-          <button
-            className={`${styles['fixture-sort-btn']}${sortByDefenceDifficulty ? ' ' + styles['active'] : ''}`}
-            onClick={handleDefenceSort}
-          >
-           Defence 
-          </button>
         </div>
         <div style={{ overflowX: 'auto', maxWidth: '95vw', width: '100%' }}>
           <table className={styles['fixture-table']}>
@@ -367,6 +391,30 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                           >
                             {strengthValue}
                           </span>
+                        </td>
+                      );
+                    }
+
+                    if (col.key === 'avg_fdr') {
+                      return (
+                        <td key={col.key}>
+                          {getAverageFDR(team)}
+                        </td>
+                      );
+                    }
+
+                    if (col.key === 'avg_fdr_attack') {
+                      return (
+                        <td key={col.key}>
+                          {getAverageAttackFDR(team)}
+                        </td>
+                      );
+                    }
+
+                    if (col.key === 'avg_fdr_defence') {
+                      return (
+                        <td key={col.key}>
+                          {getAverageDefenceFDR(team)}
                         </td>
                       );
                     }
