@@ -317,8 +317,20 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
   return (
     <div className="player-table-outer-container">
       <div className="player-table-scroll-container">
-        <table 
+        <table
           className="player-table">
+          <colgroup>
+            {visibleColumns.map(col => (
+              <col
+                key={col.id}
+                style={{
+                  width: col.minWidth ? `${col.minWidth}px` : undefined,
+                  minWidth: col.minWidth ? `${col.minWidth}px` : undefined,
+                  maxWidth: col.maxWidth ? `${col.maxWidth}px` : undefined,
+                }}
+              />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               {visibleColumns.map((col) => {

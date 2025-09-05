@@ -18,8 +18,10 @@
   border-collapse: separate;
   border-spacing: 0 16px; /* vertical space between rows */
   width: 100%;
-  min-width: 1800px;
   background: transparent;
+  table-layout: fixed;
+  width: max-content;
+  min-width: 0;
 }
 
 .player-table thead tr {
