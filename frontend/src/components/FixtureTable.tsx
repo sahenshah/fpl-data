@@ -256,7 +256,6 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
             <span style={{ 
               color: '#fff', 
               minWidth: 35, 
-              marginTop: 30,
               padding: 0, 
               textAlign: 'right', 
               justifyContent: 'center',
