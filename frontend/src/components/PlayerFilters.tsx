@@ -411,7 +411,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
       <div style={{maxWidth: '500px', minWidth: '350px'}}> 
         {/* Top filter buttons */}
         <div className="player-filters-title">
-          Table Column Data:
+          Table Data:
         </div>
         <div className='player-filters-buttons-container' 
              style={{ 
