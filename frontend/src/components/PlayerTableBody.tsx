@@ -63,11 +63,11 @@ const columns: TableColumn[] = [
   { id: 'element_type', label: 'Position', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'now_cost', label: 'Cost (£)', minWidth: 50, maxWidth: 50, align: 'center', format: (value: number) => (value / 10).toFixed(1) },
   { id: 'total_points', label: 'Total Points', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'form', label: 'Form', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'assists', label: 'Assists', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'clean_sheets', label: 'Clean Sheets', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'form', label: 'Form', minWidth: 50, maxWidth: 50, align: 'center' },
 
   { id: 'selected_by_percent', label: 'Selected', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value + '%' },
   { id: 'elite_selected_percent', label: 'Elite Selected', minWidth: 80, maxWidth: 80, align: 'center' },
@@ -82,7 +82,7 @@ const columns: TableColumn[] = [
   { id: 'expected_goal_involvements', label: 'xGI', minWidth: 80, maxWidth:80, align: 'center' },
   
   { id: 'expected_goals_per_90', label: 'xG / 90', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'expected_assists_per_89', label: 'xA / 90', minWidth: 80, maxWidth: 79, align: 'center' },
+  { id: 'expected_assists_per_90', label: 'xA / 90', minWidth: 80, maxWidth: 79, align: 'center' },
   { id: 'expected_goal_involvements_per_90', label: 'xGI / 90', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'defensive_contribution_per_90', label: 'Def Con / 90', minWidth: 100, maxWidth: 100, align: 'center' },
 

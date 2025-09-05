@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Team, Fixture } from '../types/fpl';
-import './FixtureTable.module.css';
+import styles from './FixtureTable.module.css';
 import { getCurrentGameweek } from '../App';
 import Slider from '@mui/material/Slider';
 
@@ -199,10 +199,10 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   };
 
   return (
-    <div className="fixture-table-outer-container">
-      <div className="fixture-table-container">
-        <div className="fixture-controls">
-          <div className="fixture-slider" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+    <div className={styles['fixture-table-outer-container']}>
+      <div className={styles['fixture-table-container']}>
+        <div className={styles['fixture-controls']}>
+          <div className={styles['fixture-slider']} style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
             <span style={{ 
               color: '#fff', 
               minWidth: 35, 
@@ -226,33 +226,34 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                 color: '#7768f6',
                 mx: 2,
                 '& .MuiSlider-rail': {
-                  height: 18,
+                  height: 22,
                   borderRadius: 4,
+                  color: '#000000ff'
                 },
                 '& .MuiSlider-track': {
-                  height: 18,
-                  borderRadius: 4,
+                  height: 22,
+                  color: '#7768f6',
+                  borderRadius: 0,
                 },
                 '& .MuiSlider-thumb': {
+                  color: '#000000ff',
+                  outline: '3px solid #7768f6',
                   height: 20,
                   width: 20,
-                  backgroundColor: '#000000ff',
-                  border: '7px solid #7768f6',
-                },
-                // Left thumb (first thumb)
-                '& .MuiSlider-thumb[data-index="0"]': {
-                  borderTopLeftRadius: '50%',
-                  borderBottomLeftRadius: '50%',
-                  borderTopRightRadius: '0',
-                  borderBottomRightRadius: '0',
-                },
-                // Right thumb (second thumb)
-                '& .MuiSlider-thumb[data-index="1"]': {
-                  borderTopLeftRadius: '0',
-                  borderBottomLeftRadius: '0',
-                  borderTopRightRadius: '50%',
-                  borderBottomRightRadius: '50%',
-                },
+                  '&:hover, &.Mui-focusVisible': {
+                    height: 28,
+                    width: 28,
+                  },
+                  '& .MuiSlider-valueLabel': {
+                    background: '#7768f6',
+                    borderRadius: '6px',
+                    color: '#fff',
+                    fontWeight: 400,
+                    fontSize: '0.8rem',
+                    padding: '2px 6px',
+                    boxShadow: '0 2px 8px rgba(119,104,246,0.15)',
+                  },
+                }
               }}
             />
             <span style={{ 
@@ -268,76 +269,78 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
           </div>
           <span style={{ color: '#fff', fontSize: 14, fontWeight: 500, paddingRight: 14, textAlign: 'right' }}> 
             Sort by Fixture Difficulty Rating (FDR) 
-            </span>
+          </span>
           <button
-            className={`fixture-sort-btn${sortByDifficulty ? ' active' : ''}`}
+            className={`${styles['fixture-sort-btn']}${sortByDifficulty ? ' ' + styles['active'] : ''}`}
             onClick={handleOverallSort}
           >
             Overall 
           </button>
           <button
-            className={`fixture-sort-btn${sortByAttackDifficulty ? ' active' : ''}`}
+            className={`${styles['fixture-sort-btn']}${sortByAttackDifficulty ? ' ' + styles['active'] : ''}`}
             onClick={handleAttackSort}
           >
             Attack 
           </button>
           <button
-            className={`fixture-sort-btn${sortByDefenceDifficulty ? ' active' : ''}`}
+            className={`${styles['fixture-sort-btn']}${sortByDefenceDifficulty ? ' ' + styles['active'] : ''}`}
             onClick={handleDefenceSort}
           >
            Defence 
           </button>
         </div>
         <div style={{ overflowX: 'auto', maxWidth: '95vw', width: '100%' }}>
-          <table className="fixture-table">
+          <table className={styles['fixture-table']}>
             <thead>
-              {columns.map(col => (
-                <th
-                  key={col.key}
-                  className={
-                    col.key === 'badge' ? 'sticky-badge-fixture' :
-                    col.key === 'position' ? 'sticky-position' :
-                    col.key === 'name' ? 'sticky-name' :
-                    'gw' in col && col.gw === currentGW ? 'current-gw-col' : undefined
-                  }
-                  style={{
-                    cursor: col.key !== 'badge' && !col.key.startsWith('gw_') ? 'pointer' : undefined,
-                    minWidth: col.key === 'badge' ? 40 : undefined,
-                  }}
-                  onClick={() => {
-                    if (
-                      col.key !== 'badge' &&
-                      !col.key.startsWith('gw_')
-                    ) {
-                      handleSort(col.key);
+              <tr>
+                {columns.map(col => (
+                  <th
+                    key={col.key}
+                    className={
+                      col.key === 'badge' ? styles['sticky-badge-fixture'] :
+                      col.key === 'position' ? styles['sticky-position'] :
+                      col.key === 'name' ? styles['sticky-name'] :
+                      'gw' in col && col.gw === currentGW ? styles['current-gw-col'] : undefined
                     }
-                  }}
-                >
-                  {col.key === 'badge' ? <span>&nbsp;</span> : (
-                    <>
-                      {col.label}
-                      {sortColumn === col.key && (
-                        sortDirection === 'asc'
-                          ? <span style={{ verticalAlign: 'middle', fontSize: 16, marginLeft: 2 }}>▲</span>
-                          : <span style={{ verticalAlign: 'middle', fontSize: 16, marginLeft: 2 }}>▼</span>
-                      )}
-                    </>
-                  )}
-                </th>
-              ))}
+                    style={{
+                      cursor: col.key !== 'badge' && !col.key.startsWith('gw_') ? 'pointer' : undefined,
+                      minWidth: col.key === 'badge' ? 40 : undefined,
+                    }}
+                    onClick={() => {
+                      if (
+                        col.key !== 'badge' &&
+                        !col.key.startsWith('gw_')
+                      ) {
+                        handleSort(col.key);
+                      }
+                    }}
+                  >
+                    {col.key === 'badge' ? <span>&nbsp;</span> : (
+                      <>
+                        {col.label}
+                        {sortColumn === col.key && (
+                          sortDirection === 'asc'
+                            ? <span style={{ verticalAlign: 'middle', fontSize: 16, marginLeft: 2 }}>▲</span>
+                            : <span style={{ verticalAlign: 'middle', fontSize: 16, marginLeft: 2 }}>▼</span>
+                        )}
+                      </>
+                    )}
+                  </th>
+                ))}
+              </tr>
             </thead>
             <tbody>
               {sortedTeams.map(team => (
                 <tr key={team.id}>
                   {columns.map(col => {
                     const stickyClass =
-                      col.key === 'position' ? 'sticky-position' :
-                      col.key === 'name' ? 'sticky-name' :
+                      col.key === 'position' ? styles['sticky-position'] :
+                      col.key === 'name' ? styles['sticky-name'] :
                       undefined;
 
                     if (col.key === 'badge') {
                       return (
-                        <td key={col.key} className="sticky-badge-fixture">
+                        <td key={col.key} className={styles['sticky-badge-fixture']}>
                           <img
                             src={`/team-badges/${team.short_name}.svg`}
                             alt={team.short_name}
@@ -376,7 +379,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                       return (
                         <td
                           key={col.key}
-                          className={`${stickyClass ? stickyClass + ' ' : ''}${gwNum === currentGW ? 'current-gw-cell' : ''}`}
+                          className={`${stickyClass ? stickyClass + ' ' : ''}${gwNum === currentGW ? styles['current-gw-cell'] : ''}`}
                           style={{ backgroundColor: bgColor }}
                         >
                           {fixture ? fixture.text : ''}
@@ -387,7 +390,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
                     return (
                       <td
                         key={col.key}
-                        className={stickyClass + (col.key === 'name' ? ' name-cell' : '')}
+                        className={`${stickyClass ? stickyClass : ''}${col.key === 'name' ? ' name-cell' : ''}`}
                       >
                         {col.key === 'name'
                           ? (
