@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Fade from '@mui/material/Fade';
 import PlayerData from './components/PlayerData'; 
-import TeamPlanner from './components/TeamPlanner'; 
+// import TeamPlanner from './components/TeamPlanner'; 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 

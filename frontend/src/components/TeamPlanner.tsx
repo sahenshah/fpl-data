@@ -16,21 +16,30 @@ const TeamPlanner: React.FC = () => {
     setTeamData(null);
 
     try {
-      const response = await fetch(`https://corsproxy.io/?https://fantasy.premierleague.com/api/entry/${teamId}/`); 
-      if (!response.ok) throw new Error('Team not found');
-      const data = await response.json();
-      setTeamData(data);
+      const cachedData = localStorage.getItem(`team_${teamId}_data`);
+      if (cachedData) {
+        const teamData = JSON.parse(cachedData);
+        setTeamData(teamData);
+      } else {
+        const response = await fetch(`https://corsproxy.io/?https://fantasy.premierleague.com/api/entry/${teamId}/`); 
+        if (!response.ok) throw new Error('Team not found');
+        const data = await response.json();
+        setTeamData(data);
 
-      // Store JSON in browser as a temporary file (download)
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `team_${teamId}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+        // Store JSON in browser as a temporary file (download)
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `team_${teamId}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        // Store data in localStorage
+        localStorage.setItem(`team_${teamId}_data`, JSON.stringify(data));
+      }
     } catch (err: any) {
       setError(err.message || 'Error fetching team data');
     } finally {
