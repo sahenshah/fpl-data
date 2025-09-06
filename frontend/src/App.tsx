@@ -187,7 +187,7 @@ function App() {
             >
               <Tab label="Player Data" />
               <Tab label="Fixtures" />
-              <Tab label="Team Planner" />
+              {/* <Tab label="Team Planner" /> */}
             </Tabs>
           </Box>
         </div>
@@ -227,11 +227,11 @@ function App() {
                     <FixtureTable teams={fplData.teams} fixtures={fixtures} />
                   </div>
                 </Fade>
-                <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
+                {/* <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
                   <div>
                     <TeamPlanner />
                   </div>
-                </Fade>
+                </Fade> */}
               </Box>
             </div>
           </div>
