@@ -1,0 +1,269 @@
+.team-selection-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #212027;
+  min-width: 100%;
+  width: 100%;
+  border-radius: 60px;
+  padding: 24px;
+  margin-top: 8px;
+  color: #ffffff;
+}
+
+.formation-container {
+  background: #1c7e29;
+  height: max-content;
+  min-width: 710px;
+  width: 100%;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center; /* Center all rows horizontally */
+  background-image: url('/team-selection-pitch-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.formation-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center; /* Center items in each row */
+}
+.bench-row {
+  background: #8f8f8f8f;
+  border-radius: 8px;
+  padding: 12px 0;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.player-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 80px;         /* Fixed width for alignment */
+  height: 110px;       /* Fixed height for alignment */
+  margin: 0 6px;
+  box-sizing: border-box;
+}
+
+
+.player-chip {
+  font-weight: 400;
+  font-size: 13px;
+  display: inline-block;
+  color: #fff;
+  text-align: center;
+  width: 120px;
+  margin: 0 auto;
+  margin-top: 2px;
+  margin-left: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.bench-chip {
+  border-radius: 20px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 2px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 54px;
+  height: 54px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.player-name {
+  font-weight: 400;
+  color: #fff;
+  background: rgba(34,34,34,0.85);
+  border-radius: 8px;
+  padding: 2px 6px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  text-align: center;
+  width: max-content;
+  max-width: 60px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.captain {
+  color: #000000;
+  font-weight: bold;
+}
+
+.vice-captain {
+  color: #000000;
+  font-weight: bold;
+}
+
+.gw-info {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: space-between;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.team-formation-data-container {
+  display: flex;
+  flex-direction: row;
+  gap: 18px;
+  justify-content: center;
+  align-items: flex-end;
+  margin-bottom: 24px;
+}
+
+.team-formation-data-card-total-points {
+  background: #2b5f3b;
+  border: 2px solid #0f250f;
+  border-radius: 14px;
+  padding: 8px 18px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0;
+}
+.team-formation-data-card {
+  background: #262c38;
+  border: 2px solid #3a4152;
+  border-radius: 14px;
+  padding: 14px 22px;
+  min-width: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.team-formation-data-title {
+  font-size: 0.8em;
+  font-weight: 400;
+  color: #b6c1d6;
+  text-align: center;
+}
+
+.team-formation-data-value {
+  font-size: 1em;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+
+.transfer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.transfer-card {
+  background: #42464e;
+  border: 2px solid #2e2e2e;
+  border-radius: 14px;
+  padding: 8px 18px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0;
+}
+
+.transfer-label {
+  font-size: 0.7em;
+  font-weight: 400;
+  color: #bebebe;
+  text-align: left;
+}
+
+.transfer-value {
+  font-size: 1em;
+  font-weight: 600;
+  color: #fff;
+  text-align: right;
+}
+
+.remove-player-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #bd0000ff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.restore-player-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1c40f;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}
+
+.substitute-player-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 18px;
+  height: 18px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f39c12;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+}

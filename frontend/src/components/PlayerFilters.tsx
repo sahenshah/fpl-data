@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Team, Element } from '../types/fpl';
-import './PlayerFilters.css';
+import styles from './PlayerFilters.module.css'; // <-- Use module CSS
 import Slider from '@mui/material/Slider';
 
 interface PositionOption {
@@ -42,7 +42,9 @@ const bottomFilterButtonLabels = [
   'xMins',
 ];
 
-const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFilteredPlayers, costRange, setCostRange, activeFilters, setActiveFilters }) => {
+const PlayerFilters: React.FC<PlayerFiltersProps> = ({
+  players, teams, onFilteredPlayers, costRange, setCostRange, activeFilters, setActiveFilters
+}) => {
   const [positionFilter, setPositionFilter] = React.useState<string[]>(() => positionOptions.map(p => p.value));
   const [teamFilter, setTeamFilter] = React.useState<string[]>(() => teams.map(t => t.name));
   const [minutesFilter, setMinutesFilter] = React.useState<string>('');
@@ -50,6 +52,9 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
   const [showSearchInput, setShowSearchInput] = React.useState(false);
   const [showPositionDropdown, setShowPositionDropdown] = React.useState(false);
   const [showTeamDropdown, setShowTeamDropdown] = React.useState(false);
+
+  const positionDropdownRef = React.useRef<HTMLDivElement>(null);
+  const teamDropdownRef = React.useRef<HTMLDivElement>(null);
 
   // Update teamFilter if teams prop changes (e.g., after fetch)
   React.useEffect(() => {
@@ -103,15 +108,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
     }
   }, [showSearchInput]);
 
-  // Position dropdown logic
-  const togglePositionDropdown = () => setShowPositionDropdown(v => !v);
-  const handleAllPositions = () => {
-    if (positionFilter.length === positionOptions.length) {
-      setPositionFilter([]);
-    } else {
-      setPositionFilter(positionOptions.map(p => p.value));
-    }
-  };
   const handlePositionOption = (value: string) => {
     setPositionFilter(prev =>
       prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
@@ -119,7 +115,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
   };
 
   // Team dropdown logic
-  const toggleTeamDropdown = () => setShowTeamDropdown(v => !v);
   const handleTeamOption = (value: string) => {
     setTeamFilter(prev =>
       prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
@@ -137,12 +132,26 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
   React.useEffect(() => {
     const closeDropdowns = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest('.custom-dropdown.position')) setShowPositionDropdown(false);
-      if (!target.closest('.custom-dropdown.team')) setShowTeamDropdown(false);
+      // Position dropdown
+      if (
+        showPositionDropdown &&
+        positionDropdownRef.current &&
+        !positionDropdownRef.current.contains(target)
+      ) {
+        setShowPositionDropdown(false);
+      }
+      // Team dropdown
+      if (
+        showTeamDropdown &&
+        teamDropdownRef.current &&
+        !teamDropdownRef.current.contains(target)
+      ) {
+        setShowTeamDropdown(false);
+      }
     };
     document.addEventListener('mousedown', closeDropdowns);
     return () => document.removeEventListener('mousedown', closeDropdowns);
-  }, []);
+  }, [showPositionDropdown, showTeamDropdown]);
 
   // Filter button click handler
   const handleFilterButtonClick = (label: string) => {
@@ -199,17 +208,40 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
     }
   };
 
+  // Position dropdown button label
+  const positionDropdownLabel =
+    positionFilter.length === positionOptions.length
+      ? 'Position'
+      : positionFilter.length === 0
+        ? 'No Positions'
+        : 'Selected';
+
+  // Team dropdown button label
+  const teamDropdownLabel =
+    teamFilter.length === teams.length
+      ? 'Teams'
+      : teamFilter.length === 0
+        ? 'No Teams'
+        : 'Selected';
+
+  function handleAllPositions(event: React.ChangeEvent<HTMLInputElement>): void {
+    if (event.target.checked) {
+      setPositionFilter(positionOptions.map(p => p.value));
+    } else {
+      setPositionFilter([]);
+    }
+  }
   return (
-    <div className="player-filters-root">
+    <div className={styles['player-filters-root']}>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-      <div className="player-filters-title">
-        Player Filters:
-      </div>
-        <div className="player-filters-left">
-          <div className="player-filters-search-container">
+        <div className={styles['player-filters-title']}>
+          Player Filters:
+        </div>
+        <div className={styles['player-filters-left']}>
+          <div className={styles['player-filters-search-container']}>
             {!showSearchInput ? (
               <button
-                className="player-filters-search-icon"
+                className={styles['player-filters-search-icon']}
                 onClick={() => setShowSearchInput(true)}
                 tabIndex={0}
                 aria-label="Search by name"
@@ -228,32 +260,42 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
                 onChange={e => setSearchTerm(e.target.value)}
                 onBlur={() => setShowSearchInput(false)}
                 placeholder="Search by name"
-                className="player-filters-search-input"
+                className={styles['player-filters-search-input']}
                 style={{ minWidth: 180 }}
               />
             )}
           </div>
-          <div className="player-filters-dropdown-input">
+          <div className={styles['player-filters-dropdown-input']}>
             {/* Position filter */}
-            <div className="custom-dropdown position">
+            <div
+              className={styles['custom-dropdown'] + ' ' + styles['position']}
+              style={{ position: 'relative' }}
+            >
               <button
-                className="custom-dropdown-btn"
-                onClick={togglePositionDropdown}
+                className={styles['custom-dropdown-btn']}
+                onClick={() => setShowPositionDropdown(v => !v)}
                 type="button"
               >
-                {positionFilter.length === positionOptions.length
-                  ? 'Position'
-                  : positionFilter.length === 0
-                    ? 'No Positions'
-                    : positionOptions
-                      .filter(opt => positionFilter.includes(opt.value))
-                      .map(opt => opt.label)
-                      .join(', ')}
-                <span className="custom-dropdown-arrow">&#9662;</span>
+                {positionDropdownLabel}
+                <span className={styles['custom-dropdown-arrow']}>&#9662;</span>
               </button>
               {showPositionDropdown && (
-                <div className="custom-dropdown-menu">
-                  <label className="custom-dropdown-item">
+                <div
+                  ref={positionDropdownRef}
+                  className={styles['custom-dropdown-menu']}
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    zIndex: 20,
+                    background: '#23232b',
+                    borderRadius: 8,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    minWidth: 160, // <-- Increased from 120 to 160
+                    padding: '8px 0',
+                  }}
+                >
+                  <label className={styles['custom-dropdown-item']}>
                     <input
                       type="checkbox"
                       checked={positionFilter.length === positionOptions.length}
@@ -262,7 +304,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
                     All Positions
                   </label>
                   {positionOptions.map(option => (
-                    <label key={option.value} className="custom-dropdown-item">
+                    <label key={option.value} className={styles['custom-dropdown-item']}>
                       <input
                         type="checkbox"
                         checked={positionFilter.includes(option.value)}
@@ -275,22 +317,32 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               )}
             </div>
             {/* Team filter */}
-            <div className="custom-dropdown team">
+            <div className={styles['custom-dropdown'] + ' ' + styles['team']} style={{ position: 'relative' }}>
               <button
-                className="custom-dropdown-btn"
-                onClick={toggleTeamDropdown}
+                className={styles['custom-dropdown-btn']}
+                onClick={() => setShowTeamDropdown(v => !v)}
                 type="button"
               >
-                {teamFilter.length === teams.length
-                  ? 'Teams'
-                  : teamFilter.length === 0
-                    ? 'No Teams'
-                    : 'Selected'}
-                <span className="custom-dropdown-arrow">&#9662;</span>
+                {teamDropdownLabel}
+                <span className={styles['custom-dropdown-arrow']}>&#9662;</span>
               </button>
               {showTeamDropdown && (
-                <div className="custom-dropdown-menu teams-dropdown">
-                  <label className="custom-dropdown-item">
+                <div
+                  ref={teamDropdownRef}
+                  className={styles['custom-dropdown-menu'] + ' ' + styles['teams-dropdown']}
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    zIndex: 20,
+                    background: '#23232b',
+                    borderRadius: 8,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    minWidth: 140,
+                    padding: '8px 0',
+                  }}
+                >
+                  <label className={styles['custom-dropdown-item']}>
                     <input
                       type="checkbox"
                       checked={teamFilter.length === teams.length}
@@ -299,7 +351,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
                     All Teams
                   </label>
                   {teams.map(team => (
-                    <label key={team.id} className="custom-dropdown-item">
+                    <label key={team.id} className={styles['custom-dropdown-item']}>
                       <input
                         type="checkbox"
                         checked={teamFilter.includes(team.name)}
@@ -323,13 +375,13 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               value={minutesFilter}
               onChange={e => setMinutesFilter(e.target.value)}
               placeholder="Min Minutes"
-              className="xmins-filter-input"
+              className={styles['mins-filter-input']}
               step={10}
             />
           </div>
           {/* Add margin-top to the slider box for spacing */}
           <div
-            className="custom-slider-box"
+            className={styles['custom-slider-box']}
             style={{
               width: 450,
               display: 'flex',
@@ -402,25 +454,25 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
               £{(costRange[1] / 10).toFixed(1)}
             </span>
           </div>
-      </div>
+        </div>
       </div>
       {/* Vertical divider */}
       <div
-        className="player-filters-divider"
+        className={styles['player-filters-divider']}
       />
       <div style={{maxWidth: '500px', minWidth: '350px'}}> 
         {/* Top filter buttons */}
-        <div className="player-filters-title">
+        <div className={styles['player-filters-title']}>
           Table Data:
         </div>
-        <div className='player-filters-buttons-container' 
+        <div className={styles['player-filters-buttons-container']} 
              style={{ 
               display: 'flex', 
               flexDirection: 'column',
               gap: 8,
               marginTop: 10
               }}>
-          <div className="player-filters-buttons" style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+          <div className={styles['player-filters-buttons']} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
             {topFilterButtonLabels.map((label) => (
               <button
                 key={label}
@@ -430,6 +482,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
                   background: activeFilters.includes(label) ? '#7768f6' : '#23232b',
                   color: '#fff',
                   border: '1px solid #7768f6',
+                  width: '80%',
                   height: 28,
                   borderRadius: 24,
                   padding: '6px 14px',
@@ -445,7 +498,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
             ))}
           </div>
           {/* Bottom filter buttons */}
-          <div className="player-filters-buttons" style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <div className={styles['player-filters-buttons']} style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
             {bottomFilterButtonLabels.map((label) => (
               <button
                 key={label}
@@ -455,6 +508,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({ players, teams, onFiltere
                   background: activeFilters.includes(label) ? '#7768f6' : '#23232b',
                   color: '#fff',
                   border: '1px solid #7768f6',
+                  width: '80%',
                   height: 28,
                   borderRadius: 24,
                   padding: '6px 14px',

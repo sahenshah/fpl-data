@@ -1,0 +1,160 @@
+.table-container {
+  width: 100%;
+  max-height: 700px;
+  overflow: auto;
+  background: #14161a;
+  border-radius: 12px;
+  box-sizing: border-box;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: #7768f6 transparent;
+}
+
+/* For Webkit browsers */
+.table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #7768f6;
+  border-radius: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.player-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  color: #fff;
+  font-size: 0.82em; 
+  background: #14161a;
+}
+
+.player-table th,
+.player-table td {
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid #2e3250;
+  font-size: 0.85em; 
+}
+
+.player-table th {
+  position: sticky;
+  top: 0;
+  background: #14161a;
+  font-size: 0.82em;
+  font-weight: 400;
+  z-index: 2;
+  border-bottom: 1px solid #2e3250;
+}
+
+/* Sticky badge and player name columns */
+.player-table th.sticky-badge,
+.player-table td.sticky-badge {
+  position: sticky;
+  left: 0;
+  top: 0;              /* Make header sticky vertically */
+  background: #14161a;
+  border-bottom: 1px solid #2e3250;
+  z-index: 4;           /* Higher z-index for header overlap */
+}
+
+.player-table td.sticky-name {
+  font-size: 0.92em;
+  font-weight: 600;
+  border-bottom: 1px solid #2e3250;
+}
+.player-table th.sticky-name,
+.player-table td.sticky-name {
+  position: sticky;
+  left: 45px;           /* width of badge column */
+  top: 0;               /* Make header sticky vertically */
+  background: #14161a;
+  border-bottom: 1px solid #2e3250;
+  z-index: 4;
+}
+
+.team-img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.pagination-container {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: #14161a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 0 12px 0;
+  z-index: 10;
+  border-radius: 0;     /* Remove bottom border-radius for flush look */
+  margin-bottom: 0;
+}
+
+.pagination-btn {
+  background: #23232b;
+  border: 2px solid #7768f6;
+  border-radius: 18px;
+  color: #fff;
+  padding: 6px 18px;
+  font-size: 1em;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, border 0.2s;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #bbb;
+  font-size: 1em;
+}
+
+.status-cell {
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.status-green {
+  background: #119721; /* green */
+  color: #119721;
+}
+
+.status-red {
+  background: #e74c3c; /* red */
+  color: #e74c3c;
+}
+
+.status-yellow {
+  background: #ffe066; /* yellow */
+  color: #ffe066;
+}
+
+.player-row.selectable-row:hover .sticky-name,
+.player-row.selectable-row:hover .sticky-badge {
+  background: #4c9cd1; 
+  transition: background 0.2s;
+} 
+.selectable-row:hover {
+  background: linear-gradient(90deg, #5bbeff 0%, #23235e 100%);
+  transition: background 0.2s;
+}

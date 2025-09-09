@@ -3,16 +3,12 @@
   flex-direction: row;
   align-items: flex-start; 
   justify-content: center;
-  gap: 24px;
-}
-
-.custom-dropdown {
-  position: relative;
-  min-width: 140px;
+  gap: 18px;
+  max-width: 100%;
 }
 
 .custom-dropdown-btn {
-  width: 140px;
+  width: 100%;
   height: 36px;
   border-radius: 22px;
   border: 1px solid #353545;
@@ -128,8 +124,8 @@
   left: 10%;
 }
 
-.xmins-filter-input {
-  width: 140px;
+.mins-filter-input {
+  width: 100%;
   height: 36px;
   border-radius: 18px;
   text-align: left;
@@ -143,7 +139,7 @@
   padding-left: 10px;
 }
 
-.xmins-filter-input:focus {
+.mins-filter-input:focus {
   border-color: #7768f6;
   background: #23232baf;
 }
@@ -176,14 +172,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 16px;
   width: 100%;
 }
 
 .player-filters-dropdown-input {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 12px;
+  width: 40% !important;
 }
 .player-filters-search-icon {
   color: #fff;
@@ -232,7 +229,7 @@
   flex-direction: column;
   align-items: center;
 }
-.xmins-filter-input,
+.mins-filter-input,
 .player-filters-search-input {
   text-align: left;
   padding-left: 16px;
@@ -241,11 +238,9 @@
 .player-filters-buttons {
   flex-wrap: wrap;
   gap: 6px;
-  justify-content: flex-start;
-}
-.player-filters-buttons {
+  justify-content: center;
   flex-direction: column !important;
-  align-items: flex-start !important;
+  align-items: center !important;
   width: 100%;
   gap: 8px;
   margin-bottom: 8px;
@@ -256,8 +251,10 @@
   align-items: flex-start;
   display: flex;
   flex-direction: row !important;
-  gap: 8px;
+  gap: 0 !important;
   margin-top: 10px;
+  max-height: 240px; /* or whatever fits your layout */
+  overflow: auto;
 }
 
 .player-filter-btn {
@@ -283,7 +280,7 @@
 .player-filters-title {
   color: #d8d7d7;
   font-size: 16px !important;
-  margin-bottom: 30px;
+  margin-bottom: 8px;
   text-align: center;
 }
 .player-filters-divider {
@@ -358,12 +355,10 @@
     max-width: 400px;
     margin: 0 auto 8px auto;
   }
-  .xmins-filter-input {
-    width: 140px;
-    max-width: 140px;
+  .mins-filter-input {
     margin: 0 auto 8px auto;
   }
-  .xmins-filter-input {
+  .mins-filter-input {
     display: flex;
     justify-content: center;
     align-items: center;
