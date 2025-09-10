@@ -21,7 +21,29 @@ function validTeamCached(teamId: string) {
   }
 }
 
-const fetchAllPicks = async (teamId: string) => {
+const corsProxies = [
+  'https://corsproxy.io/?',
+  'https://cors-anywhere.herokuapp.com/',
+  'https://api.allorigins.win/raw?url=',
+  'https://thingproxy.freeboard.io/fetch/',
+];
+
+const fetchWithFallback = async (url: string) => {
+  for (const proxy of corsProxies) {
+    try {
+      const proxyUrl = proxy + encodeURIComponent(url);
+      const response = await fetch(proxyUrl);
+      if (response.ok) {
+        return response;
+      }
+    } catch (error) {
+      console.warn(`Failed with proxy ${proxy}:`, error);
+    }
+  }
+  throw new Error('All CORS proxies failed');
+};
+
+const fetchAllPicksWithFallback = async (teamId: string) => {
   const picksArray = [];
   const currGw = await getCurrentGameweek();
   let lastFetchedPicks = null;
@@ -29,16 +51,12 @@ const fetchAllPicks = async (teamId: string) => {
   if (typeof currGw === 'number' && currGw > 0) {
     for (let gw = 1; gw < currGw; gw++) {
       try {
-        const response = await fetch(
-          `https://corsproxy.io/?https://fantasy.premierleague.com/api/entry/${teamId}/event/${gw}/picks/`
+        const response = await fetchWithFallback(
+          `https://fantasy.premierleague.com/api/entry/${teamId}/event/${gw}/picks/`
         );
-        if (response.ok) {
-          const data = await response.json();
-          picksArray.push({ gw, picks: data });
-          lastFetchedPicks = data;
-        } else {
-          picksArray.push({ gw, picks: null });
-        }
+        const data = await response.json();
+        picksArray.push({ gw, picks: data });
+        lastFetchedPicks = data;
       } catch {
         picksArray.push({ gw, picks: null });
       }
@@ -92,24 +110,22 @@ const TeamManager: React.FC = () => {
 
     try {
       // Fetch summary
-      const response = await fetch(`https://corsproxy.io/?https://fantasy.premierleague.com/api/entry/${teamId}/`);
-      if (!response.ok) throw new Error('Team not found');
+      const response = await fetchWithFallback(`https://fantasy.premierleague.com/api/entry/${teamId}/`);
       const data = await response.json();
       localStorage.setItem(`team_${teamId}_data`, JSON.stringify(data));
 
       // Fetch history
-      const historyResponse = await fetch(`https://corsproxy.io/?https://fantasy.premierleague.com/api/entry/${teamId}/history/`);
-      if (historyResponse.ok) {
-        const historyData = await historyResponse.json();
-        localStorage.setItem(`team_${teamId}_history_data`, JSON.stringify(historyData));
-      }
+      const historyResponse = await fetchWithFallback(`https://fantasy.premierleague.com/api/entry/${teamId}/history/`);
+      const historyData = await historyResponse.json();
+      localStorage.setItem(`team_${teamId}_history_data`, JSON.stringify(historyData));
 
       // Fetch picks for GW 1-38
-      const picksArray = await fetchAllPicks(teamId);
+      const picksArray = await fetchAllPicksWithFallback(teamId);
       localStorage.setItem(`team_${teamId}_picks_data`, JSON.stringify(picksArray));
 
       setIsValidTeam(true);
     } catch (err) {
+      console.error('Failed to fetch team data:', err);
       setSubmittedTeamId('');
       setIsValidTeam(false);
     } finally {
