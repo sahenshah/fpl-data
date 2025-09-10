@@ -70,6 +70,11 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
 	}, [elements]);
 
 
+  const formatNumberWithSpaces = (num: number | string | undefined): string => {
+    if (num === undefined || num === null || num === 'N/A') return 'N/A';
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  };
+
   const getDynamicPicksForGameweek = (gw: number) => {
     // Find the most recent gameweek <= gw with picks
     let sourceGw = gw;
@@ -711,7 +716,9 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
                 </div>
                 <div className={styles['team-formation-data-card']}>
                   <div className={styles['team-formation-data-title']}>GW Rank:</div>
-                  <div className={styles['team-formation-data-value']}>{pickData.entry_history?.rank_sort}</div>
+                  <div className={styles['team-formation-data-value']}>
+                    {formatNumberWithSpaces(pickData.entry_history?.rank_sort)}
+                  </div>
                 </div>
               </>
             )}
@@ -1513,9 +1520,11 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
               <span className={styles['team-formation-data-title']}>Overall Rank:</span>
               <span className={styles['team-formation-data-value']}>
                 {typeof currentGameweek === 'number' && gw >= currentGameweek ? (
-                  lastPastGwData && typeof lastPastGwData.overall_rank === 'number' ? lastPastGwData.overall_rank : 'N/A'
+                  lastPastGwData && typeof lastPastGwData.overall_rank === 'number'
+                    ? formatNumberWithSpaces(lastPastGwData.overall_rank)
+                    : 'N/A'
                 ) : (
-                  pickData.entry_history?.overall_rank
+                  formatNumberWithSpaces(pickData.entry_history?.overall_rank)
                 )}
               </span>
             </div>
