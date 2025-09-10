@@ -624,74 +624,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
 
   return (
     <div className={styles['team-selection-container']}>
-      <div style={{ display: 'flex', flexDirection: 'row', marginTop: '30px', width: '100%', gap: '30px', justifyContent: 'space-around' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '30%' }}>
-          <div className={styles['transfer-section']}>
-            <div className={styles['team-formation-data-card-total-points']}>
-              <span className={styles['team-formation-data-title']}>Overall Rank:</span>
-              <span className={styles['team-formation-data-value']}>
-                {typeof currentGameweek === 'number' && gw >= currentGameweek ? (
-                  lastPastGwData && typeof lastPastGwData.overall_rank === 'number' ? lastPastGwData.overall_rank : 'N/A'
-                ) : (
-                  pickData.entry_history?.overall_rank
-                )}
-              </span>
-            </div>
-            <div className={styles['transfer-card']}>
-              <span className={styles['transfer-label']}>Total Points</span>
-              <span className={styles['transfer-value']}>
-                {typeof currentGameweek === 'number' && gw >= currentGameweek ? (
-                  lastPastGwData && typeof lastPastGwData.total_points === 'number' ? lastPastGwData.total_points : 'N/A'
-                ) : (
-                  pickData.entry_history?.total_points
-                )}
-              </span>
-            </div>
-          </div>
-          {/* New containers below the data cards */}
-          <div
-            style={{
-              background: '#14161a',
-              borderRadius: '16px',
-              padding: '18px',
-              marginTop: '18px',
-              marginBottom: '12px',
-              width: '100%',
-              maxHeight: '320px',
-              color: '#fff',
-            }}
-          >
-            <TeamSelectionFilters
-              players={elements}
-              teams={teams}
-					    onFilteredPlayers={setFilteredPlayers}
-              costRange={costRange}
-              setCostRange={setCostRange}
-              activeFilters={activeFilters}
-              setActiveFilters={setActiveFilters}
-            />
-          </div>
-          <div
-            style={{
-              background: '#14161a',
-              borderRadius: '16px',
-              padding: '18px',
-              marginBottom: '12px',
-              width: '100%',
-              boxSizing: 'border-box',
-              color: '#fff',
-            }}
-          >
-            <TeamSelectionPlayerTable
-              players={filteredPlayers}
-              teams={teams}
-              activeFilters={activeFilters}
-              selectable={selectable}
-              selectedPlayerId={selectedPlayerId}
-              setSelectedPlayerId={handleSelectPlayer}
-            />
-          </div>
-        </div>
+      <div className={styles['team-selection-inner-container']}>
         <div className='team-formation-data-container'>
           <div style={{ display: 'flex', justifyContent: 'center', height: '1.5rem', fontSize: '1.2rem', fontWeight: '600', color: '#fff', marginBottom: '1rem' }}>
             Gameweek {gw} Team Selection
@@ -1572,6 +1505,73 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
                 );
               })}
             </div>
+          </div>
+        </div>
+        <div className={styles['transfer-section-outer-container']}>
+          <div className={styles['transfer-section']}>
+            <div className={styles['team-formation-data-card-total-points']}>
+              <span className={styles['team-formation-data-title']}>Overall Rank:</span>
+              <span className={styles['team-formation-data-value']}>
+                {typeof currentGameweek === 'number' && gw >= currentGameweek ? (
+                  lastPastGwData && typeof lastPastGwData.overall_rank === 'number' ? lastPastGwData.overall_rank : 'N/A'
+                ) : (
+                  pickData.entry_history?.overall_rank
+                )}
+              </span>
+            </div>
+            <div className={styles['transfer-card']}>
+              <span className={styles['transfer-label']}>Total Points</span>
+              <span className={styles['transfer-value']}>
+                {typeof currentGameweek === 'number' && gw >= currentGameweek ? (
+                  lastPastGwData && typeof lastPastGwData.total_points === 'number' ? lastPastGwData.total_points : 'N/A'
+                ) : (
+                  pickData.entry_history?.total_points
+                )}
+              </span>
+            </div>
+          </div>
+          {/* New containers below the data cards */}
+          <div
+            style={{
+              background: '#14161a',
+              borderRadius: '16px',
+              padding: '18px',
+              marginTop: '18px',
+              marginBottom: '12px',
+              width: '100%',
+              maxHeight: '320px',
+              color: '#fff',
+            }}
+          >
+            <TeamSelectionFilters
+              players={elements}
+              teams={teams}
+					    onFilteredPlayers={setFilteredPlayers}
+              costRange={costRange}
+              setCostRange={setCostRange}
+              activeFilters={activeFilters}
+              setActiveFilters={setActiveFilters}
+            />
+          </div>
+          <div
+            style={{
+              background: '#14161a',
+              borderRadius: '16px',
+              padding: '18px',
+              marginBottom: '12px',
+              width: '100%',
+              boxSizing: 'border-box',
+              color: '#fff',
+            }}
+          >
+            <TeamSelectionPlayerTable
+              players={filteredPlayers}
+              teams={teams}
+              activeFilters={activeFilters}
+              selectable={selectable}
+              selectedPlayerId={selectedPlayerId}
+              setSelectedPlayerId={handleSelectPlayer}
+            />
           </div>
         </div>
       </div>

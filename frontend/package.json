@@ -18,6 +18,7 @@
     "@mui/x-data-grid": "^8.10.2",
     "ag-grid-community": "^34.1.2",
     "ag-grid-react": "^34.1.2",
+    "flag-icons": "^7.5.0",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

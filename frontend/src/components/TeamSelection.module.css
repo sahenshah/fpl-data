@@ -181,6 +181,31 @@
   text-align: center;
 }
 
+.team-selection-inner-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  width: 100%;
+  gap: 30px;
+  justify-content: space-around;
+}
+
+.transfer-section-outer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+}
+@media (max-width: 1250px) {
+  .team-selection-inner-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .transfer-section-outer-container {
+    width: 75%;
+  }
+}
 .transfer-section {
   display: flex;
   flex-direction: column;
