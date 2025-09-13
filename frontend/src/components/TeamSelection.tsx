@@ -16,7 +16,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
   const [filteredPlayers, setFilteredPlayers] = useState<Element[]>([]);
   const [costRange, setCostRange] = useState<[number, number]>([38, 150]);
   const [activeFilters, setActiveFilters] = React.useState<string[]>(['General']);
-  const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
+  const [selectedPlayerId] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/static_json/elements.json')
