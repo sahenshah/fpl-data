@@ -736,36 +736,11 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
 
     print(f"Opening CSV file: {projection_csv_path}")
 
-    with open(projection_csv_path, newline='') as csvfile:
+    with open(projection_csv_path, newline='', encoding='utf-8-sig') as csvfile:
         reader = csv.DictReader(csvfile)
-        
-        # Debug: Print the raw fieldnames
-        print(f"Raw fieldnames: {reader.fieldnames}")
-        print(f"Fieldnames type: {type(reader.fieldnames)}")
-        
+        # Remove BOM from fieldnames if present
         if reader.fieldnames:
-            for i, field in enumerate(reader.fieldnames):
-                print(f"Field {i}: '{field}' (length: {len(field)}, repr: {repr(field)})")
-        
-        # Try to get the first row to see what's actually in it
-        try:
-            first_row = next(reader)
-            print(f"First row keys: {list(first_row.keys())}")
-            print(f"First row: {first_row}")
-            
-            # Check if 'Pos' exists in different ways
-            if 'Pos' in first_row:
-                print("'Pos' found in first_row")
-            else:
-                print("'Pos' NOT found in first_row")
-                # Try to find similar keys
-                for key in first_row.keys():
-                    if 'pos' in key.lower():
-                        print(f"Found similar key: '{key}'")
-            
-        except StopIteration:
-            print("CSV file is empty")
-            return
+            reader.fieldnames = [f.lstrip('\ufeff') for f in reader.fieldnames]
         
         # Reset the reader
         csvfile.seek(0)
@@ -818,20 +793,33 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
             """, (element_type,))
             candidates = cur.fetchall()
             player_id = None
-            for cid, c_web, c_first, c_second in candidates:
-                names_to_try = [
-                    c_web,
-                    c_first,
-                    c_second,
-                    f"{c_first} {c_second}".strip(),
-                    f"{c_first[0]}. {c_second}".strip() if c_first else None
-                ]
-                for candidate_name in names_to_try:
-                    if candidate_name and normalize_name(candidate_name) == normalize_name(name):
-                        player_id = cid
+
+            # Prefer matching by ID if available
+            csv_id = row.get('ID', '').strip()
+            if csv_id.isdigit():
+                player_id = int(csv_id)
+                # Verify the player exists in the DB
+                cur.execute("SELECT id FROM elements WHERE id = ?", (player_id,))
+                if not cur.fetchone():
+                    print(f"ID {player_id} from CSV not found in DB for {name} ({pos})")
+                    player_id = None
+
+            # Fallback to name/position matching if ID not found
+            if not player_id:
+                for cid, c_web, c_first, c_second in candidates:
+                    names_to_try = [
+                        c_web,
+                        c_first,
+                        c_second,
+                        f"{c_first} {c_second}".strip(),
+                        f"{c_first[0]}. {c_second}".strip() if c_first else None
+                    ]
+                    for candidate_name in names_to_try:
+                        if candidate_name and normalize_name(candidate_name) == normalize_name(name):
+                            player_id = cid
+                            break
+                    if player_id:
                         break
-                if player_id:
-                    break
 
             if not player_id:
                 print(f"No match for {name} ({pos}) in projection.csv")
@@ -847,10 +835,15 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
 
                 # Always update if value exists in CSV
                 if xmins_col in row and row[xmins_col].strip() != '':
-                    update_fields[db_xmins_col] = row[xmins_col]
-
+                    try:
+                        update_fields[db_xmins_col] = float(row[xmins_col])
+                    except ValueError:
+                        print(f"Invalid xmins value for {name} GW{gw}: {row[xmins_col]}")
                 if pts_col in row and row[pts_col].strip() != '':
-                    update_fields[db_pp_col] = row[pts_col]
+                    try:
+                        update_fields[db_pp_col] = float(row[pts_col])
+                    except ValueError:
+                        print(f"Invalid pts value for {name} GW{gw}: {row[pts_col]}")
 
             if update_fields:
                 set_clause = ', '.join([f"{col} = ?" for col in update_fields])
