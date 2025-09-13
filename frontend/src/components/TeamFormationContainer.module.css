@@ -1,0 +1,315 @@
+.picks-data-container {
+  color: #fff;
+}
+.pitch-container {
+  width: 100%;
+  height: 1150px; /* Adjust height as needed */
+  background-color: #216324; /* Green color for the pitch */
+  background-image: url(team-selection-pitch-bg.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  margin-top: 20px;
+  position: relative;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  color: #fff;
+}
+
+.pitch-title {
+  text-align: center;
+  margin: 0 0 20px 0;
+  color: #fff;
+  font-size: 1.4em;
+}
+
+.gw-info-container {
+    color: #fff;
+}
+
+.gw-nav-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: #fff;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.team-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.stat-card {
+  background: #34495e;
+  border-radius: 8px;
+  padding: 12px 16px;
+  min-width: 120px;
+  text-align: center;
+  border: 1px solid #4a5568;
+  flex: 1;
+  max-width: 150px;
+}
+
+.stat-label {
+  font-size: 0.8em;
+  color: #bdc3c7;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #fff;
+}
+
+.position-row {
+  margin-bottom: 20px;
+}
+
+.position-title {
+  text-align: center;
+  margin: 0 0 10px 0;
+  color: #ecf0f1;
+  font-size: 1.1em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.players-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.bench-player-card,
+.player-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  min-width: 130px;
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player-name {
+  font-weight: bold;
+  font-size: 0.85em;
+  padding: 2px;
+  background-color: #005e1c88;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.player-team {
+  font-size: 0.8em;
+  color: #bdc3c7;
+}
+
+.player-opponent-bench, 
+.player-opponent {
+  font-size: 0.8em;
+  color: #fff;
+  margin-bottom: 2px; 
+  padding: 2px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+}
+
+.player-points-bench,
+.player-points {
+  font-size: 0.75em;
+  color: #eeeded;
+  margin-top: 2px;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+  padding: 3px 6px; 
+  box-sizing: border-box; /* Include padding in width calculation */
+  display: flex; /* Use flexbox for better control */
+  justify-content: center; /* Center the content */
+  align-items: center; /* Vertically center */
+}
+
+.points-separator {
+  margin: 0 10px; /* Adjust this value to control spacing */
+}
+
+.captain {
+  color: #080808;
+  font-weight: bold;
+}
+
+.vice-captain {
+  color: #000000;
+  font-weight: bold;
+}
+
+.bench-section {
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+  background-color: #3030308f;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: 20px;
+  border-radius: 16px;
+}
+
+.bench-players {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.player-details {
+  font-size: 0.75em;
+  color: #95a5a6;
+  margin-top: 2px;
+}
+
+.kit-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  position: relative; /* Add relative positioning for absolute child */
+}
+
+.kit-image {
+  width: 100px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.autosub-icon {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  width: 16px;
+  height: 16px;
+  z-index: 2;
+  border-radius: 50%;
+  background: white;
+  padding: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Difficulty color classes */
+.difficulty-easy {
+  background-color: #27ae60; /* Green for easy (< 3) */
+}
+
+.difficulty-medium {
+  background-color: #f39c12; /* Yellow for medium (= 3) */
+  color: #000; /* Black text for better readability on yellow */
+}
+
+.difficulty-hard {
+  background-color: #e74c3c; /* Red for hard (> 3) */
+}
+
+/* Ensure text is readable on all backgrounds */
+.player-opponent.difficulty-medium,
+.player-opponent-bench.difficulty-medium {
+  color: #000;
+}
+
+/* Add to TeamFormationContainer.module.css */
+
+.captain-badge,
+.vice-captain-badge {
+  position: absolute;
+  top: 0px;
+  left: 18px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 0;
+  z-index: 3;
+  border: 1px solid #fff;
+  font-family: Arial, sans-serif;
+}
+
+/* Update kit-container to ensure proper positioning */
+.kit-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.player-fixtures {
+  display: flex;
+  gap: 2px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  justify-content: center;
+}
+
+.player-fixtures-bench {
+  display: flex;
+  gap: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  justify-content: center;
+}
+
+.fixture-item {
+  font-size: 0.7em;
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+  text-align: center;
+  min-width: 28px;
+  background-color: #666; /* Default background for fixtures without difficulty */
+}
+
+/* Update difficulty classes to work with fixture items */
+.fixture-item.difficulty-easy {
+  background-color: #27ae60; /* Green */
+}
+
+.fixture-item.difficulty-medium {
+  background-color: #f39c12; /* Yellow/Orange */
+  color: #000; /* Black text for better readability on yellow */
+}
+
+.fixture-item.difficulty-hard {
+  background-color: #e74c3c; /* Red */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .fixture-item {
+    font-size: 0.65em;
+    padding: 1px 3px;
+    min-width: 24px;
+  }
+  
+  .player-fixtures,
+  .player-fixtures-bench {
+    gap: 1px;
+  }
+}

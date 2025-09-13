@@ -253,7 +253,6 @@
   flex-direction: row !important;
   gap: 0 !important;
   margin-top: 10px;
-  max-height: 240px; /* or whatever fits your layout */
   overflow: auto;
 }
 
