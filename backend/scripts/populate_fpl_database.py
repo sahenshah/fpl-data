@@ -734,11 +734,79 @@ def update_elements_from_projection_csv(conn, projection_csv_path):
     def normalize_name(name):
         return name.lower().replace('.', '').replace('-', ' ').replace('  ', ' ').strip()
 
+    print(f"Opening CSV file: {projection_csv_path}")
+
     with open(projection_csv_path, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
+        
+        # Debug: Print the raw fieldnames
+        print(f"Raw fieldnames: {reader.fieldnames}")
+        print(f"Fieldnames type: {type(reader.fieldnames)}")
+        
+        if reader.fieldnames:
+            for i, field in enumerate(reader.fieldnames):
+                print(f"Field {i}: '{field}' (length: {len(field)}, repr: {repr(field)})")
+        
+        # Try to get the first row to see what's actually in it
+        try:
+            first_row = next(reader)
+            print(f"First row keys: {list(first_row.keys())}")
+            print(f"First row: {first_row}")
+            
+            # Check if 'Pos' exists in different ways
+            if 'Pos' in first_row:
+                print("'Pos' found in first_row")
+            else:
+                print("'Pos' NOT found in first_row")
+                # Try to find similar keys
+                for key in first_row.keys():
+                    if 'pos' in key.lower():
+                        print(f"Found similar key: '{key}'")
+            
+        except StopIteration:
+            print("CSV file is empty")
+            return
+        
+        # Reset the reader
+        csvfile.seek(0)
+        reader = csv.DictReader(csvfile)
+        
         for row in reader:
-            name = row['Name'].strip()
-            pos = row['Pos'].strip()
+            # Try different ways to access the position
+            pos = None
+            name = None
+            
+            # Try direct access
+            try:
+                pos = row['Pos'].strip()
+                name = row['Name'].strip()
+            except KeyError as e:
+                print(f"KeyError: {e}")
+                print(f"Available keys: {list(row.keys())}")
+                
+                # Try to find the position column by looking for similar keys
+                for key in row.keys():
+                    if key.lower() == 'pos':
+                        pos = row[key].strip()
+                        print(f"Found position using key '{key}': {pos}")
+                        break
+                
+                # Try to find the name column
+                for key in row.keys():
+                    if key.lower() == 'name':
+                        name = row[key].strip()
+                        print(f"Found name using key '{key}': {name}")
+                        break
+                
+                if not pos or not name:
+                    print(f"Could not find position or name in row: {row}")
+                    continue
+            
+            if not name or not pos:
+                print(f"Missing name or position data: Name='{name}', Pos='{pos}'")
+                continue
+                
+            
             element_type = position_map.get(pos)
             if not element_type:
                 print(f"Unknown position: {pos} for {name}")
