@@ -15,6 +15,8 @@ interface Element {
   element_type: number;
   team: number;
   web_name: string;
+  status: string;
+  now_cost: number; // in tenths, e.g. 99 = £9.9
 }
 
 interface Team {
@@ -69,6 +71,9 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   const [elementSummaryFixtures, setElementSummaryFixtures] = useState<ElementSummaryFixtures[]>([]);
   const [teamPlannerMode, setTeamPlannerMode] = useState<boolean>(false); 
   const [historyData, setHistoryData] = useState<any>(null);
+  const [selectedSubPlayerId, setSelectedSubPlayerId] = useState<number | null>(null);
+  const [subModeActive, setSubModeActive] = useState<boolean>(false);
+  const [lineup, setLineup] = useState<{ startingXI: any[], bench: any[] } | null>(null);
 
   useEffect(() => {
     // Load static data
@@ -358,6 +363,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         const isAutoSubbed = isPlayerAutoSubbed(pick.element);
         
         const playerInfo = {
+          id: player.id,
+          element_type: player.element_type, 
           name: `${player.first_name} ${player.second_name}`,
           webName: player.web_name,
           team: getTeamName(player.team),
@@ -389,61 +396,166 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     return lineup;
   };
 
+  useEffect(() => {
+    const initialLineup = getPlayerLineup();
+    setLineup(initialLineup);
+  }, [picksData, elements]);
+
   // Organize players by position for formation display
   const getFormationPlayers = () => {
-    const lineup = getPlayerLineup();
-    if (!lineup) return null;
+    // Use the mutable lineup state in planner mode so swaps are reflected
+    if (teamPlannerMode && lineup) {
+      const formation = {
+        goalkeepers: lineup.startingXI.filter(player => player.element_type === 1),
+        defenders: lineup.startingXI.filter(player => player.element_type === 2),
+        midfielders: lineup.startingXI.filter(player => player.element_type === 3),
+        forwards: lineup.startingXI.filter(player => player.element_type === 4)
+      };
+      return { formation, bench: lineup.bench };
+    }
+
+    // Otherwise, use the original picks data (read-only)
+    const staticLineup = getPlayerLineup();
+    if (!staticLineup) return null;
 
     const formation = {
-      goalkeepers: [] as any[],
-      defenders: [] as any[],
-      midfielders: [] as any[],
-      forwards: [] as any[]
+      goalkeepers: staticLineup.startingXI.filter(player => player.element_type === 1),
+      defenders: staticLineup.startingXI.filter(player => player.element_type === 2),
+      midfielders: staticLineup.startingXI.filter(player => player.element_type === 3),
+      forwards: staticLineup.startingXI.filter(player => player.element_type === 4)
     };
+    return { formation, bench: staticLineup.bench };
+  };
 
-    lineup.startingXI.forEach(player => {
-      switch (player.positionId) {
-        case 1:
-          formation.goalkeepers.push(player);
-          break;
-        case 2:
-          formation.defenders.push(player);
-          break;
-        case 3:
-          formation.midfielders.push(player);
-          break;
-        case 4:
-          formation.forwards.push(player);
-          break;
+  // Handler for substitute button
+  const handleSubstituteClick = (e: React.MouseEvent, playerId: number, isBench: boolean) => {
+    e.stopPropagation();
+    console.log(`Substitute button clicked for player ${playerId}, isBench: ${isBench}`);
+    if (!isBench) {
+      if (selectedSubPlayerId === playerId) {
+        setSelectedSubPlayerId(null);
+        setSubModeActive(false);
+      } else {
+        setSelectedSubPlayerId(playerId);
+        setSubModeActive(true);
+
+        // Log selectable bench players (unchanged)
+        if (lineup) {
+          const selectedPlayer = lineup.startingXI.find(p => p.id === playerId);
+          const benchDefenders = lineup.bench.filter(p => p.element_type === 2);
+          const benchGoalkeepers = lineup.bench.filter(p => p.element_type === 1);
+
+          const selectableBenchPlayers = lineup.bench.filter(benchPlayer => {
+            if (!selectedPlayer) return false;
+            if (selectedPlayer.element_type === 1) {
+              return benchPlayer.element_type === 1 && benchGoalkeepers.length === 1;
+            }
+            if (selectedPlayer.element_type === 2) {
+              return (benchPlayer.element_type === 2) ||
+                     (benchPlayer.element_type === 3 ||
+                      benchPlayer.element_type === 4) &&
+                     benchDefenders.length < 2;
+            }
+            if (selectedPlayer.element_type === 3 || selectedPlayer.element_type === 4) {
+              return benchPlayer.element_type === 2 ||
+                benchPlayer.element_type === 3 ||
+                benchPlayer.element_type === 4;
+            }
+          });
+
+          console.log('Selectable bench players:', selectableBenchPlayers);
+        }
       }
-    });
+    } else if (subModeActive && selectedSubPlayerId !== null) {
+      // Swap the selected starting XI player with the selected bench player
+      if (lineup) {
+        const startingIdx = lineup.startingXI.findIndex(p => p.id === selectedSubPlayerId);
+        const benchIdx = lineup.bench.findIndex(p => p.id === playerId);
 
-    return { formation, bench: lineup.bench };
+        if (startingIdx !== -1 && benchIdx !== -1) {
+          const newStartingXI = [...lineup.startingXI];
+          const newBench = [...lineup.bench];
+
+          // Swap the players
+          [newStartingXI[startingIdx], newBench[benchIdx]] = [newBench[benchIdx], newStartingXI[startingIdx]];
+
+          // Swap their pickPosition values so they appear in the correct place
+          const tempPickPosition = newStartingXI[startingIdx].pickPosition;
+          newStartingXI[startingIdx].pickPosition = newBench[benchIdx].pickPosition;
+          newBench[benchIdx].pickPosition = tempPickPosition;
+
+          setLineup({
+            startingXI: newStartingXI,
+            bench: newBench
+          });
+        }
+      }
+      // Deselect after swap
+      setSelectedSubPlayerId(null);
+      setSubModeActive(false);
+      console.log(`Bench player ${playerId} selected, swapped with starting XI player ${selectedSubPlayerId}.`);
+    }
   };
 
   // Component to render a player card with shirt
-  const PlayerCard = ({ player, isBench = false }: { player: any, isBench?: boolean }) => {
+  const PlayerCard = ({
+    player,
+    elements,
+    isBench = false,
+    isSelected = false,
+    isSelectable = false,
+    showSubButton = false,
+    subButtonDisabled = false,
+    onSubstituteClick
+  }: {
+    player: any,
+    elements: Element[],
+    isBench?: boolean,
+    isSelected?: boolean,
+    isSelectable?: boolean,
+    showSubButton?: boolean,
+    subButtonDisabled?: boolean,
+    onSubstituteClick?: (e: React.MouseEvent) => void
+  }) => {
     const kitImageSrc = `/team-kits/${player.team}.png`;
-    
+
+    // Find the status from elements.json
+    const elementData = elements.find(el => el.id === player.id);
+    const playerStatus = elementData?.status ?? '';
+
     return (
-      <div className={isBench ? styles['bench-player-card'] : styles['player-card']}>
+      <div className={
+        (isBench ? styles['bench-player-card'] : styles['player-card']) +
+        (isSelected ? ` ${styles['selected-sub-card']}` : '') +
+        (isSelectable ? ` ${styles['selectable-bench-card']}` : '')
+      }>
+        {/* Substitute button at top left */}
+        {showSubButton && (
+          <button
+            className={styles['substitute-icon']}
+            onClick={onSubstituteClick} 
+            aria-label="Substitute"
+            type="button"
+            disabled={subButtonDisabled}
+          >
+            <img src="/sub.png" alt="Substitute" style={{ width: 18, height: 18 }} />
+          </button>
+        )}
         {isBench && (
           <div className={styles['bench-position-label']}>
             {player.positionShort}
           </div>
         )}
-        
+
         <div className={styles['kit-container']}>
           <img
             src={kitImageSrc}
             alt={`${player.team} kit`}
             className={styles['kit-image']}
             onError={(e) => {
-              // Fallback to a default kit or hide image if not found
               e.currentTarget.style.display = 'none';
             }}
           />
-          {/* Add autosub icon if player was auto-subbed */}
           {player.isAutoSubbed && (
             <img
               src="/autosub.png"
@@ -451,21 +563,24 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               className={styles['autosub-icon']}
             />
           )}
-          {/* Add captain badge */}
           {player.isCaptain && (
             <div className={styles['captain-badge']}>C</div>
           )}
-          {/* Add vice-captain badge */}
           {player.isViceCaptain && (
             <div className={styles['vice-captain-badge']}>V</div>
           )}
         </div>
-        
-        <div className={styles['player-name']}>
+
+        <div
+          className={
+            styles['player-name'] +
+            (['u', 's', 'i'].includes(playerStatus) ? ' ' + styles['player-name-unavailable'] :
+              playerStatus === 'd' ? ' ' + styles['player-name-doubtful'] : '')
+          }
+        >
           {player.webName}
         </div>
-        
-        {/* Display 3 fixtures in a row */}
+
         <div className={isBench ? styles['player-fixtures-bench'] : styles['player-fixtures']}>
           {player.fixtures.map((fixture: any, index: number) => (
             <div 
@@ -476,8 +591,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
             </div>
           ))}
         </div>
-        
-        {/* Conditionally show points based on planner mode */}
+
         <div className={isBench ? styles['player-points-bench'] : styles['player-points']}>
           {teamPlannerMode ? (
             `xP: ${player.xPoints}`
@@ -506,37 +620,71 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   const entryHistory = picksData?.picks?.entry_history;
   const formationData = getFormationPlayers();
 
-  // Add this helper function to calculate total xPoints for the gameweek
-  const calculateTotalXPoints = (): string => {
-    if (!picksData?.picks?.picks || elements.length === 0) {
-      return '0.0';
+
+  const getLastValidTeamValue = (): string => {
+    if (!historyData || !historyData.current || !Array.isArray(historyData.current)) {
+      return 'N/A';
     }
 
-    const picks = picksData.picks.picks;
-    const elementsLookup = elements.reduce((acc, element) => {
-      acc[element.id] = element;
-      return acc;
-    }, {} as { [key: number]: Element });
+    // Find the latest gameweek with a valid value
+    const validEntries = historyData.current
+      .filter((item: any) => typeof item.value === 'number' && typeof item.bank === 'number')
+      .sort((a: any, b: any) => b.event - a.event); // Sort descending by event (gameweek)
 
+    if (validEntries.length === 0) return 'N/A';
+
+    // Use the most recent entry
+    const lastEntry = validEntries[0];
+    return `£${formatValue(lastEntry.value)}`;
+  };
+
+  const getSquadTotalCost = (): number => {
+    if (!lineup || elements.length === 0) return 0;
+    // Combine startingXI and bench
+    const squad = [...lineup.startingXI, ...lineup.bench];
+    return squad.reduce((sum, player) => {
+      const element = elements.find(el => el.id === player.id);
+      // now_cost is in tenths (e.g. 99 = £9.9)
+      return sum + (element?.now_cost ?? 0);
+    }, 0);
+  };
+
+  const getBankValue = (): string => {
+    // getLastValidTeamValue returns a string like "£100.0"
+    const teamValueStr = getLastValidTeamValue();
+    const teamValue = parseFloat(teamValueStr.replace(/[£,]/g, ''));
+    const squadCost = getSquadTotalCost() / 10; // convert to £
+
+    if (isNaN(teamValue)) return 'N/A';
+    return `${(teamValue - squadCost).toFixed(1)}`;
+  };
+
+  const calcTeamValue = (): string => {
+    const teamValue = parseFloat(getLastValidTeamValue().replace(/[£,]/g, ''));
+    const bankValue = parseFloat(getBankValue().replace(/[£,]/g, ''));
+    if (isNaN(teamValue) || isNaN(bankValue)) return 'N/A';
+    return (teamValue - bankValue).toFixed(1);
+  }
+  const calculateTotalXPoints = (): string => {
+    if (!lineup || !Array.isArray(lineup.startingXI) || elements.length === 0) {
+      return '0.0';
+    }
+  
     let totalXPoints = 0;
-
-    picks.forEach((pick: any) => {
-      const player = elementsLookup[pick.element];
-      if (player) {
-        // Get xPoints for this player in the current gameweek
+  
+    lineup.startingXI.forEach((player: any) => {
+      // Find the element data for this player
+      const element = elements.find(el => el.id === player.id);
+      if (element) {
         const xPointsField = `pp_gw_${gw}`;
-        const playerXPoints = (player as any)[xPointsField];
-        
+        const playerXPoints = (element as any)[xPointsField];
+        const multiplier = player.multiplier || 1;
         if (playerXPoints) {
-          const xPointsValue = parseFloat(playerXPoints);
-          const multiplier = pick.multiplier || 0;
-          
-          // Add to total (xPoints * multiplier)
-          totalXPoints += xPointsValue * multiplier;
+          totalXPoints += parseFloat(playerXPoints) * multiplier;
         }
       }
     });
-
+  
     return totalXPoints.toFixed(1);
   };
 
@@ -683,12 +831,12 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
 
               <div className={styles['stat-card']}>
                 <div className={styles['stat-label']}>Value</div>
-                <div className={styles['stat-value']}>£100.0</div>
+                <div className={styles['stat-value']}>£{calcTeamValue()}</div>
               </div>
 
               <div className={styles['stat-card']}>
                 <div className={styles['stat-label']}>Bank</div>
-                <div className={styles['stat-value']}>-</div>
+                <div className={styles['stat-value']}>£{getBankValue()}</div>
               </div>
 
               <div className={styles['stat-card']}>
@@ -708,7 +856,18 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               <div className={styles['position-row']}>
                 <div className={styles['players-row']}>
                   {formationData.formation.goalkeepers.map((player, idx) => (
-                    <PlayerCard key={idx} player={player} />
+                    <PlayerCard
+                      key={idx}
+                      player={player}
+                      elements={elements}
+                      isSelected={selectedSubPlayerId === player.id}
+                      isBench={false}
+                      showSubButton={teamPlannerMode}
+                      subButtonDisabled={
+                        subModeActive && selectedSubPlayerId !== player.id
+                      }
+                      onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                    />
                   ))}
                 </div>
               </div>
@@ -719,7 +878,18 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               <div className={styles['position-row']}>
                 <div className={styles['players-row']}>
                   {formationData.formation.defenders.map((player, idx) => (
-                    <PlayerCard key={idx} player={player} />
+                    <PlayerCard
+                      key={idx}
+                      player={player}
+                      elements={elements}
+                      isSelected={selectedSubPlayerId === player.id}
+                      isBench={false}
+                      showSubButton={teamPlannerMode}
+                      subButtonDisabled={
+                        subModeActive && selectedSubPlayerId !== player.id
+                      }
+                      onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                    />
                   ))}
                 </div>
               </div>
@@ -730,7 +900,18 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               <div className={styles['position-row']}>
                 <div className={styles['players-row']}>
                   {formationData.formation.midfielders.map((player, idx) => (
-                    <PlayerCard key={idx} player={player} />
+                    <PlayerCard
+                      key={idx}
+                      player={player}
+                      elements={elements}
+                      isSelected={selectedSubPlayerId === player.id}
+                      isBench={false}
+                      showSubButton={teamPlannerMode}
+                      subButtonDisabled={
+                        subModeActive && selectedSubPlayerId !== player.id
+                      }
+                      onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                    />
                   ))}
                 </div>
               </div>
@@ -741,19 +922,66 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               <div className={styles['position-row']}>
                 <div className={styles['players-row']}>
                   {formationData.formation.forwards.map((player, idx) => (
-                    <PlayerCard key={idx} player={player} />
+                    <PlayerCard
+                      key={idx}
+                      player={player}
+                      elements={elements}
+                      isSelected={selectedSubPlayerId === player.id}
+                      isBench={false}
+                      showSubButton={teamPlannerMode}
+                      subButtonDisabled={
+                        subModeActive && selectedSubPlayerId !== player.id
+                      }
+                      onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                    />
                   ))}
                 </div>
               </div>
             )}
 
             {/* Bench */}
-            {formationData.bench.length > 0 && (
+            {lineup && Array.isArray(lineup.bench) && lineup.bench.length > 0 && (
               <div className={styles['bench-section']}>
                 <div className={styles['bench-players']}>
-                  {formationData.bench.map((player, idx) => (
-                    <PlayerCard key={idx} player={player} isBench={true} />
-                  ))}
+                  {lineup.bench.map((player, idx) => {
+                    // Determine if this bench player is selectable
+                    let isSelectable = false;
+                    if (subModeActive && selectedSubPlayerId !== null) {
+                      const selectedPlayer = lineup.startingXI.find(p => p.id === selectedSubPlayerId);
+                      if (selectedPlayer) {
+                        if (selectedPlayer.element_type === 1) {
+                          const benchGoalkeepers = lineup.bench.filter(p => p.element_type === 1);
+                          isSelectable = player.element_type === 1 && benchGoalkeepers.length === 1;
+                        } else if (selectedPlayer.element_type === 2) {
+                          const benchDefenders = lineup.bench.filter(p => p.element_type === 2);
+                          isSelectable = (player.element_type === 2) ||
+                                         (player.element_type === 3 ||
+                                          player.element_type === 4) &&
+                                         benchDefenders.length < 2;
+                        } else if (selectedPlayer.element_type === 3 || selectedPlayer.element_type === 4) {
+                          isSelectable = player.element_type === 2 ||
+                                         player.element_type === 3 ||
+                                         player.element_type === 4;
+                        }
+                      }
+                    }
+                  
+                    return (
+                      <PlayerCard
+                        key={idx}
+                        player={player}
+                        elements={elements}
+                        isSelected={selectedSubPlayerId === player.id}
+                        isBench={true}
+                        isSelectable={isSelectable}
+                        showSubButton={teamPlannerMode}
+                        subButtonDisabled={
+                          !isSelectable
+                        }
+                        onSubstituteClick={(e) => handleSubstituteClick(e, player.id, true)}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             )}
