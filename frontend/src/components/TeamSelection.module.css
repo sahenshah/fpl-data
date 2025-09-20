@@ -1,7 +1,31 @@
-.filters-container,
-.player-table-container,
-.team-formation-container {
+.player-table-container{
  width: 100%;
  padding-top: 2rem;
  max-width: none;
+}
+.filters-and-table-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 30%;
+}
+.team-selection-container {
+  display: flex; 
+  flex-direction: row;
+  gap: 50px;
+  justify-content: center;
+}
+.team-formation-container {
+  width: 750px !important;
+  min-width: 750px !important;
+}
+
+@media (max-width: 1200px) {
+  .team-selection-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .filters-and-table-container {
+    max-width: 100%;
+    width: 100%;
+  }
 }

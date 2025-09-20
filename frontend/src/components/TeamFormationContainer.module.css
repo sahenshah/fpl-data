@@ -2,7 +2,7 @@
   color: #fff;
 }
 .pitch-container {
-  width: 100%;
+  width: 750px;
   height: 1150px; /* Adjust height as needed */
   background-color: #216324; /* Green color for the pitch */
   background-image: url(team-selection-pitch-bg.png);

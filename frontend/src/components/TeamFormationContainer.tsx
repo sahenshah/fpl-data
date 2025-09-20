@@ -190,17 +190,18 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
 
   useEffect(() => {
     if (lineup) {
-      console.log('StartingXI:', lineup.startingXI);
-      console.log('Bench:', lineup.bench);
+      // console.log('StartingXI:', lineup.startingXI);
+      // console.log('Bench:', lineup.bench);
     }
   }, [lineup]);
 
-  useEffect(() => {
-    console.log('Transfer Out List:', transferOut);
-  }, [transferOut]);
-  useEffect(() => {
-    console.log('Transfer In List:', transferIn);
-  }, [transferIn]);
+  // useEffect(() => {
+  //   console.log('Transfer Out List:', transferOut);
+  // }, [transferOut]);
+  // useEffect(() => {
+  //   console.log('Transfer In List:', transferIn);
+  // }, [transferIn]);
+  
   useEffect(() => {
   if (
     selectedPlayerId &&
@@ -467,10 +468,16 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   };
 
   // Process picks data to get player information
+  
   const getPlayerLineup = () => {
-    if (!picksData?.picks?.picks || elements.length === 0) return null;
+    let picksSource = picksData;
+    // If no picksData for this gw, fallback to previous valid gw
+    if ((!picksData || !picksData.picks || !picksData.picks) && gw && currentGameweek && gw > currentGameweek) {
+      picksSource = getPreviousValidPicksData(gw);
+    }
+    if (!picksSource?.picks?.picks || elements.length === 0) return null;
 
-    const picks = picksData.picks.picks;
+    const picks = picksSource.picks.picks;
     const elementsLookup = elements.reduce((acc, element) => {
       acc[element.id] = element;
       return acc;
@@ -562,15 +569,30 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         }
         return prev;
       });
-      console.log('Remove clicked for player', playerId, playerData);
-      console.log('Current transferOut list:', [...transferOut, playerData]);
+      // console.log('Remove clicked for player', playerId, playerData);
+      // console.log('Current transferOut list:', [...transferOut, playerData]);
     }
   };
+
+  function getPreviousValidPicksData(currentGw: number): any {
+    if (!currentGw || !teamId) return null;
+    const teamDataRaw = localStorage.getItem(`team_${teamId}_picks_data`);
+    if (!teamDataRaw) return null;
+    const picksArray = JSON.parse(teamDataRaw);
+    // Find the latest gameweek before currentGw with valid picks
+    for (let gw = currentGw - 1; gw >= 1; gw--) {
+      const gwData = picksArray.find((item: any) => item.gw === gw);
+      if (gwData && gwData.picks && gwData.picks.picks) {
+        return gwData;
+      }
+    }
+    return null;
+  }
 
   // Handler for substitute button
   const handleSubstituteClick = (e: React.MouseEvent, playerId: number, isBench: boolean) => {
     e.stopPropagation();
-    console.log(`Substitute button clicked for player ${playerId}, isBench: ${isBench}`);
+    // console.log(`Substitute button clicked for player ${playerId}, isBench: ${isBench}`);
     if (!isBench) {
       if (selectedSubPlayerId === playerId) {
         setSelectedSubPlayerId(null);
@@ -580,31 +602,31 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         setSubModeActive(true);
 
         // Log selectable bench players (unchanged)
-        if (lineup) {
-          const selectedPlayer = lineup.startingXI.find(p => p.id === playerId);
-          const benchDefenders = lineup.bench.filter(p => p.element_type === 2);
-          const benchGoalkeepers = lineup.bench.filter(p => p.element_type === 1);
+        // if (lineup) {
+        //   const selectedPlayer = lineup.startingXI.find(p => p.id === playerId);
+        //   const benchDefenders = lineup.bench.filter(p => p.element_type === 2);
+        //   const benchGoalkeepers = lineup.bench.filter(p => p.element_type === 1);
 
-          const selectableBenchPlayers = lineup.bench.filter(benchPlayer => {
-            if (!selectedPlayer) return false;
-            if (selectedPlayer.element_type === 1) {
-              return benchPlayer.element_type === 1 && benchGoalkeepers.length === 1;
-            }
-            if (selectedPlayer.element_type === 2) {
-              return (benchPlayer.element_type === 2) ||
-                     (benchPlayer.element_type === 3 ||
-                      benchPlayer.element_type === 4) &&
-                     benchDefenders.length < 2;
-            }
-            if (selectedPlayer.element_type === 3 || selectedPlayer.element_type === 4) {
-              return benchPlayer.element_type === 2 ||
-                benchPlayer.element_type === 3 ||
-                benchPlayer.element_type === 4;
-            }
-          });
+          // const selectableBenchPlayers = lineup.bench.filter(benchPlayer => {
+          //   if (!selectedPlayer) return false;
+          //   if (selectedPlayer.element_type === 1) {
+          //     return benchPlayer.element_type === 1 && benchGoalkeepers.length === 1;
+          //   }
+          //   if (selectedPlayer.element_type === 2) {
+          //     return (benchPlayer.element_type === 2) ||
+          //            (benchPlayer.element_type === 3 ||
+          //             benchPlayer.element_type === 4) &&
+          //            benchDefenders.length < 2;
+          //   }
+          //   if (selectedPlayer.element_type === 3 || selectedPlayer.element_type === 4) {
+          //     return benchPlayer.element_type === 2 ||
+          //       benchPlayer.element_type === 3 ||
+          //       benchPlayer.element_type === 4;
+          //   }
+          // });
 
-          console.log('Selectable bench players:', selectableBenchPlayers);
-        }
+          // console.log('Selectable bench players:', selectableBenchPlayers);
+        // }
       }
     } else if (subModeActive && selectedSubPlayerId !== null) {
       // Swap the selected starting XI player with the selected bench player
@@ -633,7 +655,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       // Deselect after swap
       setSelectedSubPlayerId(null);
       setSubModeActive(false);
-      console.log(`Bench player ${playerId} selected, swapped with starting XI player ${selectedSubPlayerId}.`);
+      // console.log(`Bench player ${playerId} selected, swapped with starting XI player ${selectedSubPlayerId}.`);
     }
   };
 
@@ -641,12 +663,12 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     e.stopPropagation();
     setTransferIn(prev => prev.filter(p => p.id !== transferInId));
     setTransferMappings(prev => prev.filter(m => m.inId !== transferInId));
-    console.log(`Restore/refresh button pressed for player ${transferInId} and removed from transferIn and transferMappings`);
+    // console.log(`Restore/refresh button pressed for player ${transferInId} and removed from transferIn and transferMappings`);
   };
   const handleRestoreClick = (e: React.MouseEvent, playerId: number ) => {
     e.stopPropagation();
     setTransferOut(prev => prev.filter(p => p.id !== playerId));
-    console.log(`Restore/refresh button pressed for player ${playerId} and removed from transferOut list`);
+    // console.log(`Restore/refresh button pressed for player ${playerId} and removed from transferOut list`);
   };
   
   // Component to render a player card with shirt
@@ -752,11 +774,25 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                   src={`/team-kits/${transferInMatch.team}.png`}
                   alt={`${transferInMatch.team} kit`}
                   className={styles['kit-image']}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    setModalPlayer(transferInMatch ? transferInMatch : player);
+                    setModalOpen(true);
+                  }}
                 />
-              </div>
-              <div className={styles['player-name']}>
-                {transferInMatch.webName}
-              </div>
+                  {transferInMatch.isCaptain && (
+                    <div className={styles['captain-badge']}>C</div>
+                  )}
+                  {transferInMatch.isViceCaptain && (
+                    <div className={styles['vice-captain-badge']}>V</div>
+                  )}
+                </div>
+                <div className={styles['player-name']}>
+                  {transferInMatch.webName}
+                </div>
               {/* You can show more data from transferInMatch if desired */}
               <div className={isBench ? styles['player-fixtures-bench'] : styles['player-fixtures']}>
                 {transferInMatch.fixtures.map((fixture: any, index: number) => (
@@ -817,7 +853,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
 
             <div className={styles['kit-container']}>
               <img
-                src={kitImageSrc}
+                src={transferInMatch ? `/team-kits/${transferInMatch.team}.png` : kitImageSrc}
                 alt={`${player.team} kit`}
                 className={styles['kit-image']}
                 onError={(e) => {
@@ -825,7 +861,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                 }}
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  setModalPlayer(player);
+                  setModalPlayer(transferInMatch ? transferInMatch : player);
                   setModalOpen(true);
                 }}
               />
@@ -914,24 +950,32 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   };
 
   const getSquadTotalCost = (): number => {
-    if (!lineup || elements.length === 0) return 0;
-    // Combine startingXI and bench
-    const squad = [...lineup.startingXI, ...lineup.bench];
-    return squad.reduce((sum, player) => {
-      // Check if player is transferred out and has a mapped transfer in
-      const mapping = transferMappings.find(m => m.outId === player.id);
-      const transferInPlayer = mapping
-        ? transferIn.find(p => p.id === mapping.inId)
-        : null;
+  if (!lineup || elements.length === 0) return 0;
 
-      // Use transferIn player's cost if present, otherwise original player's cost
-      const elementId = transferInPlayer ? transferInPlayer.id : player.id;
-      const element = elements.find(el => el.id === elementId);
+  // Get all 15 players in the team
+  const squad = [...lineup.startingXI, ...lineup.bench];
 
-      // now_cost is in tenths (e.g. 99 = £9.9)
-      return sum + (element?.now_cost ?? 0);
-    }, 0);
-  };
+  // Sum the now_cost of all squad players
+  let totalCost = squad.reduce((sum, player) => {
+    const element = elements.find(el => el.id === player.id);
+    return sum + (element?.now_cost ?? 0);
+  }, 0);
+
+  // Subtract the now_cost of all players in transferOut
+  totalCost -= transferOut.reduce((sum, player) => {
+    const element = elements.find(el => el.id === player.id);
+    return sum + (element?.now_cost ?? 0);
+  }, 0);
+
+  // Add the now_cost of all players in transferIn
+  totalCost += transferIn.reduce((sum, player) => {
+    const element = elements.find(el => el.id === player.id);
+    return sum + (element?.now_cost ?? 0);
+  }, 0);
+
+  return totalCost;
+};
+  
 
   const getBankValue = (): string => {
     // getLastValidTeamValue returns a string like "£100.0"
@@ -961,7 +1005,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       let multiplier = player.multiplier || 1;
 
       if (transferInPlayer) {
-        xPoints = transferInPlayer.xPoints;
+        xPoints = (parseFloat(transferInPlayer.xPoints) * transferInPlayer.multiplier).toFixed(1);
         // If you want to use the original player's multiplier, keep as is.
         // If you want to use the transferIn player's multiplier, use transferInPlayer.multiplier.
       } else {
@@ -1322,18 +1366,34 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               onClick={() => {
                 setLineup(prevLineup => {
                   if (!prevLineup) return prevLineup;
-                  // Remove captain from current captain
+              
+                  // Remove captain from current captain in startingXI
                   const updatedStartingXI = prevLineup.startingXI.map(p =>
                     p.isCaptain || p.multiplier === 2
                       ? { ...p, isCaptain: false, multiplier: 1 }
                       : p
                   );
-                  // Set captain for selected player
+              
+                  // Set captain for selected player (including transferred-in)
                   const newStartingXI = updatedStartingXI.map(p =>
                     p.id === modalPlayer.id
                       ? { ...p, isCaptain: true, multiplier: 2 }
                       : p
                   );
+              
+                  // Remove captain from any transferred-in player
+                  setTransferIn(prev =>
+                    prev.map(p =>
+                      (p.isCaptain || p.multiplier === 2)
+                        ? { ...p, isCaptain: false, multiplier: 1 }
+                        : p
+                    ).map(p =>
+                      p.id === modalPlayer.id
+                        ? { ...p, isCaptain: true, multiplier: 2 }
+                        : p
+                    )
+                  );
+              
                   return { ...prevLineup, startingXI: newStartingXI, bench: prevLineup.bench };
                 });
                 setModalOpen(false);

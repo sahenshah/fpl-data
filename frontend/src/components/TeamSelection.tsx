@@ -42,27 +42,31 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
           onSelectionHandled={() => setSelectedPlayerId(null)}
         />
       </div>
-      <div className={styles['filters-container']}>
-        <TeamSelectionFilters
-          players={elements}
-          teams={teams}
-          onFilteredPlayers={setFilteredPlayers}
-          costRange={costRange}
-          setCostRange={setCostRange}
-          activeFilters={activeFilters}
-          setActiveFilters={setActiveFilters}
-        />
+      <div className={styles['filters-and-table-container']}>
+      
+        <div className={styles['filters-container']}>
+          <TeamSelectionFilters
+            players={elements}
+            teams={teams}
+            onFilteredPlayers={setFilteredPlayers}
+            costRange={costRange}
+            setCostRange={setCostRange}
+            activeFilters={activeFilters}
+            setActiveFilters={setActiveFilters}
+          />
+        </div>
+        <div className={styles['player-table-container']}>
+          <TeamSelectionPlayerTable
+            players={filteredPlayers}
+            teams={teams}
+            activeFilters={activeFilters}
+            selectable={true}
+            onPlayerSelect={setSelectedPlayerId}
+            selectedPlayerId={selectedPlayerId}
+          />
+        </div>
       </div>
-      <div className={styles['player-table-container']}>
-        <TeamSelectionPlayerTable
-          players={filteredPlayers}
-          teams={teams}
-          activeFilters={activeFilters}
-          selectable={true}
-          onPlayerSelect={setSelectedPlayerId}
-          selectedPlayerId={selectedPlayerId}
-        />
-      </div>
+    
     </div>
   );
 };
