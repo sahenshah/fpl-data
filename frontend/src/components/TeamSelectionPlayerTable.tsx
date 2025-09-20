@@ -17,7 +17,8 @@ interface TeamSelectionPlayerTableProps {
   selectedPlayerId?: number | null;
   setSelectedPlayerId?: (id: number | null, player?: Element) => void; // <-- updated
   activeFilters: string[];
-  selectable?: boolean; 
+  selectable?: boolean;
+  onPlayerSelect?: (id: number | null, player?: Element) => void;
 }
 
 const gwColumns: TableColumn[] = [];
@@ -135,6 +136,7 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
   setSelectedPlayerId,
   activeFilters,
   selectable = false, // default to false
+  onPlayerSelect,
 }) => {
   const [page, setPage] = React.useState(0);
   const [sortBy, setSortBy] = React.useState<string>('total_points');
@@ -241,7 +243,9 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
     if (setSelectedPlayerId) {
       setSelectedPlayerId(selectedPlayerId === playerId ? null : playerId, playerData);
     }
-    console.log(playerData);
+    if( onPlayerSelect ) {
+      onPlayerSelect(selectedPlayerId === playerId ? null : playerId, playerData);
+    }
   };
 
   return (

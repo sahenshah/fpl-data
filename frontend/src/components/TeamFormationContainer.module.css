@@ -344,3 +344,57 @@
   background-color: #ffe066; /* yellow */
   color: #333;
 }
+
+.remove-icon {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: #e53935;
+  border: 2px solid #e53935;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2;
+  width: 18px;         /* Make it square */
+  height: 18px;        /* Make it square */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0px;  /* Slightly rounded corners, remove for sharp square */
+}
+.restore-icon {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  padding: 0;
+  background: #006d00; /* Green */
+  color: #fff;
+  border: 2px solid #006d00;
+  border-radius: 0px;
+  width: 18px;
+  height: 18px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.transfer-in-remove-icon {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: #1976d2; /* Blue */
+  color: #fff;
+  border: none;
+  border-radius: 0px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -4,8 +4,10 @@ import { getCurrentGameweek } from '../App.tsx';
 
 interface FormationContainerProps {
   teamId: string;
+  selectedPlayerId?: number | null;
   onGameweekChange?: (gameweek: number) => void;
   onTeamPlannerModeChange?: (isPlanner: boolean) => void;
+  onSelectionHandled?: () => void; // New prop to notify when selection is handled
 }
 
 interface Element {
@@ -35,7 +37,6 @@ interface ElementSummaryHistory {
   was_home: number;
   kickoff_time: string;
   round: number;
-  // ... other properties
 }
 
 interface ElementSummaryFixtures {
@@ -58,8 +59,10 @@ interface ElementSummaryFixtures {
 
 const FormationContainer: React.FC<FormationContainerProps> = ({ 
   teamId, 
+  selectedPlayerId,
   onGameweekChange, 
-  onTeamPlannerModeChange 
+  onTeamPlannerModeChange,
+  onSelectionHandled
 }) => {
   const [gw, setGw] = useState<number | undefined>(undefined);
   const [currentGameweek, setCurrentGameweek] = useState<number | undefined>(undefined);
@@ -74,7 +77,10 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   const [selectedSubPlayerId, setSelectedSubPlayerId] = useState<number | null>(null);
   const [subModeActive, setSubModeActive] = useState<boolean>(false);
   const [lineup, setLineup] = useState<{ startingXI: any[], bench: any[] } | null>(null);
-
+  const [transferOut, setTransferOut] = useState<any[]>([]);
+  const [transferIn, setTransferIn] = useState<any[]>([]);
+  const [transferMappings, setTransferMappings] = useState<{ outId: number, inId: number }[]>([]); 
+  
   useEffect(() => {
     // Load static data
     Promise.all([
@@ -174,6 +180,113 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     }
   }, [gw, onGameweekChange]);
 
+  useEffect(() => {
+    const initialLineup = getPlayerLineup();
+    setLineup(initialLineup);
+  }, [picksData, elements]);
+
+  useEffect(() => {
+    if (lineup) {
+      console.log('StartingXI:', lineup.startingXI);
+      console.log('Bench:', lineup.bench);
+    }
+  }, [lineup]);
+
+  useEffect(() => {
+    console.log('Transfer Out List:', transferOut);
+  }, [transferOut]);
+  useEffect(() => {
+    console.log('Transfer In List:', transferIn);
+  }, [transferIn]);
+  useEffect(() => {
+  if (
+    selectedPlayerId &&
+    transferOut.length > 0 &&
+    elements.length > 0 &&
+    gw !== undefined
+  ) {
+    // ...existing logic...
+
+    // After handling the selection, clear it in the parent
+    onSelectionHandled?.();
+  }
+}, [selectedPlayerId, transferOut, elements, gw]);
+
+  useEffect(() => {
+    if (
+      selectedPlayerId &&
+      transferOut.length > 0 &&
+      elements.length > 0 &&
+      gw !== undefined
+    ) {
+      const selectedPlayer = elements.find(el => el.id === selectedPlayerId);
+      if (!selectedPlayer) return;
+
+      // Format the selected player data to match transferOut structure
+      const fixtures = getPlayerFixtures(selectedPlayer.id, gw);
+      const xPoints = getPlayerXPoints(selectedPlayer.id, gw);
+      const totalPoints = getPlayerTotalPoints(selectedPlayer.id, gw);
+      const isAutoSubbed = isPlayerAutoSubbed(selectedPlayer.id);
+
+      const formattedPlayer = {
+        id: selectedPlayer.id,
+        element_type: selectedPlayer.element_type,
+        name: `${selectedPlayer.first_name} ${selectedPlayer.second_name}`,
+        webName: selectedPlayer.web_name,
+        team: getTeamName(selectedPlayer.team),
+        fixtures: fixtures,
+        xPoints: xPoints,
+        totalPoints: totalPoints,
+        isAutoSubbed: isAutoSubbed,
+        position: getPositionName(selectedPlayer.element_type, false),
+        positionShort: getPositionName(selectedPlayer.element_type, true),
+        positionId: selectedPlayer.element_type,
+        isCaptain: false,
+        isViceCaptain: false,
+        multiplier: 1,
+        pickPosition: undefined
+      };
+
+      setTransferIn(prev => {
+        if (!prev.some(p => p.id === formattedPlayer.id)) {
+          return [...prev, formattedPlayer];
+        }
+        return prev;
+      });
+
+      // Find the first unmatched transferOut slot with the same element_type
+      const unmatchedOutPlayer = transferOut.find(
+        outPlayer =>
+          outPlayer.element_type === selectedPlayer.element_type &&
+          !transferMappings.some(m => m.outId === outPlayer.id)
+      );
+      if (unmatchedOutPlayer) {
+        setTransferMappings(prev => {
+          // Remove any mapping with this inId (so a transfer-in player is only mapped once)
+          const filtered = prev.filter(m => m.inId !== formattedPlayer.id);
+          // Add the new mapping
+          return [...filtered, { outId: unmatchedOutPlayer.id, inId: formattedPlayer.id }];
+        });
+      } else {
+        // Remove from transferIn if no matching transferOut slot
+        setTransferIn(prev => prev.filter(p => p.id !== formattedPlayer.id));
+      }
+
+      onSelectionHandled?.();
+    }
+  }, [selectedPlayerId, transferOut, elements, gw, transferMappings]);
+
+  useEffect(() => {
+    // If transferOut is empty, clear transferIn
+    if (transferOut.length === 0 && transferIn.length > 0) {
+      setTransferIn([]);
+    }
+    // If transferIn is longer than transferOut, trim transferIn
+    if (transferIn.length > transferOut.length) {
+      setTransferIn(prev => prev.slice(0, transferOut.length));
+    }
+  }, [transferOut, transferIn]);
+
   const formatValue = (value: number | undefined): string => {
     if (value === undefined || value === null) return 'N/A';
     return (value / 10).toFixed(1);
@@ -189,6 +302,17 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     const position = positions[positionId];
     return position ? (short ? position.short : position.full) : 'Unknown';
   };
+
+  useEffect(() => {
+    if (transferIn.length > 1) {
+      const unique = transferIn.filter(
+        (p, idx, arr) => arr.findIndex(q => q.id === p.id) === idx
+      );
+      if (unique.length !== transferIn.length) {
+        setTransferIn(unique);
+      }
+    }
+  }, [transferIn]);
 
   const getTeamName = (teamId: number): string => {
     const team = teams.find(t => t.id === teamId);
@@ -396,10 +520,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     return lineup;
   };
 
-  useEffect(() => {
-    const initialLineup = getPlayerLineup();
-    setLineup(initialLineup);
-  }, [picksData, elements]);
 
   // Organize players by position for formation display
   const getFormationPlayers = () => {
@@ -425,6 +545,23 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       forwards: staticLineup.startingXI.filter(player => player.element_type === 4)
     };
     return { formation, bench: staticLineup.bench };
+  };
+
+  const handleRemoveClick = (e: React.MouseEvent, playerId: number) => {
+    e.stopPropagation();
+    // Find the player in startingXI or bench
+    const playerData = lineup?.startingXI.find(p => p.id === playerId) || lineup?.bench.find(p => p.id === playerId);
+    if (playerData) {
+      setTransferOut(prev => {
+        // Only add if not already present
+        if (!prev.some(p => p.id === playerId)) {
+          return [...prev, playerData];
+        }
+        return prev;
+      });
+      console.log('Remove clicked for player', playerId, playerData);
+      console.log('Current transferOut list:', [...transferOut, playerData]);
+    }
   };
 
   // Handler for substitute button
@@ -497,25 +634,43 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     }
   };
 
+  const handleRemoveTransferInClick = (e: React.MouseEvent, transferInId: number) => {
+    e.stopPropagation();
+    setTransferIn(prev => prev.filter(p => p.id !== transferInId));
+    setTransferMappings(prev => prev.filter(m => m.inId !== transferInId));
+    console.log(`Restore/refresh button pressed for player ${transferInId} and removed from transferIn and transferMappings`);
+  };
+  const handleRestoreClick = (e: React.MouseEvent, playerId: number ) => {
+    e.stopPropagation();
+    setTransferOut(prev => prev.filter(p => p.id !== playerId));
+    console.log(`Restore/refresh button pressed for player ${playerId} and removed from transferOut list`);
+  };
+  
   // Component to render a player card with shirt
   const PlayerCard = ({
     player,
     elements,
+    transferInMatch,
     isBench = false,
     isSelected = false,
     isSelectable = false,
     showSubButton = false,
     subButtonDisabled = false,
-    onSubstituteClick
+    onSubstituteClick,
+    showRemoveButton = false,
+    onRemoveClick
   }: {
     player: any,
     elements: Element[],
+    transferInMatch: any | null,
     isBench?: boolean,
     isSelected?: boolean,
     isSelectable?: boolean,
     showSubButton?: boolean,
     subButtonDisabled?: boolean,
-    onSubstituteClick?: (e: React.MouseEvent) => void
+    onSubstituteClick?: (e: React.MouseEvent) => void,
+    showRemoveButton?: boolean,
+    onRemoveClick?: (e: React.MouseEvent) => void
   }) => {
     const kitImageSrc = `/team-kits/${player.team}.png`;
 
@@ -523,89 +678,201 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     const elementData = elements.find(el => el.id === player.id);
     const playerStatus = elementData?.status ?? '';
 
-    return (
+    const isRemoved = transferOut.some(p => p.id === player.id);
+    
+      return (
       <div className={
         (isBench ? styles['bench-player-card'] : styles['player-card']) +
         (isSelected ? ` ${styles['selected-sub-card']}` : '') +
         (isSelectable ? ` ${styles['selectable-bench-card']}` : '')
       }>
-        {/* Substitute button at top left */}
-        {showSubButton && (
-          <button
-            className={styles['substitute-icon']}
-            onClick={onSubstituteClick} 
-            aria-label="Substitute"
-            type="button"
-            disabled={subButtonDisabled}
-          >
-            <img src="/sub.png" alt="Substitute" style={{ width: 18, height: 18 }} />
-          </button>
-        )}
-        {isBench && (
-          <div className={styles['bench-position-label']}>
-            {player.positionShort}
-          </div>
-        )}
-
-        <div className={styles['kit-container']}>
-          <img
-            src={kitImageSrc}
-            alt={`${player.team} kit`}
-            className={styles['kit-image']}
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
-          />
-          {player.isAutoSubbed && (
-            <img
-              src="/autosub.png"
-              alt="Auto-substituted"
-              className={styles['autosub-icon']}
-            />
-          )}
-          {player.isCaptain && (
-            <div className={styles['captain-badge']}>C</div>
-          )}
-          {player.isViceCaptain && (
-            <div className={styles['vice-captain-badge']}>V</div>
-          )}
-        </div>
-
-        <div
-          className={
-            styles['player-name'] +
-            (['u', 's', 'i'].includes(playerStatus) ? ' ' + styles['player-name-unavailable'] :
-              playerStatus === 'd' ? ' ' + styles['player-name-doubtful'] : '')
-          }
-        >
-          {player.webName}
-        </div>
-
-        <div className={isBench ? styles['player-fixtures-bench'] : styles['player-fixtures']}>
-          {player.fixtures.map((fixture: any, index: number) => (
-            <div 
-              key={index}
-              className={`${styles['fixture-item']} ${fixture.difficultyClass}`}
-            >
-              {fixture.name}
-            </div>
-          ))}
-        </div>
-
-        <div className={isBench ? styles['player-points-bench'] : styles['player-points']}>
-          {teamPlannerMode ? (
-            `xP: ${player.xPoints}`
+        {/* Remove button at top right */}
+        {showRemoveButton && (
+          isRemoved ? (
+            transferInMatch ? (
+              // Show X icon with blue background for transferred-in player
+              <button
+                className={styles['transfer-in-remove-icon']}
+                onClick={(e) => handleRemoveTransferInClick(e, transferInMatch.id)}
+                aria-label="Remove Transfer In"
+                type="button"
+              >
+                &#10005;
+              </button>
+            ) : (
+              // Show restore button for normal removed player
+              <button
+                className={styles['restore-icon']}
+                onClick={(e) => handleRestoreClick(e, player.id)}
+                aria-label="Restore"
+                type="button"
+              >
+                &#8635;
+              </button>
+            )
           ) : (
-            <>
-              <span>xP:{player.xPoints}</span>
-              <span className={styles['points-separator']}>|</span>
-              <span>{player.totalPoints}pts</span>
+            // Show normal remove button
+            <button
+              className={styles['remove-icon']}
+              onClick={onRemoveClick}
+              aria-label="Remove"
+              type="button"
+            >
+              &#10005;
+            </button>
+          )
+        )}
+
+        {/* If removed, show only name and NONE kit */}
+        {isRemoved ? (
+          transferInMatch ? (
+              <>
+                {/* Substitute button at top left */}
+                {showSubButton && (
+                  <button
+                    className={styles['substitute-icon']}
+                    onClick={onSubstituteClick}
+                    aria-label="Substitute"
+                    type="button"
+                    disabled={subButtonDisabled}
+                  >
+                    <img src="/sub.png" alt="Substitute" style={{ width: 18, height: 18 }} />
+                  </button>
+                )}
+                {isBench && (
+                  <div className={styles['bench-position-label']}>
+                    {transferInMatch.positionShort}
+                  </div>
+                )}
+                <div className={styles['kit-container']}>
+                <img
+                  src={`/team-kits/${transferInMatch.team}.png`}
+                  alt={`${transferInMatch.team} kit`}
+                  className={styles['kit-image']}
+                />
+              </div>
+              <div className={styles['player-name']}>
+                {transferInMatch.webName}
+              </div>
+              {/* You can show more data from transferInMatch if desired */}
+              <div className={isBench ? styles['player-fixtures-bench'] : styles['player-fixtures']}>
+                {transferInMatch.fixtures.map((fixture: any, index: number) => (
+                  <div
+                    key={index}
+                    className={`${styles['fixture-item']} ${fixture.difficultyClass}`}
+                  >
+                    {fixture.name}
+                  </div>
+                ))}
+              </div>
+              <div className={isBench ? styles['player-points-bench'] : styles['player-points']}>
+                {teamPlannerMode ? (
+                  `xP: ${transferInMatch.xPoints}`
+                ) : (
+                  <>
+                    <span>xP:{transferInMatch.xPoints}</span>
+                    <span className={styles['points-separator']}>|</span>
+                    <span>{transferInMatch.totalPoints}pts</span>
+                  </>
+                )}
+              </div>
             </>
-          )}
-        </div>
+          ) : (
+            // Default removed state: show only name and NONE kit
+            <>
+              <div className={styles['kit-container']}>
+                <img
+                  src="/team-kits/NONE.png"
+                  alt="No kit"
+                  className={styles['kit-image']}
+                />
+              </div>
+              <div className={styles['player-name']}>
+                {player.webName}
+              </div>
+            </>
+          )
+        ) : (
+          <>
+            {/* Substitute button at top left */}
+            {showSubButton && (
+              <button
+                className={styles['substitute-icon']}
+                onClick={onSubstituteClick}
+                aria-label="Substitute"
+                type="button"
+                disabled={subButtonDisabled}
+              >
+                <img src="/sub.png" alt="Substitute" style={{ width: 18, height: 18 }} />
+              </button>
+            )}
+            {isBench && (
+              <div className={styles['bench-position-label']}>
+                {player.positionShort}
+              </div>
+            )}
+
+            <div className={styles['kit-container']}>
+              <img
+                src={kitImageSrc}
+                alt={`${player.team} kit`}
+                className={styles['kit-image']}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+              {player.isAutoSubbed && (
+                <img
+                  src="/autosub.png"
+                  alt="Auto-substituted"
+                  className={styles['autosub-icon']}
+                />
+              )}
+              {player.isCaptain && (
+                <div className={styles['captain-badge']}>C</div>
+              )}
+              {player.isViceCaptain && (
+                <div className={styles['vice-captain-badge']}>V</div>
+              )}
+            </div>
+
+            <div
+              className={
+                styles['player-name'] +
+                (['u', 's', 'i'].includes(playerStatus) ? ' ' + styles['player-name-unavailable'] :
+                  playerStatus === 'd' ? ' ' + styles['player-name-doubtful'] : '')
+              }
+            >
+              {player.webName}
+            </div>
+
+            <div className={isBench ? styles['player-fixtures-bench'] : styles['player-fixtures']}>
+              {player.fixtures.map((fixture: any, index: number) => (
+                <div
+                  key={index}
+                  className={`${styles['fixture-item']} ${fixture.difficultyClass}`}
+                >
+                  {fixture.name}
+                </div>
+              ))}
+            </div>
+
+            <div className={isBench ? styles['player-points-bench'] : styles['player-points']}>
+              {teamPlannerMode ? (
+                `xP: ${player.xPoints}`
+              ) : (
+                <>
+                  <span>xP:{player.xPoints}</span>
+                  <span className={styles['points-separator']}>|</span>
+                  <span>{player.totalPoints}pts</span>
+                </>
+              )}
+            </div>
+          </>
+        )}
       </div>
     );
-  };
+  }
 
   if (loading || gw === undefined) {
     return (
@@ -643,7 +910,16 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     // Combine startingXI and bench
     const squad = [...lineup.startingXI, ...lineup.bench];
     return squad.reduce((sum, player) => {
-      const element = elements.find(el => el.id === player.id);
+      // Check if player is transferred out and has a mapped transfer in
+      const mapping = transferMappings.find(m => m.outId === player.id);
+      const transferInPlayer = mapping
+        ? transferIn.find(p => p.id === mapping.inId)
+        : null;
+
+      // Use transferIn player's cost if present, otherwise original player's cost
+      const elementId = transferInPlayer ? transferInPlayer.id : player.id;
+      const element = elements.find(el => el.id === elementId);
+
       // now_cost is in tenths (e.g. 99 = £9.9)
       return sum + (element?.now_cost ?? 0);
     }, 0);
@@ -659,32 +935,34 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     return `${(teamValue - squadCost).toFixed(1)}`;
   };
 
-  const calcTeamValue = (): string => {
-    const teamValue = parseFloat(getLastValidTeamValue().replace(/[£,]/g, ''));
-    const bankValue = parseFloat(getBankValue().replace(/[£,]/g, ''));
-    if (isNaN(teamValue) || isNaN(bankValue)) return 'N/A';
-    return (teamValue - bankValue).toFixed(1);
-  }
   const calculateTotalXPoints = (): string => {
     if (!lineup || !Array.isArray(lineup.startingXI) || elements.length === 0) {
       return '0.0';
     }
-  
+
     let totalXPoints = 0;
-  
+
     lineup.startingXI.forEach((player: any) => {
-      // Find the element data for this player
-      const element = elements.find(el => el.id === player.id);
-      if (element) {
-        const xPointsField = `pp_gw_${gw}`;
-        const playerXPoints = (element as any)[xPointsField];
-        const multiplier = player.multiplier || 1;
-        if (playerXPoints) {
-          totalXPoints += parseFloat(playerXPoints) * multiplier;
-        }
+      // Check if player is transferred out and has a mapped transfer in
+      const mapping = transferMappings.find(m => m.outId === player.id);
+      const transferInPlayer = mapping
+        ? transferIn.find(p => p.id === mapping.inId)
+        : null;
+
+      let xPoints = '0.0';
+      let multiplier = player.multiplier || 1;
+
+      if (transferInPlayer) {
+        xPoints = transferInPlayer.xPoints;
+        // If you want to use the original player's multiplier, keep as is.
+        // If you want to use the transferIn player's multiplier, use transferInPlayer.multiplier.
+      } else {
+        xPoints = player.xPoints;
       }
+
+      totalXPoints += parseFloat(xPoints) * multiplier;
     });
-  
+
     return totalXPoints.toFixed(1);
   };
 
@@ -756,11 +1034,19 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     return Math.max(freeTransfers, 0); // Ensure we never return negative
   };
 
+  // Place this just before your return (
+  function getTransferInMatch(player: any) {
+    // Find the mapping for this transfer-out slot
+    const mapping = transferMappings.find(m => m.outId === player.id);
+    if (!mapping) return null;
+    return transferIn.find(p => p.id === mapping.inId) || null;
+  }
+
   // Update the return statement to use the calculated xPoints
   return (
     <div className={styles['team-formation-container']}>
       <div className={styles['gw-nav-container']}>
-        <button 
+        <button
           className={styles['nav-button']}
           onClick={handlePrevGW}
           disabled={gw === 1}
@@ -821,17 +1107,21 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
             <>
               <div className={styles['stat-card']}>
                 <div className={styles['stat-label']}>Transfers</div>
-                <div className={styles['stat-value']}>{getTransfers()} / {calcFreeTransfers()}</div>
+                <div className={styles['stat-value']}>{transferOut.length} / {calcFreeTransfers()}</div>
               </div>
 
               <div className={styles['stat-card']}>
                 <div className={styles['stat-label']}>Cost</div>
-                <div className={styles['stat-value']}>{getTransferCost()}</div>
+                  <div className={styles['stat-value']}>
+                    {(transferOut.length - calcFreeTransfers()) > 0
+                      ? (transferOut.length - calcFreeTransfers()) * -4
+                      : 0}
+                  </div>
               </div>
 
               <div className={styles['stat-card']}>
                 <div className={styles['stat-label']}>Value</div>
-                <div className={styles['stat-value']}>£{calcTeamValue()}</div>
+                <div className={styles['stat-value']}>{getLastValidTeamValue()}</div>
               </div>
 
               <div className={styles['stat-card']}>
@@ -860,6 +1150,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                       key={idx}
                       player={player}
                       elements={elements}
+                      transferInMatch={getTransferInMatch(player)}
                       isSelected={selectedSubPlayerId === player.id}
                       isBench={false}
                       showSubButton={teamPlannerMode}
@@ -867,6 +1158,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                         subModeActive && selectedSubPlayerId !== player.id
                       }
                       onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                      showRemoveButton={gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek}
+                      onRemoveClick={(e) => handleRemoveClick(e, player.id)}
                     />
                   ))}
                 </div>
@@ -882,6 +1175,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                       key={idx}
                       player={player}
                       elements={elements}
+                      transferInMatch={getTransferInMatch(player)}
                       isSelected={selectedSubPlayerId === player.id}
                       isBench={false}
                       showSubButton={teamPlannerMode}
@@ -889,6 +1183,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                         subModeActive && selectedSubPlayerId !== player.id
                       }
                       onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                      showRemoveButton={gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek}
+                      onRemoveClick={(e) => handleRemoveClick(e, player.id)}
                     />
                   ))}
                 </div>
@@ -904,6 +1200,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                       key={idx}
                       player={player}
                       elements={elements}
+                      transferInMatch={getTransferInMatch(player)}
                       isSelected={selectedSubPlayerId === player.id}
                       isBench={false}
                       showSubButton={teamPlannerMode}
@@ -911,6 +1208,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                         subModeActive && selectedSubPlayerId !== player.id
                       }
                       onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                      showRemoveButton={gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek}
+                      onRemoveClick={(e) => handleRemoveClick(e, player.id)}
                     />
                   ))}
                 </div>
@@ -926,6 +1225,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                       key={idx}
                       player={player}
                       elements={elements}
+                      transferInMatch={getTransferInMatch(player)}
                       isSelected={selectedSubPlayerId === player.id}
                       isBench={false}
                       showSubButton={teamPlannerMode}
@@ -933,6 +1233,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                         subModeActive && selectedSubPlayerId !== player.id
                       }
                       onSubstituteClick={(e) => handleSubstituteClick(e, player.id, false)}
+                      showRemoveButton={gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek}
+                      onRemoveClick={(e) => handleRemoveClick(e, player.id)}
                     />
                   ))}
                 </div>
@@ -971,6 +1273,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                         key={idx}
                         player={player}
                         elements={elements}
+                        transferInMatch={getTransferInMatch(player)}
                         isSelected={selectedSubPlayerId === player.id}
                         isBench={true}
                         isSelectable={isSelectable}
@@ -979,6 +1282,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                           !isSelectable
                         }
                         onSubstituteClick={(e) => handleSubstituteClick(e, player.id, true)}
+                        showRemoveButton={gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek}
+                        onRemoveClick={(e) => handleRemoveClick(e, player.id)}
                       />
                     );
                   })}

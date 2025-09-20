@@ -16,7 +16,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
   const [filteredPlayers, setFilteredPlayers] = useState<Element[]>([]);
   const [costRange, setCostRange] = useState<[number, number]>([38, 150]);
   const [activeFilters, setActiveFilters] = React.useState<string[]>(['General']);
-  const [selectedPlayerId] = useState<number | null>(null);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/static_json/elements.json')
@@ -38,6 +38,8 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
       <div className='team-formation-container'>
         <FormationContainer
           teamId={teamId}
+          selectedPlayerId={selectedPlayerId}
+          onSelectionHandled={() => setSelectedPlayerId(null)}
         />
       </div>
       <div className={styles['filters-container']}>
@@ -57,6 +59,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
           teams={teams}
           activeFilters={activeFilters}
           selectable={true}
+          onPlayerSelect={setSelectedPlayerId}
           selectedPlayerId={selectedPlayerId}
         />
       </div>
