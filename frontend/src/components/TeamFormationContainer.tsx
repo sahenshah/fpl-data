@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './TeamFormationContainer.module.css';
 import { getCurrentGameweek } from '../App.tsx';
+import Dialog from '@mui/material/Dialog';
 
 interface FormationContainerProps {
   teamId: string;
@@ -80,7 +81,9 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   const [transferOut, setTransferOut] = useState<any[]>([]);
   const [transferIn, setTransferIn] = useState<any[]>([]);
   const [transferMappings, setTransferMappings] = useState<{ outId: number, inId: number }[]>([]); 
-  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalPlayer, setModalPlayer] = useState<any>(null);
+
   useEffect(() => {
     // Load static data
     Promise.all([
@@ -820,6 +823,11 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setModalPlayer(player);
+                  setModalOpen(true);
+                }}
               />
               {player.isAutoSubbed && (
                 <img
@@ -1295,6 +1303,71 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
           <p>No valid picks data available for this gameweek</p>
         )}
       </div>
+
+      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+        <div className={styles['modal-content']}>
+          {/* Close X icon at top right */}
+          <button
+            onClick={() => setModalOpen(false)}
+            className={styles['modal-close-btn']}
+            aria-label="Close"
+          >
+            &#10005;
+          </button>
+          <h2>{modalPlayer?.webName}</h2>
+          {/* Captain and Vice Captain options */}
+          <div className={styles['modal-actions']}>
+            <button
+              className={styles['modal-captain-btn']}
+              onClick={() => {
+                setLineup(prevLineup => {
+                  if (!prevLineup) return prevLineup;
+                  // Remove captain from current captain
+                  const updatedStartingXI = prevLineup.startingXI.map(p =>
+                    p.isCaptain || p.multiplier === 2
+                      ? { ...p, isCaptain: false, multiplier: 1 }
+                      : p
+                  );
+                  // Set captain for selected player
+                  const newStartingXI = updatedStartingXI.map(p =>
+                    p.id === modalPlayer.id
+                      ? { ...p, isCaptain: true, multiplier: 2 }
+                      : p
+                  );
+                  return { ...prevLineup, startingXI: newStartingXI, bench: prevLineup.bench };
+                });
+                setModalOpen(false);
+              }}
+            >
+              Captain
+            </button>
+            <button
+              className={styles['modal-vice-btn']}
+              onClick={() => {
+                setLineup(prevLineup => {
+                  if (!prevLineup) return prevLineup;
+                  // Remove captain from current captain
+                  const updatedStartingXI = prevLineup.startingXI.map(p =>
+                    p.isViceCaptain 
+                      ? { ...p, isViceCaptain: false }
+                      : p
+                  );
+                  // Set captain for selected player
+                  const newStartingXI = updatedStartingXI.map(p =>
+                    p.id === modalPlayer.id
+                      ? { ...p, isViceCaptain: true }
+                      : p
+                  );
+                  return { ...prevLineup, startingXI: newStartingXI, bench: prevLineup.bench };
+                });
+                setModalOpen(false);
+              }}
+            >
+              Vice Captain
+            </button>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };
