@@ -38,6 +38,20 @@
     margin-bottom: 12px;
 }
 
+.gw-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center vertically */
+  height: 100%;
+}
+
+.gw-label {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+}
+
 .team-stats {
   display: flex;
   flex-wrap: wrap;
@@ -298,6 +312,28 @@
 
 .fixture-item.difficulty-hard {
   background-color: #e74c3c; /* Red */
+}
+
+.nav-button {
+  width: 39px;
+  height: 39px;
+  border-radius: 50%;
+  border: 2px solid #7768f6;
+  background: #23232b;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  padding: 0;
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Responsive adjustments */

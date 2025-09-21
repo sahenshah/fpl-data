@@ -261,137 +261,139 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
   };
 
   return (
-    <div className={styles['table-container']}>
-      <table className={styles['player-table']}>
-        <thead>
-          <tr>
-            {visibleColumns.map(col => {
-              let thClass = '';
-              if (col.id === 'badge') thClass = styles['sticky-badge'] + ' sticky-badge';
-              if (col.id === 'web_name') thClass = styles['sticky-name'] + ' sticky-name';
+    <div className={styles['table-outer-container']}>
+      <div className={styles['table-scroll-container']}>
+        <table className={styles['player-table']}>
+          <thead>
+            <tr>
+              {visibleColumns.map(col => {
+                let thClass = '';
+                if (col.id === 'badge') thClass = styles['sticky-badge'] + ' sticky-badge';
+                if (col.id === 'web_name') thClass = styles['sticky-name'] + ' sticky-name';
+                return (
+                  <th
+                    key={typeof col.label === 'string' ? col.label : col.id}
+                    className={thClass}
+                    style={{
+                      minWidth: col.minWidth,
+                      maxWidth: col.maxWidth,
+                      textAlign: col.align || 'center',
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                    }}
+                    onClick={() => handleSort(col.id)}
+                  >
+                    {col.label}
+                    {sortBy === col.id && (
+                      <span style={{ marginLeft: 4 }}>
+                        {sortDirection === 'asc' ? '▲' : '▼'}
+                      </span>
+                    )}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedPlayers.map(player => {
+              const team = teams.find(t => t.id === player.team);
+              const isSelected = selectedPlayerId === player.id;
               return (
-                <th
-                  key={typeof col.label === 'string' ? col.label : col.id}
-                  className={thClass}
+                <tr
+                  key={player.id}
+                  className={
+                    styles['player-row'] +
+                    (selectable ? ` ${styles['selectable-row']}` : '') +
+                    (isSelected ? ` ${styles['selected-row']}` : '')
+                  }
+                  onClick={() => handleSelectPlayer(player.id, player)}
                   style={{
-                    minWidth: col.minWidth,
-                    maxWidth: col.maxWidth,
-                    textAlign: col.align || 'center',
-                    cursor: 'pointer',
-                    userSelect: 'none',
+                    cursor: selectable ? 'pointer' : 'default',
+                    transition: selectable ? 'background 0.15s' : undefined,
                   }}
-                  onClick={() => handleSort(col.id)}
                 >
-                  {col.label}
-                  {sortBy === col.id && (
-                    <span style={{ marginLeft: 4 }}>
-                      {sortDirection === 'asc' ? '▲' : '▼'}
-                    </span>
-                  )}
-                </th>
+                  {visibleColumns.map(col => {
+                    let tdClass = '';
+                    if (col.id === 'badge') tdClass = styles['sticky-badge'] + ' sticky-badge';
+                    if (col.id === 'web_name') tdClass = styles['sticky-name'] + ' sticky-name';
+
+                    // Status column styling
+                    if (col.id === 'status') {
+                      tdClass += ' ' + styles['status-cell'];
+                      const statusValue = (player as any)[col.id];
+                      if (statusValue === 'a') tdClass += ' ' + styles['status-green'];
+                      else if (['u', 's', 'i'].includes(statusValue)) tdClass += ' ' + styles['status-red'];
+                      else if (statusValue === 'd') tdClass += ' ' + styles['status-yellow'];
+                    }
+
+                    let value: React.ReactNode = null;
+                    switch (col.id) {
+                      case 'badge':
+                        value = team ? (
+                          <img
+                            src={`/team-kits/${team.short_name}.png`}
+                            alt={team.short_name}
+                            className={styles['team-img']}
+                          />
+                        ) : null;
+                        break;
+                      case 'web_name':
+                        value = player.web_name;
+                        break;
+                      case 'element_type':
+                        value = positionMap[player.element_type];
+                        break;
+                      default:
+                        value =
+                          col.format && (player as any)[col.id] !== undefined
+                            ? col.format((player as any)[col.id])
+                            : (player as any)[col.id] !== undefined
+                              ? (player as any)[col.id]
+                              : '';
+                    }
+                    return (
+                      <td
+                        key={col.id}
+                        className={tdClass}
+                        style={{
+                          minWidth: col.minWidth,
+                          maxWidth: col.maxWidth,
+                          textAlign: col.align || 'center',
+                          padding: '8px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          background: tdClass ? undefined : undefined,
+                          zIndex: tdClass ? 3 : undefined,
+                        }}
+                      >
+                        {value}
+                      </td>
+                    );
+                  })}
+                </tr>
               );
             })}
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedPlayers.map(player => {
-            const team = teams.find(t => t.id === player.team);
-            const isSelected = selectedPlayerId === player.id;
-            return (
-              <tr
-                key={player.id}
-                className={
-                  styles['player-row'] +
-                  (selectable ? ` ${styles['selectable-row']}` : '') +
-                  (isSelected ? ` ${styles['selected-row']}` : '')
-                }
-                onClick={() => handleSelectPlayer(player.id, player)}
-                style={{
-                  cursor: selectable ? 'pointer' : 'default',
-                  transition: selectable ? 'background 0.15s' : undefined,
-                }}
-              >
-                {visibleColumns.map(col => {
-                  let tdClass = '';
-                  if (col.id === 'badge') tdClass = styles['sticky-badge'] + ' sticky-badge';
-                  if (col.id === 'web_name') tdClass = styles['sticky-name'] + ' sticky-name';
-
-                  // Status column styling
-                  if (col.id === 'status') {
-                    tdClass += ' ' + styles['status-cell'];
-                    const statusValue = (player as any)[col.id];
-                    if (statusValue === 'a') tdClass += ' ' + styles['status-green'];
-                    else if (['u', 's', 'i'].includes(statusValue)) tdClass += ' ' + styles['status-red'];
-                    else if (statusValue === 'd') tdClass += ' ' + styles['status-yellow'];
-                  }
-
-                  let value: React.ReactNode = null;
-                  switch (col.id) {
-                    case 'badge':
-                      value = team ? (
-                        <img
-                          src={`/team-kits/${team.short_name}.png`}
-                          alt={team.short_name}
-                          className={styles['team-img']}
-                        />
-                      ) : null;
-                      break;
-                    case 'web_name':
-                      value = player.web_name;
-                      break;
-                    case 'element_type':
-                      value = positionMap[player.element_type];
-                      break;
-                    default:
-                      value =
-                        col.format && (player as any)[col.id] !== undefined
-                          ? col.format((player as any)[col.id])
-                          : (player as any)[col.id] !== undefined
-                          ? (player as any)[col.id]
-                          : '';
-                  }
-                  return (
-                    <td
-                      key={col.id}
-                      className={tdClass}
-                      style={{
-                        minWidth: col.minWidth,
-                        maxWidth: col.maxWidth,
-                        textAlign: col.align || 'center',
-                        padding: '8px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        background: tdClass ? undefined : undefined,
-                        zIndex: tdClass ? 3 : undefined,
-                      }}
-                    >
-                      {value}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
       <div className={styles['pagination-container']}>
         <button
           className={styles['pagination-btn']}
           onClick={handlePrevPage}
           disabled={page === 0}
         >
-          Prev
+           {'<'}
         </button>
         <span className={styles['pagination-info']}>
-          Page {page + 1} of {pageCount}
+          {page + 1} of {pageCount}
         </span>
         <button
           className={styles['pagination-btn']}
           onClick={handleNextPage}
           disabled={page >= pageCount - 1}
         >
-          Next
+           {'>'}
         </button>
       </div>
     </div>

@@ -32,7 +32,7 @@
   border-collapse: collapse;
   color: #fff;
   font-size: 0.82em; 
-  background: #14161a;
+  background: #252b37;
 }
 
 .player-table th,
@@ -46,7 +46,7 @@
 .player-table th {
   position: sticky;
   top: 0;
-  background: #14161a;
+  background: #1e222b;
   font-size: 0.82em;
   font-weight: 400;
   z-index: 2;
@@ -59,7 +59,7 @@
   position: sticky;
   left: 0;
   top: 0;              /* Make header sticky vertically */
-  background: #14161a;
+  background: #252b37;
   border-bottom: 1px solid #2e3250;
   z-index: 4;           /* Higher z-index for header overlap */
 }
@@ -74,9 +74,13 @@
   position: sticky;
   left: 45px;           /* width of badge column */
   top: 0;               /* Make header sticky vertically */
-  background: #14161a;
+  background: #252b37;
   border-bottom: 1px solid #2e3250;
   z-index: 4;
+}
+.player-table th.sticky-badge,
+.player-table th.sticky-name {
+  background: #1e222b;
 }
 
 .team-img {
@@ -107,18 +111,23 @@
 .pagination-btn {
   background: #23232b;
   border: 2px solid #7768f6;
-  border-radius: 18px;
+  border-radius: 50%;
   color: #fff;
-  padding: 6px 18px;
-  font-size: 1em;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  font-size: 1.2em;
   cursor: pointer;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background 0.2s, border 0.2s;
 }
 
 .pagination-btn:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  cursor: auto; 
 }
 
 .pagination-info {
@@ -157,4 +166,47 @@
 .selectable-row:hover {
   background: linear-gradient(90deg, #5bbeff 0%, #23235e 100%);
   transition: background 0.2s;
+}
+
+.table-outer-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  max-height: 950px;
+  border-radius: 18px;
+}
+
+.pagination-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+.table-scroll-container::-webkit-scrollbar,
+.table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: #23232b;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb,
+.table-container::-webkit-scrollbar-thumb {
+  background: #7768f6; /* purple */
+  border-radius: 6px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track,
+.table-container::-webkit-scrollbar-track {
+  background: #23232b; /* dark background */
+}
+.table-scroll-container,
+.table-container {
+  scrollbar-width: thin;
+  scrollbar-color: #7768f6 #23232b; /* purple thumb, dark track */
 }

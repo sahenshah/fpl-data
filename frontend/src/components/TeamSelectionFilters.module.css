@@ -283,6 +283,40 @@
   font-weight: 600;
 }
 
+/* Circular checkbox style for expanded dropdown */
+.player-filters-root input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #7768f6;
+  background: #23232b;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  margin-right: 8px;
+  vertical-align: middle;
+  transition: border-color 0.2s;
+}
+
+.player-filters-root input[type="checkbox"]:checked {
+  border-color: #7768f6;
+  background: #ffffff;
+}
+
+.player-filters-root input[type="checkbox"]:checked::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: #2196f3; 
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
 /* Responsive styles for small screens */
 @media (max-width: 999px) {
   .player-filters-buttons-container {

@@ -1111,16 +1111,12 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
           disabled={gw === 1}
           aria-label="Previous Gameweek"
         >
-          ‹
+          {'<'}
         </button>
         
         <div className={styles['gw-display']}>
           <span className={styles['gw-label']}>Gameweek </span>
           <span className={styles['gw-number']}>{gw}</span>
-          {/* Optional: Display planner mode indicator */}
-          {teamPlannerMode && (
-            <span className={styles['planner-indicator']}> (Planner)</span>
-          )}
         </div>
         
         <button 
@@ -1129,7 +1125,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
           disabled={gw === 38}
           aria-label="Next Gameweek"
         >
-          ›
+          {'>'}
         </button>
       </div>
       

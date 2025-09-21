@@ -183,7 +183,7 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
   return (
     <div className={styles['player-filters-root']} style={{ position: 'relative' }}>
       {/* Bottom dropdown for General/Predicted toggle */}
-      <div style={{ position: 'absolute', bottom: -30, right: 0 }}>
+      <div style={{ position: 'absolute', bottom: -40, right: 0 }}>
         <button
           className={styles['filters-dropdown-icon']}
           style={{
@@ -198,8 +198,8 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
           aria-label="Open bottom dropdown"
         >
           <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="11" r="10" stroke="#7768f6" strokeWidth="2" fill="#23232b"/>
-            <path d="M7 9l4 4 4-4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <circle cx="11" cy="11" r="11" stroke="#f7f7f702" strokeWidth="1" fill="#23232b"/>
+            <path d="M7 9l4 4 4-4" stroke="#fff" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
         {selectColumnsDropdownOpen && (
@@ -266,7 +266,7 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
         <div
           style={{
             position: 'absolute',
-            top: "265px",
+            top: "275px",
             right: 0,
             background: '#23232b',
             borderRadius: 6,
@@ -338,81 +338,6 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
 
       <div className={styles['player-filters-container']}>
         <div className={styles['player-filters-left']}>
-          {/* Add margin-top to the slider box for spacing */}
-          <div
-            className={styles['custom-slider-box']}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              paddingLeft: 0,
-              paddingRight: 0,
-
-            }}
-          >
-            <span
-              style={{
-                color: '#fff',
-                fontSize: 13,
-                minWidth: 40,
-                padding: 6,
-                textAlign: 'right',
-                flexShrink: 0,
-              }}
-            >
-              £{(costRange[0] / 10).toFixed(1)}
-            </span>
-            <Slider
-              value={costRange}
-              min={38}
-              max={150}
-              step={1}
-              marks={[
-                { value: 38 },
-                { value: 150 }
-              ]}
-              valueLabelDisplay="off"
-              onChange={(_, value) => setCostRange(value as [number, number])}
-              disableSwap
-              sx={{
-                color: '#7768f6',
-                flex: 1,
-                '& .MuiSlider-rail': {
-                  height: 20, // Increase rail thickness here (default is 4)
-                  borderRadius: 4,
-                  color: '#000000ff'
-                },
-                '& .MuiSlider-track': {
-                  height: 20, // Match the rail thickness
-                  borderRadius: 0,
-                },
-                '& .MuiSlider-thumb': {
-                  color: '#000000ff',
-                  outline: '3px solid #7768f6',
-                  height: 18,
-                  width: 18,
-                  transition: 'width 0.2s, height 0.2s',
-                  '&:hover, &.Mui-focusVisible': {
-                    height: 28,
-                    width: 28,
-                  },
-                },
-              }}
-            />
-            <span
-              style={{
-                color: '#fff',
-                fontSize: 13,
-                padding: 6,
-                minWidth: 40,
-                textAlign: 'left',
-                flexShrink: 0,
-              }}
-            >
-              £{(costRange[1] / 10).toFixed(1)}
-            </span>
-          </div>
           <div className={styles['player-filters-dropdown-input']}>
             <div className={styles['position-toggle-buttons']}>
               {positionOptions.map(option => (
@@ -502,6 +427,81 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
               placeholder="Search name"
               className={styles['player-filters-search-input']}
             />
+          </div>
+          {/* Add margin-top to the slider box for spacing */}
+          <div
+            className={styles['custom-slider-box']}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              paddingLeft: 0,
+              paddingRight: 0,
+
+            }}
+          >
+            <span
+              style={{
+                color: '#fff',
+                fontSize: 13,
+                minWidth: 40,
+                padding: 6,
+                textAlign: 'right',
+                flexShrink: 0,
+              }}
+            >
+              £{(costRange[0] / 10).toFixed(1)}
+            </span>
+            <Slider
+              value={costRange}
+              min={38}
+              max={150}
+              step={1}
+              marks={[
+                { value: 38 },
+                { value: 150 }
+              ]}
+              valueLabelDisplay="off"
+              onChange={(_, value) => setCostRange(value as [number, number])}
+              disableSwap
+              sx={{
+                color: '#7768f6',
+                flex: 1,
+                '& .MuiSlider-rail': {
+                  height: 20, // Increase rail thickness here (default is 4)
+                  borderRadius: 4,
+                  color: '#000000ff'
+                },
+                '& .MuiSlider-track': {
+                  height: 20, // Match the rail thickness
+                  borderRadius: 0,
+                },
+                '& .MuiSlider-thumb': {
+                  color: '#000000ff',
+                  outline: '3px solid #7768f6',
+                  height: 18,
+                  width: 18,
+                  transition: 'width 0.2s, height 0.2s',
+                  '&:hover, &.Mui-focusVisible': {
+                    height: 28,
+                    width: 28,
+                  },
+                },
+              }}
+            />
+            <span
+              style={{
+                color: '#fff',
+                fontSize: 13,
+                padding: 6,
+                minWidth: 40,
+                textAlign: 'left',
+                flexShrink: 0,
+              }}
+            >
+              £{(costRange[1] / 10).toFixed(1)}
+            </span>
           </div>
         </div>
       </div>
