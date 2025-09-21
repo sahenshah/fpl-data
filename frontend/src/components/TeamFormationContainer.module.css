@@ -125,6 +125,9 @@
   background-color: #005e1c88;
   width: 100%;
   border-radius: 4px;
+  white-space: nowrap;         /* Prevent wrapping */
+  overflow: hidden;            /* Hide overflow */
+  text-overflow: ellipsis;     /* Show ... when overflowed */
 }
 
 .player-team {
@@ -242,8 +245,6 @@
   color: #000;
 }
 
-/* Add to TeamFormationContainer.module.css */
-
 .captain-badge,
 .vice-captain-badge {
   position: absolute;
@@ -352,8 +353,8 @@
 
 .substitute-icon {
   position: absolute;
-  top: 4px;
-  left: 6px;
+  top: 2px;
+  left: 3px;
   background: none;
   border: none;
   padding: 0;
@@ -472,4 +473,455 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+@media (max-width: 850px) {
+  .pitch-container {
+    width: 580px;
+    min-width: 580px;
+    padding: 8px;
+    margin-top: 8px;
+    border-radius: 8px;
+    height: auto;
+  }
+
+  .player-card,
+  .bench-player-card {
+    min-width: 100px;
+    max-width: 100px;
+    width: 100px;
+    padding: 6px;
+    border-radius: 6px;
+  }
+
+  .kit-image {
+    width: 60px;
+    height: 48px;
+  }
+
+  .player-name {
+    font-size: 0.75em;
+    padding: 1px;
+    font-weight: 400;
+  }
+  .gw-display {
+    flex-direction: row;
+    gap: 6px;
+    font-size: 0.9em;
+  }
+  .nav-button {
+    width: 29px;
+    height: 29px;
+  }
+  .player-team,
+  .player-opponent,
+  .player-opponent-bench,
+  .player-points,
+  .player-points-bench,
+  .player-details {
+    font-size: 0.7em;
+    padding: 1px;
+  }
+
+  .stat-card {
+    min-width: 80px;
+    max-width: 100px;
+    padding: 6px 8px;
+    border-radius: 6px;
+  }
+
+  .stat-label {
+    font-size: 0.7em;
+    margin-bottom: 2px;
+  }
+
+  .stat-value {
+    font-size: 0.9em;
+  }
+
+  .team-stats {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .position-row {
+    margin-bottom: 10px;
+  }
+
+  .position-title {
+    font-size: 0.9em;
+    margin-bottom: 4px;
+  }
+
+  .players-row,
+  .bench-players {
+    gap: 6px;
+  }
+
+  .bench-section {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+
+  .gw-info-container {
+    font-size: 0.9em;
+  }
+
+  .gw-nav-container {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .gw-display {
+    font-size: 1em;
+  }
+
+  .modal-content {
+    min-width: 220px;
+    padding: 12px;
+  }
+
+  .modal-actions {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .modal-captain-btn,
+  .modal-vice-btn {
+    padding: 6px 10px;
+    font-size: 0.9em;
+  }
+  .bench-position-label {
+    font-size: 0.7em;
+  }
+}
+
+@media (max-width: 675px) {
+  .pitch-container {
+    width: 420px;
+    min-width: 420px;
+    padding: 4px;
+    margin-top: 4px;
+    border-radius: 6px;
+    height: auto;
+  }
+
+  .player-card,
+  .bench-player-card {
+    min-width: 80px;
+    max-width: 80px;
+    width: 80px;
+    padding: 3px;
+    border-radius: 4px;
+  }
+  .points-separator {
+    margin: 0 6px; 
+  }
+  .bench-player-card .position-title {
+    font-size: 0.6em;
+  }
+  .kit-container {
+    margin-bottom: -10px;
+  }
+  .kit-image {
+    width: 60px;
+    height: 48px;
+    z-index: -1;
+  }
+
+  .player-name {
+    font-size: 0.55em;
+    padding: 0;
+    border-radius: 2px;
+    background-color: #216324;
+  }
+
+  .player-team,
+  .player-opponent,
+  .player-opponent-bench,
+  .player-points,
+  .player-points-bench,
+  .player-details {
+    font-size: 0.5em;
+    padding: 0;
+  }
+
+  .stat-card {
+    min-width: 50px;
+    max-width: 70px;
+    padding: 3px 4px;
+    border-radius: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.6em;
+    margin-bottom: 1px;
+  }
+
+  .stat-value {
+    font-size: 0.7em;
+  }
+
+  .team-stats {
+    gap: 3px;
+    margin-bottom: 4px;
+  }
+
+  .position-row {
+    margin-bottom: 4px;
+  }
+
+  .position-title {
+    font-size: 0.7em;
+    margin-bottom: 2px;
+  }
+
+  .players-row,
+  .bench-players {
+    gap: 3px;
+  }
+
+  .bench-section {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-top: 4px;
+    border-radius: 6px;
+  }
+
+  .gw-info-container {
+    font-size: 0.7em;
+    padding: 2px;
+  }
+
+  .gw-nav-container {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .gw-display {
+    margin-top: 6px;
+    gap: 4px;
+    font-size: 0.8em;
+  }
+
+  .modal-content {
+    min-width: 120px;
+    padding: 4px;
+  }
+
+  .modal-actions {
+    gap: 4px;
+    margin-top: 6px;
+  }
+
+  .modal-captain-btn,
+  .modal-vice-btn {
+    padding: 3px 5px;
+    font-size: 0.7em;
+  }
+
+  .captain-badge,
+  .vice-captain-badge {
+    width: 14px;
+    height: 14px;
+    font-size: 8px;
+    left: 0px;
+    top: 28px;
+  }
+
+  .fixture-item {
+    font-size: 0.55em;
+    padding: 0 2px;
+    min-width: 16px;
+  }
+
+  .player-fixtures,
+  .player-fixtures-bench {
+    gap: 0px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+  }
+  .remove-icon,
+  .restore-icon,
+  .transfer-in-remove-icon {
+    width: 12px;
+    height: 12px;
+    font-size: 10px;
+    top: 2px;
+    right: 3px;
+    border-width: 1px;
+    padding: 0;
+  }
+  .substitute-icon {
+    width: 12px;
+    height: 12px;
+    top: 2px;
+    left: 3px;
+  }
+}
+
+@media (max-width: 475px) {
+  .pitch-container {
+    width: 320px;
+    min-width: 320px;
+    padding: 1px;
+    margin-top: 2px;
+    border-radius: 4px;
+    height: auto;
+  }
+
+  .player-card,
+  .bench-player-card {
+    min-width: 60px;
+    max-width: 60px;
+    width: 60px;
+    padding: 2px;
+    border-radius: 2px;
+  }
+
+  .kit-image {
+    width: 36px;
+    height: 32px;
+  }
+
+  .player-name {
+    font-size: 0.55em;
+    padding: 0;
+    border-radius: 1px;
+  }
+
+  .player-team,
+  .player-opponent,
+  .player-opponent-bench,
+  .player-points,
+  .player-points-bench,
+  .player-details {
+    font-size: 0.5em;
+    padding: 0;
+  }
+
+  .stat-card {
+    min-width: 30px;
+    max-width: 40px;
+    padding: 2px 2px;
+    border-radius: 2px;
+  }
+
+  .stat-label {
+    font-size: 0.45em;
+    margin-bottom: 0;
+  }
+
+  .stat-value {
+    font-size: 0.55em;
+  }
+
+  .team-stats {
+    gap: 1px;
+    margin-bottom: 2px;
+  }
+
+  .position-row {
+    margin-bottom: 2px;
+  }
+
+  .position-title {
+    font-size: 0.5em;
+    margin-bottom: 1px;
+  }
+
+  .players-row,
+  .bench-players {
+    gap: 1px;
+  }
+
+  .bench-section {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-top: 2px;
+    border-radius: 2px;
+  }
+
+  .gw-info-container {
+    font-size: 0.6em;
+    padding: 0.5px;
+  }
+
+  .gw-nav-container {
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .gw-display {
+    margin-top: 8px;
+    gap: 4px;
+    font-size: 0.6em;
+  }
+
+  .modal-content {
+    min-width: 80px;
+    padding: 2px;
+  }
+
+  .modal-actions {
+    gap: 2px;
+    margin-top: 3px;
+  }
+
+  .modal-captain-btn,
+  .modal-vice-btn {
+    padding: 2px 3px;
+    font-size: 0.5em;
+  }
+
+  .captain-badge,
+  .vice-captain-badge {
+    width: 10px;
+    height: 10px;
+    font-size: 6px;
+    left: 0px;
+    top: 14px;
+  }
+
+  .fixture-item {
+    font-size: 0.35em;
+    padding: 0 1px;
+    min-width: 8px;
+  }
+
+  .player-fixtures,
+  .player-fixtures-bench {
+    gap: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
+  .remove-icon,
+  .restore-icon,
+  .transfer-in-remove-icon {
+    width: 8px;
+    height: 8px;
+    font-size: 7px;
+    top: 0px;
+    right: 0px;
+    border-width: 1px;
+    padding: 0;
+  }
+
+  .substitute-icon {
+    width: 8px;
+    height: 8px;
+    top: 0px;
+    left: 0px;
+  }
+
+  .bench-position-label,
+  .bench-player-card .position-title {
+    font-size: 0.45em;
+  }
+  .points-separator {
+    margin: 0 3px; 
+  }
 }

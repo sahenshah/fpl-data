@@ -766,7 +766,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                     type="button"
                     disabled={subButtonDisabled}
                   >
-                    <img src="/sub.png" alt="Substitute" style={{ width: 18, height: 18 }} />
+                    <img src="/sub.png" alt="Substitute" className={styles['substitute-icon']} />
                   </button>
                 )}
                 {isBench && (
@@ -847,7 +847,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                 type="button"
                 disabled={subButtonDisabled}
               >
-                <img src="/sub.png" alt="Substitute" style={{ width: 18, height: 18 }} />
+                <img src="/sub.png" alt="Substitute" className={styles['substitute-icon']} />
               </button>
             )}
             {isBench && (

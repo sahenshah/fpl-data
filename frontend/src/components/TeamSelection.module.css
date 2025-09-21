@@ -31,3 +31,17 @@
     width: 100%;
   }
 }
+
+@media (max-width: 675px) {
+  .team-formation-container {
+    width: 420px !important;
+    min-width: 420px !important;
+  }
+}
+@media (max-width: 475px) {
+  .team-formation-container {
+    width: 450px !important;
+    max-width: 450px !important;
+    min-width: 275px !important;
+  }
+}
