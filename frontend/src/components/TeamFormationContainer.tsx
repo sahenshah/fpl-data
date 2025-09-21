@@ -252,7 +252,12 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       };
 
       setTransferIn(prev => {
-        if (!prev.some(p => p.id === formattedPlayer.id)) {
+        // Check if player is in startingXI, bench, or already in transferIn
+        const inStartingXI = lineup?.startingXI?.some(p => p.id === formattedPlayer.id);
+        const inBench = lineup?.bench?.some(p => p.id === formattedPlayer.id);
+        const inTransferIn = prev.some(p => p.id === formattedPlayer.id);
+
+        if (!inStartingXI && !inBench && !inTransferIn) {
           return [...prev, formattedPlayer];
         }
         return prev;
