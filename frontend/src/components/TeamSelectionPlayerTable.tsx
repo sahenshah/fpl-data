@@ -158,13 +158,25 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
   }, [players]);
 
   const visibleColumnIds = React.useMemo(() => {
+    // Get all columns from active filters except GW columns
     const filterCols = Object.entries(filterColumnMap)
       .filter(([filter]) => activeFilters.includes(filter))
       .flatMap(([, cols]) => cols);
 
-    const gwCols = filterCols.filter(id => id.startsWith('pp_gw_') || id.startsWith('xmins_gw_'));
-    const nonGwCols = filterCols.filter(id => !id.startsWith('pp_gw_') && !id.startsWith('xmins_gw_'));
+    // Only include GW columns if their filter is active
+    let gwCols: string[] = [];
+    if (activeFilters.includes('xPts')) {
+      gwCols = gwCols.concat(gwColumns.filter(col => col.id.startsWith('pp_gw_')).map(col => col.id));
+    }
+    if (activeFilters.includes('xMins')) {
+      gwCols = gwCols.concat(gwColumns.filter(col => col.id.startsWith('xmins_gw_')).map(col => col.id));
+    }
+
+    // Filter GW columns to only those with data
     const filteredGwCols = gwCols.filter(id => nonEmptyGwColumns.includes(id));
+
+    // Remove GW columns from filterCols (so only controlled by xPts/xMins)
+    const nonGwCols = filterCols.filter(id => !id.startsWith('pp_gw_') && !id.startsWith('xmins_gw_'));
 
     return [...alwaysVisible, ...nonGwCols, ...filteredGwCols, ...statusColumn];
   }, [activeFilters, nonEmptyGwColumns]);

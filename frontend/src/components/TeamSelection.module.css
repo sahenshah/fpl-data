@@ -1,12 +1,14 @@
 .player-table-container{
  width: 100%;
- padding-top: 2rem;
+ padding-top: 3rem;
  max-width: none;
+ height: 100%;
 }
 .filters-and-table-container {
   display: flex;
   flex-direction: column;
   max-width: 30%;
+  height: 100%;
 }
 .team-selection-container {
   display: flex; 
