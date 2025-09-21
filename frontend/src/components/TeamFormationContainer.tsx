@@ -864,10 +864,12 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: (gw ?? 0) < (currentGameweek ?? 0) ? '' : 'pointer' }}
                 onClick={() => {
-                  setModalPlayer(transferInMatch ? transferInMatch : player);
-                  setModalOpen(true);
+                  if (gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek) {
+                    setModalPlayer(transferInMatch ? transferInMatch : player);
+                    setModalOpen(true);
+                  }
                 }}
               />
               {player.isAutoSubbed && (
@@ -1368,6 +1370,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
           <div className={styles['modal-actions']}>
             <button
               className={styles['modal-captain-btn']}
+              disabled={gw !== undefined && currentGameweek !== undefined && gw < currentGameweek}
               onClick={() => {
                 setLineup(prevLineup => {
                   if (!prevLineup) return prevLineup;
@@ -1408,6 +1411,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
             </button>
             <button
               className={styles['modal-vice-btn']}
+              disabled={gw !== undefined && currentGameweek !== undefined && gw < currentGameweek}
               onClick={() => {
                 setLineup(prevLineup => {
                   if (!prevLineup) return prevLineup;
