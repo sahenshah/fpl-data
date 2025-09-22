@@ -892,11 +892,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                     <img src="/sub.png" alt="Substitute" className={styles['substitute-icon']} />
                   </button>
                 )}
-                {isBench && (
-                  <div className={styles['bench-position-label']}>
-                    {transferInMatch.positionShort}
-                  </div>
-                )}
                 <div className={styles['kit-container']}>
                 <img
                   src={`/team-kits/${transferInMatch.team}.png`}
@@ -972,11 +967,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               >
                 <img src="/sub.png" alt="Substitute" className={styles['substitute-icon']} />
               </button>
-            )}
-            {isBench && (
-              <div className={styles['bench-position-label']}>
-                {player.positionShort}
-              </div>
             )}
 
             <div className={styles['kit-container']}>
@@ -1527,22 +1517,24 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                     }
                   
                     return (
-                      <PlayerCard
-                        key={idx}
-                        player={player}
-                        elements={elements}
-                        transferInMatch={getTransferInMatch(player)}
-                        isSelected={selectedSubPlayerId === player.id}
-                        isBench={true}
-                        isSelectable={isSelectable}
-                        showSubButton={teamPlannerMode}
-                        subButtonDisabled={
-                          !isSelectable
-                        }
-                        onSubstituteClick={(e) => handleSubstituteClick(e, player.id, true)}
-                        showRemoveButton={gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek}
-                        onRemoveClick={(e) => handleRemoveClick(e, player.id)}
-                      />
+                      <div key={idx} className={styles['bench-player-card-wrapper']}>
+                        <div className={styles['bench-position-label']}>
+                          {player.positionShort}
+                        </div>
+                        <PlayerCard
+                          player={player}
+                          elements={elements}
+                          transferInMatch={getTransferInMatch(player)}
+                          isSelected={selectedSubPlayerId === player.id}
+                          isBench={true}
+                          isSelectable={isSelectable}
+                          showSubButton={teamPlannerMode}
+                          subButtonDisabled={!isSelectable}
+                          onSubstituteClick={(e) => handleSubstituteClick(e, player.id, true)}
+                          showRemoveButton={gw !== undefined && currentGameweek !== undefined && gw >= currentGameweek}
+                          onRemoveClick={(e) => handleRemoveClick(e, player.id)}
+                        />
+                      </div>
                     );
                   })}
                 </div>

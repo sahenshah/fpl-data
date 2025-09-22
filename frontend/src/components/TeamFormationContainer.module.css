@@ -116,6 +116,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
+  height: 195px;
+  min-height: 195px;
+  max-height: 195px;
 }
 
 .player-name {
@@ -128,6 +132,7 @@
   white-space: nowrap;         /* Prevent wrapping */
   overflow: hidden;            /* Hide overflow */
   text-overflow: ellipsis;     /* Show ... when overflowed */
+  background-color: #216324;
 }
 
 .player-team {
@@ -201,7 +206,6 @@
 .kit-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 8px;
   position: relative; /* Add relative positioning for absolute child */
 }
 
@@ -210,6 +214,7 @@
   height: 80px;
   object-fit: contain;
   border-radius: 4px;
+  z-index: -1;
 }
 
 .autosub-icon {
@@ -270,7 +275,7 @@
 .kit-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: -10px;
   position: relative;
 }
 
@@ -339,16 +344,6 @@
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .fixture-item {
-    font-size: 0.65em;
-    padding: 1px 3px;
-    min-width: 24px;
-  }
-  
-  .player-fixtures,
-  .player-fixtures-bench {
-    gap: 1px;
-  }
 }
 
 .substitute-icon {
@@ -475,6 +470,12 @@
   cursor: pointer;
 }
 
+.bench-position-label {
+  font-size: 0.85em;
+  color: #bdc3c7;
+  margin-bottom: 6px;
+  text-align: center;
+}
 @media (max-width: 850px) {
   .pitch-container {
     width: 580px;
@@ -489,14 +490,17 @@
   .bench-player-card {
     min-width: 100px;
     max-width: 100px;
+    height: 155px;
+    min-height: 155px;
+    max-height: 155px;
     width: 100px;
     padding: 6px;
     border-radius: 6px;
   }
 
   .kit-image {
-    width: 60px;
-    height: 48px;
+    width: 48px;
+    height: 70px;
   }
 
   .player-name {
@@ -596,6 +600,14 @@
   .bench-position-label {
     font-size: 0.7em;
   }
+  .captain-badge,
+  .vice-captain-badge {
+    width: 14px;
+    height: 14px;
+    font-size: 7px;
+    left: 4px;
+    top: 4px;
+  }
 }
 
 @media (max-width: 675px) {
@@ -613,6 +625,9 @@
     min-width: 80px;
     max-width: 80px;
     width: 80px;
+    height: 100px;
+    min-height: 100px;
+    max-height: 100px;
     padding: 3px;
     border-radius: 4px;
   }
@@ -689,6 +704,16 @@
     margin-top: 4px;
     border-radius: 6px;
   }
+  .fixture-item {
+    font-size: 0.65em;
+    padding: 1px 3px;
+    min-width: 24px;
+  }
+  
+  .player-fixtures,
+  .player-fixtures-bench {
+    gap: 1px;
+  }
 
   .gw-info-container {
     font-size: 0.7em;
@@ -722,19 +747,10 @@
     font-size: 0.7em;
   }
 
-  .captain-badge,
-  .vice-captain-badge {
-    width: 14px;
-    height: 14px;
-    font-size: 8px;
-    left: 0px;
-    top: 28px;
-  }
 
   .fixture-item {
     font-size: 0.55em;
     padding: 0 2px;
-    min-width: 16px;
   }
 
   .player-fixtures,
@@ -760,6 +776,14 @@
     top: 2px;
     left: 3px;
   }
+  .captain-badge,
+  .vice-captain-badge {
+    width: 14px;
+    height: 14px;
+    font-size: 7px;
+    left: -2px;
+    top: 28px;
+  }
 }
 
 @media (max-width: 475px) {
@@ -777,6 +801,9 @@
     min-width: 60px;
     max-width: 60px;
     width: 60px;
+    height: 70px;
+    min-height: 70px;
+    max-height: 70px;
     padding: 2px;
     border-radius: 2px;
   }
@@ -888,7 +915,7 @@
   .fixture-item {
     font-size: 0.35em;
     padding: 0 1px;
-    min-width: 8px;
+    min-width: 18px;
   }
 
   .player-fixtures,
