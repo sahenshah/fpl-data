@@ -97,7 +97,7 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
 
   return (
     <div className={styles['team-history-container']}>
-      {totalPlayers !== null && chartData.length > 0 ? (
+      {chartData.length > 0 ? (
         <ResponsiveContainer width="100%" height={340}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -108,7 +108,7 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
             />
             <YAxis
               yAxisId="left"
-              domain={[1, totalPlayers]}
+              domain={[1, totalPlayers || 10000000]}
               reversed={false}
               label={{ value: 'Overall Rank', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' }}}
               tick={{ fontSize: 12 }} 
