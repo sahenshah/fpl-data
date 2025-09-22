@@ -35,39 +35,46 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
       let picksArray: any[] = [];
       if (picksRaw) picksArray = JSON.parse(picksRaw);
 
+      console.log('teamHistoryRaw:', teamHistoryRaw);
       if (teamHistoryRaw) {
-        const teamHistory = JSON.parse(teamHistoryRaw);
-        if (teamHistory && teamHistory.current) {
-          const gwData = teamHistory.current.map((gw: any) => {
-            const picksData = picksArray.find((p: any) => p.gw === gw.event);
-            const picks = picksData?.picks?.picks || [];
-            const startingPicks = picks.filter((p: any) => p.position <= 11);
+        try {
+          const teamHistory = JSON.parse(teamHistoryRaw);
+          console.log('teamHistory:', teamHistory);
 
-            let xPoints = 0;
-            startingPicks.forEach((pick: any) => {
-              const player = elements.find((e: { id: any; }) => e.id === pick.element);
-              const ppGwKey = `pp_gw_${gw.event}`;
-              const expected = player && player[ppGwKey] !== undefined ? Number(player[ppGwKey]) : 0;
-              xPoints += pick.is_captain ? expected * 2 : expected;
+          if (teamHistory && teamHistory.current) {
+            const gwData = teamHistory.current.map((gw: any) => {
+              const picksData = picksArray.find((p: any) => p.gw === gw.event);
+              const picks = picksData?.picks?.picks || [];
+              const startingPicks = picks.filter((p: any) => p.position <= 11);
+
+              let xPoints = 0;
+              startingPicks.forEach((pick: any) => {
+                const player = elements.find((e: { id: any; }) => e.id === pick.element);
+                const ppGwKey = `pp_gw_${gw.event}`;
+                const expected = player && player[ppGwKey] !== undefined ? Number(player[ppGwKey]) : 0;
+                xPoints += pick.is_captain ? expected * 2 : expected;
+              });
+
+              const startingPoints = gw.points;
+
+              return {
+                event: gw.event,
+                overall_rank: gw.overall_rank,
+                rank_sort: gw.rank_sort,
+                points: gw.points,
+                total_points: gw.total_points,
+                value: gw.value,
+                points_on_bench: gw.points_on_bench,
+                event_transfers: gw.event_transfers,
+                event_transfers_cost: gw.event_transfers_cost,
+                xPoints: Number(xPoints.toFixed(1)),
+                startingPoints,
+              };
             });
-
-            const startingPoints = gw.points;
-
-            return {
-              event: gw.event,
-              overall_rank: gw.overall_rank,
-              rank_sort: gw.rank_sort,
-              points: gw.points,
-              total_points: gw.total_points,
-              value: gw.value,
-              points_on_bench: gw.points_on_bench,
-              event_transfers: gw.event_transfers,
-              event_transfers_cost: gw.event_transfers_cost,
-              xPoints: Number(xPoints.toFixed(1)),
-              startingPoints,
-            };
-          });
-          setChartData(gwData);
+            setChartData(gwData);
+          }
+        } catch (e) {
+          console.error('Invalid JSON in teamHistoryRaw:', e);
         }
       }
     });
@@ -76,6 +83,16 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
       .then(res => res.json())
       .then(data => setTotalPlayers(data.total_players))
       .catch(() => setTotalPlayers(null));
+  }, [teamId]);
+
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === `team_${teamId}_history_data`) {
+        // Re-run your data loading logic here
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, [teamId]);
 
   return (
@@ -230,7 +247,7 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
           </BarChart>
         </ResponsiveContainer>
       ) : (
-        <div>No history data or total players found.</div>
+        <div>Loading history data...</div>
       )}
     </div>
   );
