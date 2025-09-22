@@ -149,7 +149,6 @@ function App() {
               width: 64,
               height: 64,
               objectFit: 'contain',
-              marginRight: 24,
             }}
           />
           <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
