@@ -152,7 +152,7 @@ function App() {
               marginRight: 24,
             }}
           />
-          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
             <Tabs
               value={tabIndex}
               onChange={(_, newValue) => setTabIndex(newValue)}
@@ -171,8 +171,8 @@ function App() {
                   fontWeight: 600,
                   textTransform: 'none',
                   '@media (max-width: 500px)': {
-                    minWidth: 70,
-                    fontSize: '0.7rem',
+                    minWidth: '50px !important',
+                    fontSize: '0.6rem !important',
                     padding: '2px 6px',
                   },
                 },

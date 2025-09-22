@@ -655,14 +655,14 @@
     border-radius: 4px;
   }
 
-  .stat-label {
-    font-size: 0.6em;
+  /* .stat-label {
+    font-size: 0.7em;
     margin-bottom: 1px;
   }
 
   .stat-value {
-    font-size: 0.7em;
-  }
+    font-size: 0.8em;
+  } */
 
   .team-stats {
     gap: 3px;
@@ -804,19 +804,19 @@
 
   .stat-card {
     min-width: 30px;
-    max-width: 40px;
+    max-width: 50px;
     padding: 2px 2px;
     border-radius: 2px;
   }
 
-  .stat-label {
+  /* .stat-label {
     font-size: 0.45em;
     margin-bottom: 0;
   }
 
   .stat-value {
     font-size: 0.55em;
-  }
+  } */
 
   .team-stats {
     gap: 1px;
