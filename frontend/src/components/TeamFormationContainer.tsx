@@ -78,8 +78,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   const [selectedSubPlayerId, setSelectedSubPlayerId] = useState<number | null>(null);
   const [subModeActive, setSubModeActive] = useState<boolean>(false);
   const [lineup, setLineup] = useState<{ startingXI: any[], bench: any[] } | null>(null);
-  const [transferOut, setTransferOut] = useState<any[]>([]);
-  const [transferIn, setTransferIn] = useState<any[]>([]);
+  const [transferOutHistory, setTransferOutHistory] = useState<{ [gw: number]: any[] }>({});
+  const [transferInHistory, setTransferInHistory] = useState<{ [gw: number]: any[] }>({});
   const [transferMappings, setTransferMappings] = useState<{ outId: number, inId: number }[]>([]); 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalPlayer, setModalPlayer] = useState<any>(null);
@@ -188,40 +188,44 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     setLineup(initialLineup);
   }, [picksData, elements]);
 
-  useEffect(() => {
-    if (lineup) {
-      // console.log('StartingXI:', lineup.startingXI);
-      // console.log('Bench:', lineup.bench);
-    }
-  }, [lineup]);
+  // useEffect(() => {
+  //   if (lineup) {
+  //     console.log('StartingXI:', lineup.startingXI);
+  //     console.log('Bench:', lineup.bench);
+  //   }
+  // }, [lineup]);
 
   // useEffect(() => {
-  //   console.log('Transfer Out List:', transferOut);
-  // }, [transferOut]);
+  //   if (gw !== undefined) {
+  //     console.log('Transfer Out List:', transferOutHistory[gw] || []);
+  //   }
+  // }, [transferOutHistory, gw]);
   // useEffect(() => {
-  //   console.log('Transfer In List:', transferIn);
-  // }, [transferIn]);
-  
+  //   if (gw !== undefined) {
+  //     console.log('Transfer In List:', transferInHistory[gw] || []);
+  //   }
+  // }, [transferInHistory, gw]);
+
   useEffect(() => {
   if (
     selectedPlayerId &&
-    transferOut.length > 0 &&
-    elements.length > 0 &&
-    gw !== undefined
+    gw !== undefined &&
+    typeof gw === 'number' && transferOutHistory[gw]?.length > 0 &&
+    elements.length > 0
   ) {
     // ...existing logic...
 
     // After handling the selection, clear it in the parent
     onSelectionHandled?.();
   }
-}, [selectedPlayerId, transferOut, elements, gw]);
+}, [selectedPlayerId, transferOutHistory, elements, gw]);
 
   useEffect(() => {
     if (
       selectedPlayerId &&
-      transferOut.length > 0 &&
-      elements.length > 0 &&
-      gw !== undefined
+      gw !== undefined &&
+      transferOutHistory[gw]?.length > 0 &&
+      elements.length > 0
     ) {
       const selectedPlayer = elements.find(el => el.id === selectedPlayerId);
       if (!selectedPlayer) return;
@@ -251,20 +255,23 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         pickPosition: undefined
       };
 
-      setTransferIn(prev => {
+      setTransferInHistory(prev => {
         // Check if player is in startingXI, bench, or already in transferIn
         const inStartingXI = lineup?.startingXI?.some(p => p.id === formattedPlayer.id);
         const inBench = lineup?.bench?.some(p => p.id === formattedPlayer.id);
-        const inTransferIn = prev.some(p => p.id === formattedPlayer.id);
+        const inTransferIn = (prev[gw] ?? []).some((p: any) => p.id === formattedPlayer.id);
 
         if (!inStartingXI && !inBench && !inTransferIn) {
-          return [...prev, formattedPlayer];
+          return {
+            ...prev,
+            [gw]: [...(prev[gw] ?? []), formattedPlayer]
+          };
         }
         return prev;
       });
 
       // Find the first unmatched transferOut slot with the same element_type
-      const unmatchedOutPlayer = transferOut.find(
+      const unmatchedOutPlayer = transferOutHistory[gw]?.find(
         outPlayer =>
           outPlayer.element_type === selectedPlayer.element_type &&
           !transferMappings.some(m => m.outId === outPlayer.id)
@@ -278,23 +285,34 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         });
       } else {
         // Remove from transferIn if no matching transferOut slot
-        setTransferIn(prev => prev.filter(p => p.id !== formattedPlayer.id));
+        setTransferInHistory(prev => ({
+          ...prev,
+          [gw]: (prev[gw] ?? []).filter((p: any) => p.id !== formattedPlayer.id)
+        }));
       }
 
       onSelectionHandled?.();
     }
-  }, [selectedPlayerId, transferOut, elements, gw, transferMappings]);
+  }, [selectedPlayerId, transferOutHistory, elements, gw, transferMappings]);
 
   useEffect(() => {
-    // If transferOut is empty, clear transferIn
-    if (transferOut.length === 0 && transferIn.length > 0) {
-      setTransferIn([]);
+    if (gw !== undefined) {
+      // If transferOut is empty, clear transferIn
+      if ((transferOutHistory[gw]?.length ?? 0) === 0 && (transferInHistory[gw]?.length ?? 0) > 0) {
+        setTransferInHistory(prev => ({
+          ...prev,
+          [gw]: []
+        }));
+      }
+      // If transferIn is longer than transferOut, trim transferIn
+      if ((transferInHistory[gw]?.length ?? 0) > (transferOutHistory[gw]?.length ?? 0)) {
+        setTransferInHistory(prev => ({
+          ...prev,
+          [gw]: (prev[gw] ?? []).slice(0, transferOutHistory[gw]?.length ?? 0)
+        }));
+      }
     }
-    // If transferIn is longer than transferOut, trim transferIn
-    if (transferIn.length > transferOut.length) {
-      setTransferIn(prev => prev.slice(0, transferOut.length));
-    }
-  }, [transferOut, transferIn]);
+  }, [transferOutHistory, transferInHistory, gw]);
 
   const formatValue = (value: number | undefined): string => {
     if (value === undefined || value === null) return 'N/A';
@@ -313,15 +331,18 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   };
 
   useEffect(() => {
-    if (transferIn.length > 1) {
-      const unique = transferIn.filter(
+    if (gw !== undefined && transferInHistory[gw] && transferInHistory[gw].length > 1) {
+      const unique = transferInHistory[gw].filter(
         (p, idx, arr) => arr.findIndex(q => q.id === p.id) === idx
       );
-      if (unique.length !== transferIn.length) {
-        setTransferIn(unique);
+      if (unique.length !== transferInHistory[gw].length) {
+        setTransferInHistory(prev => ({
+          ...prev,
+          [gw]: unique
+        }));
       }
     }
-  }, [transferIn]);
+  }, [transferInHistory]);
 
   const getTeamName = (teamId: number): string => {
     const team = teams.find(t => t.id === teamId);
@@ -386,7 +407,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       }
     }
 
-    console.log(`No opponent data found for player ${playerId} in gameweek ${gameweek}`);
+    // console.log(`No opponent data found for player ${playerId} in gameweek ${gameweek}`);
     return { name: 'Unknown', difficultyClass: '' };
   };
 
@@ -450,17 +471,20 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     );
   };
 
-  // Add this helper function to get fixtures for a player (current + next 2)
   const getPlayerFixtures = (playerId: number, gameweek: number | undefined): Array<{ name: string, difficultyClass: string }> => {
     if (!gameweek) {
+      console.warn('getPlayerFixtures: gameweek is undefined for player', playerId);
       return [{ name: 'Unknown', difficultyClass: '' }];
     }
 
     const fixtures = [];
-    
-    // Get current fixture and next 2 fixtures (gameweeks)
-    for (let gw = gameweek; gw <= gameweek + 2 && gw <= 38; gw++) {
-      const fixtureInfo = getOpponentInfo(playerId, gw);
+
+    // Show fixtures for [gameweek, gameweek+1, gameweek+2]
+    for (let offset = 0; offset < 3; offset++) {
+      const gwNum = gameweek + offset;
+      if (gwNum > 38) break;
+      const fixtureInfo = getOpponentInfo(playerId, gwNum);
+      // console.log(`getPlayerFixtures: playerId=${playerId}, gwNum=${gwNum}, fixtureInfo=`, fixtureInfo);
       fixtures.push(fixtureInfo);
     }
 
@@ -469,17 +493,108 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       fixtures.push({ name: '-', difficultyClass: '' });
     }
 
+    // console.log(`getPlayerFixtures: Final fixtures for playerId=${playerId}, gameweek=${gameweek}:`, fixtures);
+
     return fixtures;
   };
 
   // Process picks data to get player information
-  
   const getPlayerLineup = () => {
     let picksSource = picksData;
     // If no picksData for this gw, fallback to previous valid gw
-    if ((!picksData || !picksData.picks || !picksData.picks) && gw && currentGameweek && gw > currentGameweek) {
-      picksSource = getPreviousValidPicksData(gw);
+    if ((!picksData || !picksData.picks || !picksData.picks.picks) && gw && currentGameweek && gw > currentGameweek) {
+      // Get previous valid picks data and lineup
+      const prevGw = gw - 1;
+      const prevPicksData = getPreviousValidPicksData(gw);
+      if (!prevPicksData?.picks?.picks || elements.length === 0) return null;
+
+      // Build previous lineup
+      const prevPicks = prevPicksData.picks.picks;
+      const elementsLookup = elements.reduce((acc, element) => {
+        acc[element.id] = element;
+        return acc;
+      }, {} as { [key: number]: Element });
+
+      let prevLineup = {
+        startingXI: [] as any[],
+        bench: [] as any[]
+      };
+
+      prevPicks.forEach((pick: any) => {
+        const player = elementsLookup[pick.element];
+        if (player) {
+          const fixtures = getPlayerFixtures(pick.element, gw); // Get 3 fixtures
+          const xPoints = getPlayerXPoints(pick.element, prevGw);
+          const totalPoints = getPlayerTotalPoints(pick.element, prevGw);
+          const isAutoSubbed = isPlayerAutoSubbed(pick.element);
+
+          const playerInfo = {
+            id: player.id,
+            element_type: player.element_type, 
+            name: `${player.first_name} ${player.second_name}`,
+            webName: player.web_name,
+            team: getTeamName(player.team),
+            fixtures: fixtures,
+            xPoints: xPoints,
+            totalPoints: totalPoints,
+            isAutoSubbed: isAutoSubbed,
+            position: getPositionName(player.element_type, false),
+            positionShort: getPositionName(player.element_type, true), 
+            positionId: player.element_type,
+            isCaptain: pick.is_captain || false,
+            isViceCaptain: pick.is_vice_captain || false,
+            multiplier: pick.multiplier || 1,
+            pickPosition: pick.position
+          };
+
+          if (pick.position <= 11) {
+            prevLineup.startingXI.push(playerInfo);
+          } else {
+            prevLineup.bench.push(playerInfo);
+          }
+        }
+      });
+
+      // Sort starting XI and bench
+      prevLineup.startingXI.sort((a, b) => a.pickPosition - b.pickPosition);
+      prevLineup.bench.sort((a, b) => a.pickPosition - b.pickPosition);
+
+      // Apply transfers from previous gameweek
+      const prevTransfersOut = transferOutHistory[prevGw] || [];
+      const prevTransfersIn = transferInHistory[prevGw] || [];
+
+      // Remove transferred out players from startingXI and bench
+      prevLineup.startingXI = prevLineup.startingXI.filter(
+        p => !prevTransfersOut.some(out => out.id === p.id)
+      );
+      prevLineup.bench = prevLineup.bench.filter(
+        p => !prevTransfersOut.some(out => out.id === p.id)
+      );
+
+      // Add transferred in players to startingXI (or bench if you track that)
+      // You may want to decide where to add them (e.g., fill startingXI first)
+      prevTransfersIn.forEach(inPlayer => {
+        // Only add if not already present
+        if (
+          !prevLineup.startingXI.some(p => p.id === inPlayer.id) &&
+          !prevLineup.bench.some(p => p.id === inPlayer.id)
+        ) {
+          // Add to startingXI if less than 11, else to bench
+          if (prevLineup.startingXI.length < 11) {
+            prevLineup.startingXI.push(inPlayer);
+          } else {
+            prevLineup.bench.push(inPlayer);
+          }
+        }
+      });
+
+      // Re-sort startingXI and bench by pickPosition if needed
+      prevLineup.startingXI.sort((a, b) => a.pickPosition - b.pickPosition);
+      prevLineup.bench.sort((a, b) => a.pickPosition - b.pickPosition);
+
+      return prevLineup;
     }
+
     if (!picksSource?.picks?.picks || elements.length === 0) return null;
 
     const picks = picksSource.picks.picks;
@@ -500,14 +615,14 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         const xPoints = getPlayerXPoints(pick.element, gw);
         const totalPoints = getPlayerTotalPoints(pick.element, gw);
         const isAutoSubbed = isPlayerAutoSubbed(pick.element);
-        
+
         const playerInfo = {
           id: player.id,
           element_type: player.element_type, 
           name: `${player.first_name} ${player.second_name}`,
           webName: player.web_name,
           team: getTeamName(player.team),
-          fixtures: fixtures, // Array of 3 fixtures
+          fixtures: fixtures,
           xPoints: xPoints,
           totalPoints: totalPoints,
           isAutoSubbed: isAutoSubbed,
@@ -528,7 +643,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       }
     });
 
-    // Sort starting XI by pick position
     lineup.startingXI.sort((a, b) => a.pickPosition - b.pickPosition);
     lineup.bench.sort((a, b) => a.pickPosition - b.pickPosition);
 
@@ -567,10 +681,13 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     // Find the player in startingXI or bench
     const playerData = lineup?.startingXI.find(p => p.id === playerId) || lineup?.bench.find(p => p.id === playerId);
     if (playerData) {
-      setTransferOut(prev => {
+      setTransferOutHistory(prev => {
         // Only add if not already present
-        if (!prev.some(p => p.id === playerId)) {
-          return [...prev, playerData];
+        if (gw !== undefined && !prev[gw]?.some((p: any) => p.id === playerId)) {
+          return {
+            ...prev,
+            [gw]: [...(prev[gw] ?? []), playerData]
+          };
         }
         return prev;
       });
@@ -666,13 +783,19 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
 
   const handleRemoveTransferInClick = (e: React.MouseEvent, transferInId: number) => {
     e.stopPropagation();
-    setTransferIn(prev => prev.filter(p => p.id !== transferInId));
+    setTransferInHistory(prev => ({
+      ...prev,
+      [gw!]: (prev[gw!] ?? []).filter((p: any) => p.id !== transferInId)
+    }));
     setTransferMappings(prev => prev.filter(m => m.inId !== transferInId));
     // console.log(`Restore/refresh button pressed for player ${transferInId} and removed from transferIn and transferMappings`);
   };
   const handleRestoreClick = (e: React.MouseEvent, playerId: number ) => {
     e.stopPropagation();
-    setTransferOut(prev => prev.filter(p => p.id !== playerId));
+    setTransferOutHistory(prev => ({
+      ...prev,
+      [gw!]: (prev[gw!] ?? []).filter((p: any) => p.id !== playerId)
+    }));
     // console.log(`Restore/refresh button pressed for player ${playerId} and removed from transferOut list`);
   };
   
@@ -708,7 +831,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     const elementData = elements.find(el => el.id === player.id);
     const playerStatus = elementData?.status ?? '';
 
-    const isRemoved = transferOut.some(p => p.id === player.id);
+    const isRemoved = transferOutHistory[gw!]?.some((p: any) => p.id === player.id) ?? false;
     
       return (
       <div className={
@@ -957,41 +1080,103 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   };
 
   const getSquadTotalCost = (): number => {
-  if (!lineup || elements.length === 0) return 0;
+    if (!lineup || elements.length === 0) {
+      console.warn('getSquadTotalCost: lineup or elements missing', { lineup, elements });
+      return 0;
+    }
 
-  // Get all 15 players in the team
-  const squad = [...lineup.startingXI, ...lineup.bench];
+    // Get all 15 players in the team
+    const squad = [...lineup.startingXI, ...lineup.bench];
+    // console.log('getSquadTotalCost: squad', squad);
 
-  // Sum the now_cost of all squad players
-  let totalCost = squad.reduce((sum, player) => {
-    const element = elements.find(el => el.id === player.id);
-    return sum + (element?.now_cost ?? 0);
-  }, 0);
+    // Sum the now_cost of all squad players
+    let totalCost = squad.reduce((sum, player) => {
+      const element = elements.find(el => el.id === player.id);
+      const cost = element?.now_cost ?? player.now_cost ?? 0;
+      if (!element) {
+        console.warn('getSquadTotalCost: element not found for player', player);
+      }
+      if (typeof cost !== 'number') {
+        console.warn('getSquadTotalCost: cost is not a number for player', player, 'cost:', cost);
+      }
+      return sum + cost;
+    }, 0);
 
-  // Subtract the now_cost of all players in transferOut
-  totalCost -= transferOut.reduce((sum, player) => {
-    const element = elements.find(el => el.id === player.id);
-    return sum + (element?.now_cost ?? 0);
-  }, 0);
+    // console.log('getSquadTotalCost: totalCost after squad sum', totalCost);
 
-  // Add the now_cost of all players in transferIn
-  totalCost += transferIn.reduce((sum, player) => {
-    const element = elements.find(el => el.id === player.id);
-    return sum + (element?.now_cost ?? 0);
-  }, 0);
+    // Subtract the now_cost of all players in transferOut
+    const transferOutCost = transferOutHistory[gw!]?.reduce((sum, player) => {
+      const element = elements.find(el => el.id === player.id);
+      const cost = element?.now_cost ?? 0;
+      if (!element) {
+        console.warn('getSquadTotalCost: transferOut element not found for player', player);
+      }
+      return sum + cost;
+    }, 0) ?? 0;
 
-  return totalCost;
-};
+    // console.log('getSquadTotalCost: transferOutCost', transferOutCost);
+
+    totalCost -= transferOutCost;
+
+    // Add the now_cost of all players in transferIn
+    const transferInCost = transferInHistory[gw!]?.reduce((sum, player) => {
+      const element = elements.find(el => el.id === player.id);
+      const cost = element?.now_cost ?? 0;
+      if (!element) {
+        console.warn('getSquadTotalCost: transferIn element not found for player', player);
+      }
+      return sum + cost;
+    }, 0) ?? 0;
+
+    // console.log('getSquadTotalCost: transferInCost', transferInCost);
+
+    totalCost += transferInCost;
+
+    // console.log('getSquadTotalCost: final totalCost', totalCost);
+
+    return totalCost;
+  };
+
+
+    const getBankValue = (): string => {
+    if (!historyData || !historyData.current || !Array.isArray(historyData.current)) {
+      console.warn('getBankValue: historyData missing or malformed', historyData);
+      return 'N/A';
+    }
   
-
-  const getBankValue = (): string => {
-    // getLastValidTeamValue returns a string like "£100.0"
-    const teamValueStr = getLastValidTeamValue();
-    const teamValue = parseFloat(teamValueStr.replace(/[£,]/g, ''));
+    // Find the team value for the current gameweek (from history)
+    let teamValueEntry = historyData.current.find((item: any) => item.event === gw);
+    let teamValue: number;
+  
+    if (teamValueEntry && typeof teamValueEntry.value === 'number') {
+      teamValue = teamValueEntry.value / 10; // convert to £
+      // console.log('getBankValue: teamValueEntry found for gw', gw, 'teamValue:', teamValue);
+    } else {
+      // For future gameweeks, use the last valid team value
+      const validEntries = historyData.current
+        .filter((item: any) => typeof item.value === 'number')
+        .sort((a: any, b: any) => b.event - a.event);
+      if (validEntries.length === 0) {
+        console.warn('getBankValue: No validEntries found in historyData.current');
+        return 'N/A';
+      }
+      teamValue = validEntries[0].value / 10;
+      // console.log('getBankValue: using last valid teamValue from history', validEntries[0], 'teamValue:', teamValue);
+    }
+  
+    // Calculate squad cost (starting XI + bench, including transfers)
     const squadCost = getSquadTotalCost() / 10; // convert to £
-
-    if (isNaN(teamValue)) return 'N/A';
-    return `${(teamValue - squadCost).toFixed(1)}`;
+  
+    // Calculate bank value
+    const bankValue = teamValue - squadCost;
+  
+    // If result is negative or NaN, return '0.0'
+    if (isNaN(bankValue)) {
+      console.warn('getBankValue: bankValue is NaN', bankValue);
+      return 'NaN';
+    }
+  
+    return bankValue.toFixed(1);
   };
 
   const calculateTotalXPoints = (): string => {
@@ -1005,7 +1190,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       // Check if player is transferred out and has a mapped transfer in
       const mapping = transferMappings.find(m => m.outId === player.id);
       const transferInPlayer = mapping
-        ? transferIn.find(p => p.id === mapping.inId)
+        ? transferInHistory[gw!]?.find(p => p.id === mapping.inId)
         : null;
 
       let xPoints = '0.0';
@@ -1070,35 +1255,51 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
 
   const calcFreeTransfers = (): number => {
     if (!gw || !historyData?.current || !Array.isArray(historyData.current)) {
-      return 0;
+      return 1;
     }
 
-    // Start with 1 free transfer for gameweek 1 (you get 1 free transfer each week)
-    let freeTransfers = 0;
-    
-    // For each week from 2 to current gameweek, add 1 and subtract transfers used
-    for (let week = 2; week <= gw; week++) {
-      // Add 1 free transfer for this week (max accumulation is 5)
-      freeTransfers = Math.min(freeTransfers + 1, 5);
-      
-      // Find transfers used in the PREVIOUS week (week - 1)
-      const prevWeekHistoryData = historyData.current.find((item: any) => item.event === week - 1);
-      
-      if (prevWeekHistoryData && prevWeekHistoryData.event_transfers !== undefined) {
-        // Subtract the transfers that were used in the previous week
-        freeTransfers -= prevWeekHistoryData.event_transfers;
+    // GW1: unlimited free transfers
+    if (gw === 1) return 99;
+
+    // GW2: always 1 free transfer
+    if (gw === 2) return 1;
+
+    let freeTransfers = 1; // GW2 starts with 1
+
+    // Calculate free transfers for each week up to the current gw
+    for (let week = 3; week <= gw; week++) {
+      const prevWeek = week - 1;
+
+      // Find previous week's history data
+      const prevWeekHistoryData = historyData.current.find((item: any) => item.event === prevWeek);
+
+      let freeTransfersPrevWeek = freeTransfers;
+
+      // Transfers used in previous week
+      let transfersUsedPrevWeek = 0;
+      if (prevWeekHistoryData && typeof prevWeekHistoryData.event_transfers === 'number') {
+        transfersUsedPrevWeek = prevWeekHistoryData.event_transfers;
+      } else if (transferOutHistory[prevWeek]) {
+        transfersUsedPrevWeek = transferOutHistory[prevWeek].length;
+      }
+
+      // Apply the rule
+      if (transfersUsedPrevWeek >= freeTransfersPrevWeek) {
+        freeTransfers = 1;
+      } else {
+        freeTransfers = Math.min(freeTransfersPrevWeek - transfersUsedPrevWeek + 1, 5);
       }
     }
 
-    return Math.max(freeTransfers, 0); // Ensure we never return negative
+    return freeTransfers;
   };
-
+  
   // Place this just before your return (
   function getTransferInMatch(player: any) {
     // Find the mapping for this transfer-out slot
     const mapping = transferMappings.find(m => m.outId === player.id);
     if (!mapping) return null;
-    return transferIn.find(p => p.id === mapping.inId) || null;
+    return transferInHistory[gw!]?.find(p => p.id === mapping.inId) || null;
   }
 
   // Update the return statement to use the calculated xPoints
@@ -1162,14 +1363,16 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
             <>
               <div className={styles['stat-card']}>
                 <div className={styles['stat-label']}>Transfers</div>
-                <div className={styles['stat-value']}>{transferOut.length} / {calcFreeTransfers()}</div>
-              </div>
+                  <div className={styles['stat-value']}>
+                    {(transferOutHistory[gw!] && transferOutHistory[gw!].length > 0 ? transferOutHistory[gw!].length : 0)} / {calcFreeTransfers()}
+                  </div>
+                </div>
 
               <div className={styles['stat-card']}>
                 <div className={styles['stat-label']}>Cost</div>
                   <div className={styles['stat-value']}>
-                    {(transferOut.length - calcFreeTransfers()) > 0
-                      ? (transferOut.length - calcFreeTransfers()) * -4
+                    {(transferOutHistory[gw!]?.length - calcFreeTransfers()) > 0
+                      ? (transferOutHistory[gw!]?.length - calcFreeTransfers()) * -4
                       : 0}
                   </div>
               </div>
@@ -1386,8 +1589,9 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                   );
               
                   // Remove captain from any transferred-in player
-                  setTransferIn(prev =>
-                    prev.map(p =>
+                  setTransferInHistory(prev => ({
+                    ...prev,
+                    [gw!]: prev[gw!]?.map(p =>
                       (p.isCaptain || p.multiplier === 2)
                         ? { ...p, isCaptain: false, multiplier: 1 }
                         : p
@@ -1395,8 +1599,8 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
                       p.id === modalPlayer.id
                         ? { ...p, isCaptain: true, multiplier: 2 }
                         : p
-                    )
-                  );
+                    ) ?? []
+                  }));
               
                   return { ...prevLineup, startingXI: newStartingXI, bench: prevLineup.bench };
                 });
