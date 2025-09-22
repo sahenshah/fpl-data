@@ -208,14 +208,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
     }
   };
 
-  // Position dropdown button label
-  const positionDropdownLabel =
-    positionFilter.length === positionOptions.length
-      ? 'Position'
-      : positionFilter.length === 0
-        ? 'No Positions'
-        : 'Selected';
-
   // Team dropdown button label
   const teamDropdownLabel =
     teamFilter.length === teams.length
@@ -224,13 +216,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
         ? 'No Teams'
         : 'Selected';
 
-  function handleAllPositions(event: React.ChangeEvent<HTMLInputElement>): void {
-    if (event.target.checked) {
-      setPositionFilter(positionOptions.map(p => p.value));
-    } else {
-      setPositionFilter([]);
-    }
-  }
   return (
     <div className={styles['player-filters-root']}>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -238,83 +223,32 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
           Player Filters:
         </div>
         <div className={styles['player-filters-left']}>
-          <div className={styles['player-filters-search-container']}>
-            {!showSearchInput ? (
+          {/* Position filter buttons row */}
+          <div className={styles['player-filters-position-row']}>
+            {positionOptions.map(option => (
               <button
-                className={styles['player-filters-search-icon']}
-                onClick={() => setShowSearchInput(true)}
-                tabIndex={0}
-                aria-label="Search by name"
+                key={option.value}
                 type="button"
+                className={`${styles['position-filter-btn']} ${positionFilter.includes(option.value) ? styles['active'] : ''}`}
+                onClick={() => handlePositionOption(option.value)}
+                aria-pressed={positionFilter.includes(option.value)}
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <circle cx="7" cy="7" r="5.5" stroke="white" strokeWidth="1.5" />
-                  <line x1="11.25" y1="11.75" x2="15" y2="15.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+                {option.label}
               </button>
-            ) : (
+            ))}
+          </div>
+          <div className={styles['player-filters-dropdown-input']}>
+            <div className={styles['player-filters-search-container']}>
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 onBlur={() => setShowSearchInput(false)}
-                placeholder="Search by name"
-                className={styles['player-filters-search-input']}
-                style={{ minWidth: 180 }}
+                placeholder="Search name"
+                className={styles['filter-input']}
+                style={{ maxWidth: 140 }}
               />
-            )}
-          </div>
-          <div className={styles['player-filters-dropdown-input']}>
-            {/* Position filter */}
-            <div
-              className={styles['custom-dropdown'] + ' ' + styles['position']}
-              style={{ position: 'relative' }}
-            >
-              <button
-                className={styles['custom-dropdown-btn']}
-                onClick={() => setShowPositionDropdown(v => !v)}
-                type="button"
-              >
-                {positionDropdownLabel}
-                <span className={styles['custom-dropdown-arrow']}>&#9662;</span>
-              </button>
-              {showPositionDropdown && (
-                <div
-                  ref={positionDropdownRef}
-                  className={styles['custom-dropdown-menu']}
-                  style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    zIndex: 20,
-                    background: '#23232b',
-                    borderRadius: 8,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    minWidth: 160, // <-- Increased from 120 to 160
-                    padding: '8px 0',
-                  }}
-                >
-                  <label className={styles['custom-dropdown-item']}>
-                    <input
-                      type="checkbox"
-                      checked={positionFilter.length === positionOptions.length}
-                      onChange={handleAllPositions}
-                    />
-                    All Positions
-                  </label>
-                  {positionOptions.map(option => (
-                    <label key={option.value} className={styles['custom-dropdown-item']}>
-                      <input
-                        type="checkbox"
-                        checked={positionFilter.includes(option.value)}
-                        onChange={() => handlePositionOption(option.value)}
-                      />
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
-              )}
             </div>
             {/* Team filter */}
             <div className={styles['custom-dropdown'] + ' ' + styles['team']} style={{ position: 'relative' }}>
@@ -338,7 +272,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
                     background: '#23232b',
                     borderRadius: 8,
                     boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    minWidth: 140,
+                    maxWidth: 140,
                     padding: '8px 0',
                   }}
                 >
@@ -375,7 +309,8 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
               value={minutesFilter}
               onChange={e => setMinutesFilter(e.target.value)}
               placeholder="Min Minutes"
-              className={styles['mins-filter-input']}
+              className={styles['filter-input']}
+              style={{ minWidth: 140 }}
               step={10}
             />
           </div>

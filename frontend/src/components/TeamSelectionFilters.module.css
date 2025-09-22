@@ -9,6 +9,8 @@
 
 .custom-dropdown-btn {
   width: 100%;
+  max-width: 140px;
+  min-width: 100px;
   height: 36px;
   border-radius: 22px;
   border: 1px solid #353545;
@@ -183,7 +185,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 40% !important;
+  width: 100% !important;
 }
 .player-filters-slider-box {
   width: 250px;
@@ -235,7 +237,6 @@
 .player-filter-btn {
   width: 90vw;
   min-width: 120px;
-  max-width: 140px;
   margin: 0 auto;
   font-size: 14px;
   height: 36px;
@@ -258,8 +259,8 @@
 
 .position-toggle-buttons {
   display: flex;
-  justify-content: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 18px;
   margin-bottom: 12px;
 }
 
@@ -281,6 +282,22 @@
 .position-toggle-btn.active {
   background: #7768f6;
   font-weight: 600;
+}
+
+.filters-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.filters-row > * {
+  flex: 1 1 0;
+  min-width: 120px;
+  max-width: 150px;
 }
 
 /* Circular checkbox style for expanded dropdown */

@@ -128,7 +128,7 @@
   left: 10%;
 }
 
-.mins-filter-input {
+.filter-input {
   width: 140px;
   height: 36px;
   border-radius: 18px;
@@ -143,7 +143,7 @@
   padding-left: 10px;
 }
 
-.mins-filter-input:focus {
+.filter-input:focus {
   border-color: #7768f6;
   background: #23232baf;
 }
@@ -232,7 +232,7 @@
   flex-direction: column;
   align-items: center;
 }
-.mins-filter-input,
+.filter-input,
 .player-filters-search-input {
   text-align: left;
   padding-left: 16px;
@@ -291,6 +291,42 @@
   align-self: stretch;
   border-radius: 2px;
 }
+
+.player-filters-position-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 6px 0;
+  gap: 18px;
+}
+
+.position-filter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.position-filter-btn {
+  background: #23232b;
+  color: #fff;
+  border: 1px solid #7768f6;
+  border-radius: 18px;
+  padding: 6px 16px;
+  font-weight: 400;
+  font-size: 14px;
+  min-width: 65px;
+  width: 65px;
+  cursor: pointer;
+  transition: background 0.2s;
+  outline: none;
+}
+
+.position-filter-btn.active {
+  background: #7768f6;
+  font-weight: 600;
+}
+
 /* Responsive styles for small screens */
 @media (max-width: 999px) {
   .player-filters-buttons-container {
@@ -356,12 +392,12 @@
     max-width: 400px;
     margin: 0 auto 8px auto;
   }
-  .mins-filter-input {
+  .filter-input {
     width: 140px;
     max-width: 140px;
     margin: 0 auto 8px auto;
   }
-  .mins-filter-input {
+  .filter-input {
     display: flex;
     justify-content: center;
     align-items: center;

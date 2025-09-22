@@ -351,82 +351,84 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
                 </button>
               ))}
             </div>
-            
-            {/* Team filter */}
-            <div className={styles['custom-dropdown'] + ' ' + styles['team']} style={{ position: 'relative', display: 'inline-block' }}>
-              <button
-                className={`${styles['custom-dropdown-btn']} custom-dropdown-btn team`}
-                onClick={() => setShowTeamDropdown(v => !v)}
-                type="button"
-              >
-                {teamFilter.length === teams.length
-                  ? 'Teams'
-                  : teamFilter.length === 0
-                    ? 'No Teams'
-                    : 'Selected'}
-                <span className={styles['custom-dropdown-arrow']}>&#9662;</span>
-              </button>
-              {showTeamDropdown && (
-                <div
-                  ref={teamDropdownRef}
-                  className={styles['custom-dropdown-menu'] + ' ' + styles['teams-dropdown']}
-                  style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    zIndex: 20,
-                    background: '#23232b',
-                    borderRadius: 8,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    minWidth: 140,
-                    padding: '8px 0',
-                  }}
+            <div className={styles['filters-row']}>
+              {/* Team filter */}
+              <div className={styles['custom-dropdown'] + ' ' + styles['team']} style={{ position: 'relative', display: 'inline-block' }}>
+                <button
+                  className={`${styles['custom-dropdown-btn']} custom-dropdown-btn team`}
+                  onClick={() => setShowTeamDropdown(v => !v)}
+                  type="button"
                 >
-                  <label className={styles['custom-dropdown-item']}>
-                    <input
-                      type="checkbox"
-                      checked={teamFilter.length === teams.length}
-                      onChange={handleAllTeams}
-                    />
-                    All Teams
-                  </label>
-                  {teams.map(team => (
-                    <label key={team.id} className={styles['custom-dropdown-item']}>
+                  {teamFilter.length === teams.length
+                    ? 'Teams'
+                    : teamFilter.length === 0
+                      ? 'No Teams'
+                      : 'Selected'}
+                  <span className={styles['custom-dropdown-arrow']}>&#9662;</span>
+                </button>
+                {showTeamDropdown && (
+                  <div
+                    ref={teamDropdownRef}
+                    className={styles['custom-dropdown-menu'] + ' ' + styles['teams-dropdown']}
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      zIndex: 20,
+                      background: '#23232b',
+                      borderRadius: 8,
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      padding: '8px 0',
+                    }}
+                  >
+                    <label className={styles['custom-dropdown-item']}>
                       <input
                         type="checkbox"
-                        checked={teamFilter.includes(team.name)}
-                        onChange={() => handleTeamOption(team.name)}
+                        checked={teamFilter.length === teams.length}
+                        onChange={handleAllTeams}
                       />
-                      <img
-                        src={`/team-badges/${team.short_name}.svg`}
-                        alt={team.short_name}
-                        style={{ width: 22, height: 22, marginRight: 8, verticalAlign: 'middle' }}
-                      />
-                      {team.name}
+                      All Teams
                     </label>
-                  ))}
-                </div>
-              )}
+                    {teams.map(team => (
+                      <label key={team.id} className={styles['custom-dropdown-item']}>
+                        <input
+                          type="checkbox"
+                          checked={teamFilter.includes(team.name)}
+                          onChange={() => handleTeamOption(team.name)}
+                        />
+                        <img
+                          src={`/team-badges/${team.short_name}.svg`}
+                          alt={team.short_name}
+                          style={{ width: 22, height: 22, marginRight: 8, verticalAlign: 'middle' }}
+                        />
+                        {team.name}
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Minutes filter */}
+              <input
+                type="number"
+                min={0}
+                value={minutesFilter}
+                onChange={e => setMinutesFilter(e.target.value)}
+                placeholder="Min Minutes"
+                className={styles['mins-filter-input']}
+                style={{ maxWidth: 140, minWidth: 100 }}
+                step={10}
+              />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                onBlur={() => setShowSearchInput(false)}
+                placeholder="Search name"
+                className={styles['player-filters-search-input']}
+                style={{ maxWidth: 140, minWidth: 100 }}
+              />
             </div>
-            {/* Minutes filter */}
-            <input
-              type="number"
-              min={0}
-              value={minutesFilter}
-              onChange={e => setMinutesFilter(e.target.value)}
-              placeholder="Min Minutes"
-              className={styles['mins-filter-input']}
-              step={10}
-            />
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              onBlur={() => setShowSearchInput(false)}
-              placeholder="Search name"
-              className={styles['player-filters-search-input']}
-            />
           </div>
           {/* Add margin-top to the slider box for spacing */}
           <div
