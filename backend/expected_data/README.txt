@@ -2,7 +2,7 @@
 
 1. cd ../expected_data
 
-2. mv projections.csv ../archive/projection_backup_DD_MM_YYYY.csv
+2. mv projection.csv ../archive/projection_backup_DD_MM_YYYY.csv
 
 3. Download projections.csv from solio analytics to backend/expected_data
 
