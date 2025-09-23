@@ -188,23 +188,23 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     setLineup(initialLineup);
   }, [picksData, elements]);
 
-  // useEffect(() => {
-  //   if (lineup) {
-  //     console.log('StartingXI:', lineup.startingXI);
-  //     console.log('Bench:', lineup.bench);
-  //   }
-  // }, [lineup]);
+  useEffect(() => {
+    if (lineup) {
+      console.log('StartingXI:', lineup.startingXI);
+      console.log('Bench:', lineup.bench);
+    }
+  }, [lineup]);
 
-  // useEffect(() => {
-  //   if (gw !== undefined) {
-  //     console.log('Transfer Out List:', transferOutHistory[gw] || []);
-  //   }
-  // }, [transferOutHistory, gw]);
-  // useEffect(() => {
-  //   if (gw !== undefined) {
-  //     console.log('Transfer In List:', transferInHistory[gw] || []);
-  //   }
-  // }, [transferInHistory, gw]);
+  useEffect(() => {
+    if (gw !== undefined) {
+      console.log('Transfer Out List:', transferOutHistory[gw] || []);
+    }
+  }, [transferOutHistory, gw]);
+  useEffect(() => {
+    if (gw !== undefined) {
+      console.log('Transfer In List:', transferInHistory[gw] || []);
+    }
+  }, [transferInHistory, gw]);
 
   useEffect(() => {
   if (
@@ -493,7 +493,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       fixtures.push({ name: '-', difficultyClass: '' });
     }
 
-    // console.log(`getPlayerFixtures: Final fixtures for playerId=${playerId}, gameweek=${gameweek}:`, fixtures);
+    console.log(`getPlayerFixtures: Final fixtures for playerId=${playerId}, gameweek=${gameweek}:`, fixtures);
 
     return fixtures;
   };
@@ -571,19 +571,21 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         p => !prevTransfersOut.some(out => out.id === p.id)
       );
 
-      // Add transferred in players to startingXI (or bench if you track that)
-      // You may want to decide where to add them (e.g., fill startingXI first)
       prevTransfersIn.forEach(inPlayer => {
         // Only add if not already present
         if (
           !prevLineup.startingXI.some(p => p.id === inPlayer.id) &&
           !prevLineup.bench.some(p => p.id === inPlayer.id)
         ) {
-          // Add to startingXI if less than 11, else to bench
+          // Rebuild the player object with updated fixtures for the current gw
+          const updatedPlayer = {
+            ...inPlayer,
+            fixtures: getPlayerFixtures(inPlayer.id, gw),
+          };
           if (prevLineup.startingXI.length < 11) {
-            prevLineup.startingXI.push(inPlayer);
+            prevLineup.startingXI.push(updatedPlayer);
           } else {
-            prevLineup.bench.push(inPlayer);
+            prevLineup.bench.push(updatedPlayer);
           }
         }
       });
@@ -920,7 +922,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
               <div className={isBench ? styles['player-fixtures-bench'] : styles['player-fixtures']}>
                 {transferInMatch.fixtures.map((fixture: any, index: number) => (
                   <div
-                    key={index}
+                    key={`${fixture.name}-${index}`}
                     className={`${styles['fixture-item']} ${fixture.difficultyClass}`}
                   >
                     {fixture.name}
@@ -1013,7 +1015,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
             <div className={isBench ? styles['player-fixtures-bench'] : styles['player-fixtures']}>
               {player.fixtures.map((fixture: any, index: number) => (
                 <div
-                  key={index}
+                  key={`${fixture.name}-${index}`}
                   className={`${styles['fixture-item']} ${fixture.difficultyClass}`}
                 >
                   {fixture.name}
@@ -1077,7 +1079,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
 
     // Get all 15 players in the team
     const squad = [...lineup.startingXI, ...lineup.bench];
-    // console.log('getSquadTotalCost: squad', squad);
 
     // Sum the now_cost of all squad players
     let totalCost = squad.reduce((sum, player) => {
@@ -1092,8 +1093,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       return sum + cost;
     }, 0);
 
-    // console.log('getSquadTotalCost: totalCost after squad sum', totalCost);
-
     // Subtract the now_cost of all players in transferOut
     const transferOutCost = transferOutHistory[gw!]?.reduce((sum, player) => {
       const element = elements.find(el => el.id === player.id);
@@ -1104,7 +1103,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       return sum + cost;
     }, 0) ?? 0;
 
-    // console.log('getSquadTotalCost: transferOutCost', transferOutCost);
 
     totalCost -= transferOutCost;
 
@@ -1118,11 +1116,7 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       return sum + cost;
     }, 0) ?? 0;
 
-    // console.log('getSquadTotalCost: transferInCost', transferInCost);
-
     totalCost += transferInCost;
-
-    // console.log('getSquadTotalCost: final totalCost', totalCost);
 
     return totalCost;
   };
@@ -1140,7 +1134,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   
     if (teamValueEntry && typeof teamValueEntry.value === 'number') {
       teamValue = teamValueEntry.value / 10; // convert to £
-      // console.log('getBankValue: teamValueEntry found for gw', gw, 'teamValue:', teamValue);
     } else {
       // For future gameweeks, use the last valid team value
       const validEntries = historyData.current
@@ -1151,7 +1144,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
         return 'N/A';
       }
       teamValue = validEntries[0].value / 10;
-      // console.log('getBankValue: using last valid teamValue from history', validEntries[0], 'teamValue:', teamValue);
     }
   
     // Calculate squad cost (starting XI + bench, including transfers)
