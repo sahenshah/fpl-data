@@ -293,8 +293,9 @@
 }
 
 .player-filters-position-row {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   margin: 10px 0 6px 0;
   gap: 18px;
