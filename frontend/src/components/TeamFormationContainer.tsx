@@ -196,14 +196,10 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   }, [lineup]);
 
   useEffect(() => {
-    if (gw !== undefined) {
-      console.log('Transfer Out List:', transferOutHistory[gw] || []);
-    }
+      console.log('Transfer Out List:', transferOutHistory || []);
   }, [transferOutHistory, gw]);
   useEffect(() => {
-    if (gw !== undefined) {
-      console.log('Transfer In List:', transferInHistory[gw] || []);
-    }
+      console.log('Transfer In List:', transferInHistory || []);
   }, [transferInHistory, gw]);
 
   useEffect(() => {
@@ -294,25 +290,6 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       onSelectionHandled?.();
     }
   }, [selectedPlayerId, transferOutHistory, elements, gw, transferMappings]);
-
-  useEffect(() => {
-    if (gw !== undefined) {
-      // If transferOut is empty, clear transferIn
-      if ((transferOutHistory[gw]?.length ?? 0) === 0 && (transferInHistory[gw]?.length ?? 0) > 0) {
-        setTransferInHistory(prev => ({
-          ...prev,
-          [gw]: []
-        }));
-      }
-      // If transferIn is longer than transferOut, trim transferIn
-      if ((transferInHistory[gw]?.length ?? 0) > (transferOutHistory[gw]?.length ?? 0)) {
-        setTransferInHistory(prev => ({
-          ...prev,
-          [gw]: (prev[gw] ?? []).slice(0, transferOutHistory[gw]?.length ?? 0)
-        }));
-      }
-    }
-  }, [transferOutHistory, transferInHistory, gw]);
 
   const formatValue = (value: number | undefined): string => {
     if (value === undefined || value === null) return 'N/A';
@@ -493,41 +470,50 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
       fixtures.push({ name: '-', difficultyClass: '' });
     }
 
-    console.log(`getPlayerFixtures: Final fixtures for playerId=${playerId}, gameweek=${gameweek}:`, fixtures);
+    // console.log(`getPlayerFixtures: Final fixtures for playerId=${playerId}, gameweek=${gameweek}:`, fixtures);
 
     return fixtures;
   };
 
-  // Process picks data to get player information
-  const getPlayerLineup = () => {
+   const getPlayerLineup = () => {
     let picksSource = picksData;
+    // if selected gw = current gw, populate lineup with picks data for current gw (return error if not found)
+    if (gw === currentGameweek) {
+      if (!picksSource || !picksSource.picks || !picksSource.picks.picks) {
+        console.error('No picks data found for current gameweek');
+        return null;
+      }
+    }
+    // else if selected gw > current gw, populate lineup with lineup from previous gameweek
+    //update lineup for current gw with transferslist data in previous gameweek
+    
     // If no picksData for this gw, fallback to previous valid gw
     if ((!picksData || !picksData.picks || !picksData.picks.picks) && gw && currentGameweek && gw > currentGameweek) {
-      // Get previous valid picks data and lineup
-      const prevGw = gw - 1;
-      const prevPicksData = getPreviousValidPicksData(gw);
+      // Find the last valid picks data before the current future gameweek
+      let lastValidGw = currentGameweek;
+      let prevPicksData = getPreviousValidPicksData(gw);
       if (!prevPicksData?.picks?.picks || elements.length === 0) return null;
-
-      // Build previous lineup
+  
+      // Build initial lineup from last valid picks
       const prevPicks = prevPicksData.picks.picks;
       const elementsLookup = elements.reduce((acc, element) => {
         acc[element.id] = element;
         return acc;
       }, {} as { [key: number]: Element });
-
-      let prevLineup = {
+  
+      let lineup = {
         startingXI: [] as any[],
         bench: [] as any[]
       };
-
+  
       prevPicks.forEach((pick: any) => {
         const player = elementsLookup[pick.element];
         if (player) {
-          const fixtures = getPlayerFixtures(pick.element, gw); // Get 3 fixtures
-          const xPoints = getPlayerXPoints(pick.element, prevGw);
-          const totalPoints = getPlayerTotalPoints(pick.element, prevGw);
+          const fixtures = getPlayerFixtures(pick.element, gw);
+          const xPoints = getPlayerXPoints(pick.element, lastValidGw);
+          const totalPoints = getPlayerTotalPoints(pick.element, lastValidGw);
           const isAutoSubbed = isPlayerAutoSubbed(pick.element);
-
+  
           const playerInfo = {
             id: player.id,
             element_type: player.element_type, 
@@ -546,57 +532,117 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
             multiplier: pick.multiplier || 1,
             pickPosition: pick.position
           };
-
+  
           if (pick.position <= 11) {
-            prevLineup.startingXI.push(playerInfo);
+            lineup.startingXI.push(playerInfo);
           } else {
-            prevLineup.bench.push(playerInfo);
+            lineup.bench.push(playerInfo);
           }
         }
       });
+  
+      lineup.startingXI.sort((a, b) => a.pickPosition - b.pickPosition);
+      lineup.bench.sort((a, b) => a.pickPosition - b.pickPosition);
+  
+      // Apply transfers for all gameweeks ---
+      for (let gameweek = currentGameweek; gameweek <= gw; gameweek++) {
+        const transfersOut = transferOutHistory[gameweek] || [];
+        const transfersIn = transferInHistory[gameweek] || [];
 
-      // Sort starting XI and bench
-      prevLineup.startingXI.sort((a, b) => a.pickPosition - b.pickPosition);
-      prevLineup.bench.sort((a, b) => a.pickPosition - b.pickPosition);
-
-      // Apply transfers from previous gameweek
-      const prevTransfersOut = transferOutHistory[prevGw] || [];
-      const prevTransfersIn = transferInHistory[prevGw] || [];
-
-      // Remove transferred out players from startingXI and bench
-      prevLineup.startingXI = prevLineup.startingXI.filter(
-        p => !prevTransfersOut.some(out => out.id === p.id)
-      );
-      prevLineup.bench = prevLineup.bench.filter(
-        p => !prevTransfersOut.some(out => out.id === p.id)
-      );
-
-      prevTransfersIn.forEach(inPlayer => {
-        // Only add if not already present
-        if (
-          !prevLineup.startingXI.some(p => p.id === inPlayer.id) &&
-          !prevLineup.bench.some(p => p.id === inPlayer.id)
-        ) {
-          // Rebuild the player object with updated fixtures for the current gw
-          const updatedPlayer = {
-            ...inPlayer,
-            fixtures: getPlayerFixtures(inPlayer.id, gw),
-          };
-          if (prevLineup.startingXI.length < 11) {
-            prevLineup.startingXI.push(updatedPlayer);
-          } else {
-            prevLineup.bench.push(updatedPlayer);
+        // Remove transferred out players
+        lineup.startingXI = lineup.startingXI.filter(
+          p => !transfersOut.some(out => out.id === p.id)
+        );
+        lineup.bench = lineup.bench.filter(
+          p => !transfersOut.some(out => out.id === p.id)
+        );
+  
+        // Add transferred in players
+        transfersIn.forEach(inPlayer => {
+          if (
+            !lineup.startingXI.some(p => p.id === inPlayer.id) &&
+            !lineup.bench.some(p => p.id === inPlayer.id)
+          ) {
+            const updatedPlayer = {
+              ...inPlayer,
+              fixtures: getPlayerFixtures(inPlayer.id, gw),
+            };
+            if (lineup.startingXI.length < 11) {
+              lineup.startingXI.push(updatedPlayer);
+            } else {
+              lineup.bench.push(updatedPlayer);
+            }
           }
-        }
-      });
+        });
+  
+        lineup.startingXI.sort((a, b) => a.pickPosition - b.pickPosition);
+        lineup.bench.sort((a, b) => a.pickPosition - b.pickPosition);
+      }
 
-      // Re-sort startingXI and bench by pickPosition if needed
-      prevLineup.startingXI.sort((a, b) => a.pickPosition - b.pickPosition);
-      prevLineup.bench.sort((a, b) => a.pickPosition - b.pickPosition);
+      // --- ENFORCE GAME RULES ---
 
-      return prevLineup;
+      // Combine all players
+      let allPlayers = [...lineup.startingXI, ...lineup.bench];
+
+      // 1. Ensure exactly 1 GK in starting XI
+      const goalkeepers = allPlayers.filter(p => p.element_type === 1);
+      const outfieldPlayers = allPlayers.filter(p => p.element_type !== 1);
+
+      // Put first GK in startingXI, rest in bench
+      let startingXI: any[] = [];
+      let bench: any[] = [];
+
+      if (goalkeepers.length > 0) {
+        startingXI.push(goalkeepers[0]);
+        bench.push(...goalkeepers.slice(1));
+      }
+
+      // 2. Fill startingXI with outfield players up to 11 total
+      startingXI.push(...outfieldPlayers.slice(0, 10 - startingXI.length + 1)); // +1 because GK is already added
+
+      // 3. Remaining outfield players go to bench
+      bench.push(...outfieldPlayers.slice(10 - startingXI.length + 1));
+
+      // 4. Remove any players from bench who are in startingXI
+      bench = bench.filter(p => !startingXI.some(s => s.id === p.id));
+
+      // 5. Ensure bench has max 2 defenders
+      const benchDefenders = bench.filter(p => p.element_type === 2);
+      if (benchDefenders.length > 2) {
+        // Keep only first 2 defenders in bench, move extras out
+        const extraDefenders = benchDefenders.slice(2);
+
+        // Remove extra defenders from bench
+        bench = bench.filter(p => !(p.element_type === 2 && extraDefenders.some(ed => ed.id === p.id)));
+      }
+
+      // 6. Ensure bench has max 4 players
+      if (bench.length > 4) {
+        bench = bench.slice(0, 4);
+      }
+
+      // 7. If startingXI has more than 11, move extras to bench
+      if (startingXI.length > 11) {
+        bench = [...bench, ...startingXI.slice(11)];
+        startingXI = startingXI.slice(0, 11);
+        // Remove any duplicates again
+        bench = bench.filter(p => !startingXI.some(s => s.id === p.id));
+        // Limit bench to 4
+        if (bench.length > 4) bench = bench.slice(0, 4);
+      }
+
+      // 8. Final sort (optional, by pickPosition if available)
+      startingXI.sort((a, b) => (a.pickPosition ?? 0) - (b.pickPosition ?? 0));
+      bench.sort((a, b) => {
+        if (a.element_type === 1 && b.element_type !== 1) return -1; // GK first
+        if (a.element_type !== 1 && b.element_type === 1) return 1;
+        return (a.pickPosition ?? 0) - (b.pickPosition ?? 0);
+      }); 
+
+      // Return the lineup
+      return { startingXI, bench };
     }
-
+  
     if (!picksSource?.picks?.picks || elements.length === 0) return null;
 
     const picks = picksSource.picks.picks;
