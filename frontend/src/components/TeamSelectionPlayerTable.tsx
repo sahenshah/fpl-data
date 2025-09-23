@@ -61,13 +61,14 @@ const columns: TableColumn[] = [
   { id: 'badge', label: '', minWidth: 45, maxWidth: 45, align: 'center' },
   { id: 'web_name', label: 'Player', minWidth: 100, maxWidth: 100, align: 'left' },
   { id: 'element_type', label: 'Pos', minWidth: 60, maxWidth: 60, align: 'center' },
-  { id: 'now_cost', label: 'Cost (£)', minWidth: 50, maxWidth: 50, align: 'center', format: (value: number) => (value / 10).toFixed(1) },
+  { id: 'now_cost', label: 'Cost (£)', minWidth: 60, maxWidth: 60, align: 'center', format: (value: number) => (value / 10).toFixed(1) },
   { id: 'total_points', label: 'Total Pts', minWidth: 70, maxWidth: 70, align: 'center' },
   { id: 'form', label: 'Form', minWidth: 50, maxWidth: 50, align: 'center' },
-  { id: 'minutes', label: 'Minutes', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'minutes', label: 'Minutes', minWidth: 70, maxWidth: 70, align: 'center' },
+  { id: 'starts', label: 'Starts', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'assists', label: 'Assists', minWidth: 50, maxWidth: 50, align: 'center' },
-  { id: 'clean_sheets', label: 'Clean Sheets', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'clean_sheets', label: 'Clean Sheets', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'selected_by_percent', label: 'Selected', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value + '%' },
   { id: 'elite_selected_percent', label: 'Elite Selected', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'predicted_points_next5', label: 'xPoints next 5', minWidth: 80, maxWidth: 80, align: 'center' },
@@ -124,13 +125,13 @@ const columns: TableColumn[] = [
 // Column groups for filters
 const filterColumnMap: Record<string, string[]> = {
   "Predicted": [
-    'now_cost', 'total_points', 'minutes',
+    'now_cost', 'total_points', 'minutes', 'starts',
     'predicted_points_next5', 'pp_next5_per_m', 'predicted_xmins_next5', 'pxm_next5_per_m',
     ...gwColumns.map(col => col.id)
   ],
   "xPts": gwColumns.filter(col => col.id.startsWith('pp_gw_')).map(col => col.id),
   "xMins": gwColumns.filter(col => col.id.startsWith('xmins_gw_')).map(col => col.id),
-  "General": ['now_cost', 'total_points', 'minutes', 'goals_scored', 'assists', 'clean_sheets', 'form'],
+  "General": ['now_cost', 'total_points', 'minutes', 'starts', 'goals_scored', 'assists', 'clean_sheets', 'form'],
   "Selected %": ['selected_by_percent', 'elite_selected_percent'],
   "Bonus Points": ['bonus', 'bps'],
   "xData": ['expected_goals', 'expected_assists', 'expected_goal_involvements'],
