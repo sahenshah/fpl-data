@@ -223,20 +223,6 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
           Player Filters:
         </div>
         <div className={styles['player-filters-left']}>
-          {/* Position filter buttons row */}
-          <div className={styles['player-filters-position-row']}>
-            {positionOptions.map(option => (
-              <button
-                key={option.value}
-                type="button"
-                className={`${styles['position-filter-btn']} ${positionFilter.includes(option.value) ? styles['active'] : ''}`}
-                onClick={() => handlePositionOption(option.value)}
-                aria-pressed={positionFilter.includes(option.value)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
           <div className={styles['player-filters-dropdown-input']}>
             <div className={styles['player-filters-search-container']}>
               <input
@@ -272,7 +258,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
                     background: '#23232b',
                     borderRadius: 8,
                     boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    maxWidth: 140,
+                    maxWidth: 260,
                     padding: '8px 0',
                   }}
                 >
@@ -310,9 +296,22 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
               onChange={e => setMinutesFilter(e.target.value)}
               placeholder="Min Minutes"
               className={styles['filter-input']}
-              style={{ minWidth: 140 }}
               step={10}
             />
+          </div>
+          {/* Position filter buttons row */}
+          <div className={styles['player-filters-position-row']}>
+            {positionOptions.map(option => (
+              <button
+                key={option.value}
+                type="button"
+                className={`${styles['position-filter-btn']} ${positionFilter.includes(option.value) ? styles['active'] : ''}`}
+                onClick={() => handlePositionOption(option.value)}
+                aria-pressed={positionFilter.includes(option.value)}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
           {/* Add margin-top to the slider box for spacing */}
           <div

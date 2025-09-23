@@ -8,12 +8,12 @@
 
 .custom-dropdown {
   position: relative;
-  min-width: 140px;
+  height: 40px;
 }
 
 .custom-dropdown-btn {
   width: 140px;
-  height: 36px;
+  height: 40px;
   border-radius: 22px;
   border: 1px solid #353545;
   background: #23232b;
@@ -181,9 +181,10 @@
 }
 
 .player-filters-dropdown-input {
+  width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  justify-content: space-between;
 }
 .player-filters-search-icon {
   color: #fff;
@@ -236,6 +237,7 @@
 .player-filters-search-input {
   text-align: left;
   padding-left: 16px;
+  height: 40px;
 }
 
 .player-filters-buttons {
@@ -295,7 +297,7 @@
 .player-filters-position-row {
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   margin: 10px 0 6px 0;
   gap: 18px;
@@ -342,7 +344,6 @@
     order: -1;
     justify-content: center;
     width: 100%;
-    margin-bottom: 10px;
   }
   .player-filters-left {
     width: 100%;
@@ -375,7 +376,6 @@
   .player-filters-search-container {
     width: 100%;
     justify-content: center !important;
-    margin-bottom: 12px;
   }
   .custom-slider-box {
     width: 100% !important;
@@ -384,19 +384,16 @@
     margin: 0 auto;
     padding: 0;
   }
-  .custom-dropdown.position,
   .custom-dropdown.team {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     max-width: 400px;
-    margin: 0 auto 8px auto;
   }
   .filter-input {
     width: 140px;
     max-width: 140px;
-    margin: 0 auto 8px auto;
   }
   .filter-input {
     display: flex;
@@ -404,7 +401,6 @@
     align-items: center;
     width: 140px;
     max-width: 140px;
-    margin: 0 auto 8px auto;
     box-sizing: border-box;
   }
   .player-filters-title {
@@ -413,8 +409,6 @@
     margin-bottom: 30px;
   }
   .player-filters-dropdown-input {
-    display: flex;
-    flex-direction: column;
     gap: 12px;
   }
   .player-filters-divider {
@@ -425,5 +419,27 @@
     background: #3a3750;
     border-radius: 2px;
     align-self: center;
+  }
+}
+
+@media (max-width: 500px) {
+  .player-filters-dropdown-input {
+    justify-content: space-around; 
+  }
+  .player-filters-search-input,
+  .mins-filter-input {
+    width: 100px;
+    font-size: 12px;
+    padding-left: 12px;
+  }
+  .custom-dropdown-btn {
+    width: 100px;
+    font-size: 12px;
+    padding-left: 12px;
+  }
+  .filter-input {
+    padding-left: 12px;
+    width: 100px;
+    font-size: 12px;
   }
 }

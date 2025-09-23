@@ -339,19 +339,16 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
       <div className={styles['player-filters-container']}>
         <div className={styles['player-filters-left']}>
           <div className={styles['player-filters-dropdown-input']}>
-            <div className={styles['position-toggle-buttons']}>
-              {positionOptions.map(option => (
-                <button
-                  key={option.value}
-                  type="button"
-                  className={`${styles['position-toggle-btn']} ${positionFilter.includes(option.value) ? styles['active'] : ''}`}
-                  onClick={() => handlePositionOption(option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
             <div className={styles['filters-row']}>
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                onBlur={() => setShowSearchInput(false)}
+                placeholder="Search name"
+                className={styles['player-filters-search-input']}
+              />
               {/* Team filter */}
               <div className={styles['custom-dropdown'] + ' ' + styles['team']} style={{ position: 'relative', display: 'inline-block' }}>
                 <button
@@ -415,19 +412,20 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
                 onChange={e => setMinutesFilter(e.target.value)}
                 placeholder="Min Minutes"
                 className={styles['mins-filter-input']}
-                style={{ maxWidth: 140, minWidth: 100 }}
                 step={10}
               />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                onBlur={() => setShowSearchInput(false)}
-                placeholder="Search name"
-                className={styles['player-filters-search-input']}
-                style={{ maxWidth: 140, minWidth: 100 }}
-              />
+            </div>
+            <div className={styles['position-toggle-buttons']}>
+              {positionOptions.map(option => (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`${styles['position-toggle-btn']} ${positionFilter.includes(option.value) ? styles['active'] : ''}`}
+                  onClick={() => handlePositionOption(option.value)}
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
           </div>
           {/* Add margin-top to the slider box for spacing */}
