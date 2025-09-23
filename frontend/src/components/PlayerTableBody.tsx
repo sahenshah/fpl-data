@@ -34,10 +34,10 @@ const xPtsColumns = Array.from({ length: 38 }, (_, i) => `pp_gw_${i + 1}`);
 const xMinsColumns = Array.from({ length: 38 }, (_, i) => `xmins_gw_${i + 1}`);
 
 const filterColumnMap: Record<string, string[]> = {
-  "Predicted": ['now_cost', 'total_points', 'minutes', 'predicted_points_next5', 'pp_next5_per_m', 'predicted_xmins_next5', 'pxm_next5_per_m'],
+  "Predicted": ['now_cost', 'total_points', 'minutes', 'starts', 'predicted_points_next5', 'pp_next5_per_m', 'predicted_xmins_next5', 'pxm_next5_per_m'],
   "xPts": xPtsColumns,
   "xMins": xMinsColumns,
-  "General": ['now_cost', 'total_points', 'minutes', 'goals_scored', 'assists', 'clean_sheets', 'form'],
+  "General": ['now_cost', 'total_points', 'minutes', 'starts', 'goals_scored', 'assists', 'clean_sheets', 'form'],
   "Selected %": ['selected_by_percent', 'elite_selected_percent'],
   "Bonus Points": ['bonus', 'bps'],
   "xData": ['expected_goal_involvements', 'expected_goals', 'expected_assists'],
@@ -65,6 +65,7 @@ const columns: TableColumn[] = [
   { id: 'total_points', label: 'Total Points', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'form', label: 'Form', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'minutes', label: 'Minutes', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'starts', label: 'Starts', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'assists', label: 'Assists', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'clean_sheets', label: 'Clean Sheets', minWidth: 80, maxWidth: 80, align: 'center' },
