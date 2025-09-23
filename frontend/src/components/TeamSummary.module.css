@@ -22,3 +22,12 @@
   font-size: 16px;
   color: #cfcfcf;
 }
+
+@media (max-width: 700px) {
+  .player-name-large {
+    font-size: 24px;
+  }
+  .player-team-name {
+    font-size: 14px;
+  }
+}

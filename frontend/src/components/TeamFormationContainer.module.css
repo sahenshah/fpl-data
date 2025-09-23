@@ -35,7 +35,7 @@
     justify-content: center;
     color: #fff;
     gap: 16px;
-    margin-bottom: 12px;
+    margin-bottom: 18px;
 }
 
 .gw-display {
@@ -44,6 +44,7 @@
   align-items: center;
   justify-content: center; /* Center vertically */
   height: 100%;
+  margin-top: 5px;
 }
 
 .gw-label {
@@ -569,7 +570,7 @@
 
   .gw-nav-container {
     gap: 8px;
-    margin-bottom: 6px;
+    margin-bottom: 18px;
   }
 
   .gw-display {
@@ -715,7 +716,7 @@
 
   .gw-nav-container {
     gap: 8px;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
   }
 
   .gw-display {
@@ -829,15 +830,6 @@
     border-radius: 2px;
   }
 
-  /* .stat-label {
-    font-size: 0.45em;
-    margin-bottom: 0;
-  }
-
-  .stat-value {
-    font-size: 0.55em;
-  } */
-
   .team-stats {
     gap: 1px;
     margin-bottom: 2px;
@@ -871,7 +863,7 @@
 
   .gw-nav-container {
     gap: 6px;
-    margin-bottom: 4px;
+    margin-bottom: 12px;
   }
 
   .gw-display {
