@@ -188,19 +188,19 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
     setLineup(initialLineup);
   }, [picksData, elements]);
 
-  useEffect(() => {
-    if (lineup) {
-      console.log('StartingXI:', lineup.startingXI);
-      console.log('Bench:', lineup.bench);
-    }
-  }, [lineup]);
+  // useEffect(() => {
+  //   if (lineup) {
+  //     console.log('StartingXI:', lineup.startingXI);
+  //     console.log('Bench:', lineup.bench);
+  //   }
+  // }, [lineup]);
 
-  useEffect(() => {
-      console.log('Transfer Out List:', transferOutHistory || []);
-  }, [transferOutHistory, gw]);
-  useEffect(() => {
-      console.log('Transfer In List:', transferInHistory || []);
-  }, [transferInHistory, gw]);
+  // useEffect(() => {
+  //     console.log('Transfer Out List:', transferOutHistory || []);
+  // }, [transferOutHistory, gw]);
+  // useEffect(() => {
+  //     console.log('Transfer In List:', transferInHistory || []);
+  // }, [transferInHistory, gw]);
 
   useEffect(() => {
   if (

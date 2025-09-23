@@ -306,7 +306,7 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
                 if (col.id === 'web_name') thClass = styles['sticky-name'] + ' sticky-name';
                 return (
                   <th
-                    key={typeof col.label === 'string' ? col.label : col.id}
+                    key={col.id}
                     className={thClass}
                     style={{
                       minWidth: col.minWidth,

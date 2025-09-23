@@ -35,11 +35,9 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
       let picksArray: any[] = [];
       if (picksRaw) picksArray = JSON.parse(picksRaw);
 
-      console.log('teamHistoryRaw:', teamHistoryRaw);
       if (teamHistoryRaw) {
         try {
           const teamHistory = JSON.parse(teamHistoryRaw);
-          console.log('teamHistory:', teamHistory);
 
           if (teamHistory && teamHistory.current) {
             const gwData = teamHistory.current.map((gw: any) => {

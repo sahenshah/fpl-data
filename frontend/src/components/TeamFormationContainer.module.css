@@ -133,6 +133,7 @@
   overflow: hidden;            /* Hide overflow */
   text-overflow: ellipsis;     /* Show ... when overflowed */
   background-color: #216324;
+  z-index: 100;
 }
 
 .player-team {
@@ -203,18 +204,11 @@
   margin-top: 2px;
 }
 
-.kit-container {
-  display: flex;
-  justify-content: center;
-  position: relative; /* Add relative positioning for absolute child */
-}
-
 .kit-image {
   width: 100px;
   height: 80px;
   object-fit: contain;
   border-radius: 4px;
-  z-index: -1;
 }
 
 .autosub-icon {
@@ -643,7 +637,6 @@
   .kit-image {
     width: 60px;
     height: 48px;
-    z-index: -1;
   }
 
   .player-name {
