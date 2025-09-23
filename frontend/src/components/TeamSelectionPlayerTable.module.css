@@ -39,7 +39,7 @@
 .player-table td {
   padding: 8px;
   text-align: center;
-  border-bottom: 1px solid #2e3250;
+  border-bottom: 1px solid #1e222b;
   font-size: 0.85em; 
 }
 
@@ -50,24 +50,37 @@
   font-size: 0.82em;
   font-weight: 400;
   z-index: 2;
-  border-bottom: 1px solid #2e3250;
+  border-bottom: 1px solid #1e222b;
 }
 
 /* Sticky badge and player name columns */
+.info-cell {
+  padding: 0 !important;
+}
+
+.player-table th.sticky-info,
+.player-table td.sticky-info {
+  position: sticky;
+  left: 0;
+  top: 0;              /* Make header sticky vertically */
+  background: #252b37;
+  border-bottom: 1px solid #1e222b;
+  z-index: 4;           /* Higher z-index for header overlap */
+}
 .player-table th.sticky-badge,
 .player-table td.sticky-badge {
   position: sticky;
   left: 0;
   top: 0;              /* Make header sticky vertically */
   background: #252b37;
-  border-bottom: 1px solid #2e3250;
+  border-bottom: 1px solid #1e222b;
   z-index: 4;           /* Higher z-index for header overlap */
 }
 
 .player-table td.sticky-name {
   font-size: 0.92em;
   font-weight: 600;
-  border-bottom: 1px solid #2e3250;
+  border-bottom: 1px solid #1e222b;
 }
 .player-table th.sticky-name,
 .player-table td.sticky-name {
@@ -75,12 +88,28 @@
   left: 45px;           /* width of badge column */
   top: 0;               /* Make header sticky vertically */
   background: #252b37;
-  border-bottom: 1px solid #2e3250;
+  border-bottom: 1px solid #1e222b;
   z-index: 4;
 }
+.player-table th.sticky-info,
 .player-table th.sticky-badge,
 .player-table th.sticky-name {
   background: #1e222b;
+}
+
+.info-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  padding-top: 5px;
+  margin: 0;
+  box-shadow: none;
+}
+.info-btn:focus,
+.info-btn:active {
+  outline: none;
+  border: none;
+  box-shadow: none;
 }
 
 .team-img {
@@ -158,6 +187,14 @@
   color: #ffe066;
 }
 
+.sticky-info {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: #23232b; /* match your table header background */
+}
+
+.player-row.selectable-row:hover .sticky-info,
 .player-row.selectable-row:hover .sticky-name,
 .player-row.selectable-row:hover .sticky-badge {
   background: #4c9cd1; 
@@ -177,7 +214,7 @@
 .table-scroll-container {
   width: 100%;
   overflow-x: auto;
-  max-height: 950px;
+  max-height: 1050px;
   border-radius: 18px;
 }
 

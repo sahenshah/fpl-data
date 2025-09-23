@@ -1,6 +1,26 @@
 import React from 'react';
 import type { Element, Team } from '../types/fpl';
 import styles from './TeamSelectionPlayerTable.module.css';
+import Dialog from '@mui/material/Dialog'; // or wherever Dialog is imported from
+import PlayerDetail from './PlayerDetail'; // adjust import path as needed
+import type { SVGProps } from 'react';
+
+export function InformationVariant(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="1em"
+      height="1em"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M13.5 4A1.5 1.5 0 0 0 12 5.5A1.5 1.5 0 0 0 13.5 7A1.5 1.5 0 0 0 15 5.5A1.5 1.5 0 0 0 13.5 4m-.36 4.77c-1.19.1-4.44 2.69-4.44 2.69c-.2.15-.14.14.02.42c.16.27.14.29.33.16c.2-.13.53-.34 1.08-.68c2.12-1.36.34 1.78-.57 7.07c-.36 2.62 2 1.27 2.61.87c.6-.39 2.21-1.5 2.37-1.61c.22-.15.06-.27-.11-.52c-.12-.17-.24-.05-.24-.05c-.65.43-1.84 1.33-2 .76c-.19-.57 1.03-4.48 1.7-7.17c.11-.64.41-2.04-.75-1.94"
+      ></path>
+    </svg>
+  );
+}
 
 interface TableColumn {
   id: string;
@@ -37,6 +57,7 @@ const positionMap: { [key: number]: string } = {
 };
 
 const columns: TableColumn[] = [
+  { id: 'info', label: '', minWidth: 36, maxWidth: 36, align: 'center' },
   { id: 'badge', label: '', minWidth: 45, maxWidth: 45, align: 'center' },
   { id: 'web_name', label: 'Player', minWidth: 100, maxWidth: 100, align: 'left' },
   { id: 'element_type', label: 'Pos', minWidth: 60, maxWidth: 60, align: 'center' },
@@ -121,7 +142,7 @@ const filterColumnMap: Record<string, string[]> = {
   "Cards": ['yellow_cards', 'red_cards'],
 };
 
-const alwaysVisible = ['badge', 'web_name', 'element_type'];
+const alwaysVisible = ['info', 'badge', 'web_name', 'element_type'];
 const statusColumn = ['status'];
 
 // Find which pp_gw_# and xmins_gw_# columns have data for players
@@ -141,6 +162,8 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
   const [page, setPage] = React.useState(0);
   const [sortBy, setSortBy] = React.useState<string>('total_points');
   const [sortDirection, setSortDirection] = React.useState<SortDirection>('desc');
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [selectedPlayer, setSelectedPlayer] = React.useState<Element | null>(null);
 
   const nonEmptyGwColumns = React.useMemo(() => {
     const cols: string[] = [];
@@ -260,6 +283,16 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
     }
   };
 
+  const handleOpenModal = (player: Element) => {
+    setSelectedPlayer(player);
+    setDialogOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setDialogOpen(false);
+    setSelectedPlayer(null);
+  };
+
   return (
     <div className={styles['table-outer-container']}>
       <div className={styles['table-scroll-container']}>
@@ -268,6 +301,7 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
             <tr>
               {visibleColumns.map(col => {
                 let thClass = '';
+                if (col.id === 'info') thClass = styles['sticky-info'] + ' sticky-info';
                 if (col.id === 'badge') thClass = styles['sticky-badge'] + ' sticky-badge';
                 if (col.id === 'web_name') thClass = styles['sticky-name'] + ' sticky-name';
                 return (
@@ -314,6 +348,7 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
                 >
                   {visibleColumns.map(col => {
                     let tdClass = '';
+                    if (col.id === 'info') tdClass = styles['sticky-info'] + ' sticky-info';
                     if (col.id === 'badge') tdClass = styles['sticky-badge'] + ' sticky-badge';
                     if (col.id === 'web_name') tdClass = styles['sticky-name'] + ' sticky-name';
 
@@ -326,8 +361,36 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
                       else if (statusValue === 'd') tdClass += ' ' + styles['status-yellow'];
                     }
 
+                    if (col.id === 'info') {
+                      tdClass += ' ' + styles['info-cell'];
+                    }
                     let value: React.ReactNode = null;
                     switch (col.id) {
+                      case 'info':
+                        value = (
+                          <button
+                            type="button"
+                            className={styles['info-btn']}
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleOpenModal(player);
+                            }}
+                            tabIndex={0}
+                            aria-label="Show player info"
+                          >
+                            <InformationVariant
+                              style={{
+                                display: 'block',
+                                margin: '0 auto',
+                                color: '#7768f6',
+                                width: 22,
+                                height: 22,
+                              }}
+                              aria-hidden="true"
+                            />
+                          </button>
+                        );
+                        break;
                       case 'badge':
                         value = team ? (
                           <img
@@ -396,6 +459,26 @@ const TeamSelectionPlayerTable: React.FC<TeamSelectionPlayerTableProps> = ({
            {'>'}
         </button>
       </div>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleCloseModal}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: '36px',
+          }
+        }}
+      >
+        {selectedPlayer && (
+          <PlayerDetail
+            player={selectedPlayer}
+            team={teams.find(t => t.id === selectedPlayer.team)}
+            teams={teams}
+            onClose={handleCloseModal}
+          />
+        )}
+      </Dialog>
     </div>
   );
 };
