@@ -42,7 +42,7 @@ const filterColumnMap: Record<string, string[]> = {
   "Bonus Points": ['bonus', 'bps'],
   "xData": ['expected_goal_involvements', 'expected_goals', 'expected_assists'],
   "Def Cons": ['clearances_blocks_interceptions', 'recoveries', 'tackles', 'defensive_contribution'],
-  "Per 90": ['expected_goals_per_90', 'expected_assists_per_90', 'expected_goal_involvements_per_90', 'defensive_contribution_per_90'],
+  "Per 90": ['goal_involvements_per_90', 'expected_goals_per_90', 'expected_assists_per_90', 'expected_goal_involvements_per_90', 'defensive_contribution_per_90', 'delta_goal_involvements_per_90'],
   "ICT": ['influence', 'creativity', 'threat', 'ict_index'],
   "Cards": ['yellow_cards', 'red_cards'],
 };
@@ -64,14 +64,22 @@ const columns: TableColumn[] = [
   { id: 'now_cost', label: 'Cost (£)', minWidth: 50, maxWidth: 50, align: 'center', format: (value: number) => (value / 10).toFixed(1) },
   { id: 'total_points', label: 'Total Points', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'form', label: 'Form', minWidth: 50, maxWidth: 50, align: 'center' },
+  
+  { id: 'selected_by_percent', label: 'Selected', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value + '%' },
+  { id: 'elite_selected_percent', label: 'Elite Selected', minWidth: 80, maxWidth: 80, align: 'center' },
+  
   { id: 'minutes', label: 'Minutes', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'starts', label: 'Starts', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'goals_scored', label: 'Goals', minWidth: 50, maxWidth: 50, align: 'center' },
   { id: 'assists', label: 'Assists', minWidth: 50, maxWidth: 50, align: 'center' },
-  { id: 'clean_sheets', label: 'Clean Sheets', minWidth: 80, maxWidth: 80, align: 'center' },
-
-  { id: 'selected_by_percent', label: 'Selected', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value + '%' },
-  { id: 'elite_selected_percent', label: 'Elite Selected', minWidth: 80, maxWidth: 80, align: 'center' },
+  { 
+    id: 'goal_involvements_per_90', 
+    label: 'GI/90', 
+    minWidth: 80, 
+    maxWidth: 80, 
+    align: 'center',
+  },
+  
 
   { id: 'predicted_points_next5', label: 'xPoints next 5', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'pp_next5_per_m', label: 'xPoints / £M', minWidth: 80, maxWidth: 80, align: 'center' },
@@ -82,10 +90,17 @@ const columns: TableColumn[] = [
   { id: 'expected_assists', label: 'xA', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'expected_goal_involvements', label: 'xGI', minWidth: 80, maxWidth:80, align: 'center' },
   
-  { id: 'expected_goals_per_90', label: 'xG / 90', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'expected_assists_per_90', label: 'xA / 90', minWidth: 80, maxWidth: 79, align: 'center' },
-  { id: 'expected_goal_involvements_per_90', label: 'xGI / 90', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'expected_assists_per_90', label: 'xA / 90', minWidth: 100, maxWidth: 100, align: 'center' },
+  { id: 'expected_goal_involvements_per_90', label: 'xGI / 90', minWidth: 100, maxWidth: 100, align: 'center' },
+  { 
+    id: 'delta_goal_involvements_per_90', 
+    label: 'Δ', 
+    minWidth: 80, 
+    maxWidth: 80, 
+    align: 'center',
+  },
 
+  { id: 'clean_sheets', label: 'Clean Sheets', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'clearances_blocks_interceptions', label: 'CBI', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'recoveries', label: 'Recoveries', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'tackles', label: 'Tackles', minWidth: 80, maxWidth: 80, align: 'center' },
@@ -184,8 +199,38 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
       );
     } else {
       sortable.sort((a, b) => {
-        const aValue = a[orderBy as keyof Element];
-        const bValue = b[orderBy as keyof Element];
+        let aValue = a[orderBy as keyof Element];
+        let bValue = b[orderBy as keyof Element];
+
+        // Special case for delta_goal_involvements_per_90
+        if (orderBy === 'delta_goal_involvements_per_90') {
+          const aGoals = typeof a.goals_scored === 'number' ? a.goals_scored : 0;
+          const aAssists = typeof a.assists === 'number' ? a.assists : 0;
+          const aMinutes = typeof a.minutes === 'number' && a.minutes > 0 ? a.minutes : 0;
+          const aActualPer90 = aMinutes > 0 ? ((aGoals + aAssists) / aMinutes) * 90 : 0;
+          const aXgi90 = typeof a.expected_goal_involvements_per_90 === 'number' ? a.expected_goal_involvements_per_90 : 0;
+          aValue = aActualPer90 - aXgi90;
+
+          const bGoals = typeof b.goals_scored === 'number' ? b.goals_scored : 0;
+          const bAssists = typeof b.assists === 'number' ? b.assists : 0;
+          const bMinutes = typeof b.minutes === 'number' && b.minutes > 0 ? b.minutes : 0;
+          const bActualPer90 = bMinutes > 0 ? ((bGoals + bAssists) / bMinutes) * 90 : 0;
+          const bXgi90 = typeof b.expected_goal_involvements_per_90 === 'number' ? b.expected_goal_involvements_per_90 : 0;
+          bValue = bActualPer90 - bXgi90;
+        }
+
+        if (orderBy === 'goal_involvements_per_90') {
+          const aGoals = typeof a.goals_scored === 'number' ? a.goals_scored : 0;
+          const aAssists = typeof a.assists === 'number' ? a.assists : 0;
+          const aMinutes = typeof a.minutes === 'number' && a.minutes > 0 ? a.minutes : 0;
+          aValue = aMinutes > 0 ? ((aGoals + aAssists) / aMinutes) * 90 : 0;
+
+          const bGoals = typeof b.goals_scored === 'number' ? b.goals_scored : 0;
+          const bAssists = typeof b.assists === 'number' ? b.assists : 0;
+          const bMinutes = typeof b.minutes === 'number' && b.minutes > 0 ? b.minutes : 0;
+          bValue = bMinutes > 0 ? ((bGoals + bAssists) / bMinutes) * 90 : 0;
+        }
+
         if (aValue == null) return 1;
         if (bValue == null) return -1;
         if (typeof aValue === 'number' && typeof bValue === 'number') {
@@ -458,6 +503,36 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
                     return (
                       <td key={col.id} className={`align-${col.align} status-${statusValue.toLowerCase()}`}>
                         {/* {statusValue} */}
+                      </td>
+                    );
+                  }
+                  if (col.id === 'goal_involvements_per_90') {
+                    // Calculate goal_involvements_per_90 using the formula:
+                    // ((goals_scored + assists) / minutes) * 90
+                    const goals = typeof player.goals_scored === 'number' ? player.goals_scored : 0;
+                    const assists = typeof player.assists === 'number' ? player.assists : 0;
+                    const minutes = typeof player.minutes === 'number' && player.minutes > 0 ? player.minutes : 0;
+                    const actual_per_90 = minutes > 0 ? ((goals + assists) / minutes) * 90 : 0;
+
+                    return (
+                      <td key={col.id} className={`align-${col.align}`}>
+                        {actual_per_90.toFixed(2)}
+                      </td>
+                    );
+                  }
+                  if (col.id === 'delta_goal_involvements_per_90') {
+                    // Calculate delta_goal_involvements_per_90 using the formula:
+                    // (((goals_scored + assists) / minutes) * 90) - goal_involvements_per_90 
+                    const xgi90 = typeof player.expected_goal_involvements_per_90 === 'number' ? player.expected_goal_involvements_per_90 : 0;
+                    const goals = typeof player.goals_scored === 'number' ? player.goals_scored : 0;
+                    const assists = typeof player.assists === 'number' ? player.assists : 0;
+                    const minutes = typeof player.minutes === 'number' && player.minutes > 0 ? player.minutes : 0;
+                    const actual_per_90 = minutes > 0 ? ((goals + assists) / minutes) * 90 : 0;
+                    const delta = actual_per_90 - xgi90;
+
+                    return (
+                      <td key={col.id} className={`align-${col.align}`}>
+                        {delta.toFixed(2)}
                       </td>
                     );
                   }

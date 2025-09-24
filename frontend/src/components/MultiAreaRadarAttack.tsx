@@ -12,11 +12,11 @@ interface MultiAreaRadarProps {
 
 const METRICS = [
   {
-    key: 'bonus',
-    label: 'Bonus/90',
+    key: 'goal_involvements_per_90',
+    label: 'GI/90',
     max: 1,
     normalize: (v: number) => v / 1,
-    custom: (p: Element) => p.minutes ? (p.bonus / p.minutes) * 90 : 0,
+    custom: (p: Element) => p.minutes ? ((p.goals_scored + p.assists) / p.minutes) * 90 : 0,
   },
   {
     key: 'expected_goal_involvements_per_90',
