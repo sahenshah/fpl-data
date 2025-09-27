@@ -124,7 +124,7 @@ function PlayerData() {
 	};
 
 	// Get selected players from the filtered list
-	const selectedPlayers = filteredPlayers.filter(player => checked[player.id]);
+	const selectedPlayers = players.filter(player => checked[player.id]);
 	const selectedPlayerIds = Object.keys(checked).filter(key => checked[parseInt(key)]).map(id => parseInt(id));
 
 	// Dynamically get the next 5 GW data for each player based on gwRange
