@@ -93,8 +93,8 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
   const chartHeight = typeof height === 'number' ? height : (isSmallScreen ? 260 : 550);
   const chartWidth = width ?? '100%';
   const chartCx = isSmallScreen ? "53%" : "50%";
-  const angleAxisFontSize = isSmallScreen ? 8 : 11;
-  const radiusAxisFontSize = isSmallScreen ? 7 : 10;
+  const angleAxisFontSize = isSmallScreen ? 6 : 11;
+  const radiusAxisFontSize = isSmallScreen ? 6 : 10;
 
   const data = METRICS.map(metric => {
     const entry: { metric: string; [playerName: string]: number | string } = {
@@ -119,8 +119,9 @@ const MultiAreaRadarDefence: React.FC<MultiAreaRadarProps> = ({ player, showTitl
     <div
       style={{
         width: '100%',
-        maxWidth: width || (isSmallScreen ? 320 : 500),
-        margin: '0 auto',
+        maxWidth: width || (isSmallScreen ? 300 : 600),
+        minWidth: width || (isSmallScreen ? 300 : 600),
+        margin: '0',
       }}
     >
       {showTitle && (

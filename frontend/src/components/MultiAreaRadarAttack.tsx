@@ -125,7 +125,8 @@ const MultiAreaRadarAttack: React.FC<MultiAreaRadarProps> = ({ player, showTitle
     <div
       style={{
         width: '100%',
-        maxWidth: isSmallScreen ? 350 : 500,
+        maxWidth: width || (isSmallScreen ? 300 : 600),
+        minWidth: width || (isSmallScreen ? 300 : 600),
         margin: '0 auto',
       }}
     >
