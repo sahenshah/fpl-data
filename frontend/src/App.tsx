@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Fade from '@mui/material/Fade';
 import PlayerData from './components/PlayerData'; 
-import TeamManager from './components/TeamManager'; 
+// import TeamManager from './components/TeamManager'; 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -186,7 +186,7 @@ function App() {
             >
               <Tab label="Player Data" />
               <Tab label="Fixtures" />
-              <Tab label="Team Manager" />
+              {/* <Tab label="Team Manager" /> */}
             </Tabs>
           </Box>
         </div>
@@ -226,11 +226,11 @@ function App() {
                     <FixtureTable teams={fplData.teams} fixtures={fixtures} />
                   </div>
                 </Fade>
-                <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
+                {/* <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
                   <div>
                     <TeamManager />
                   </div>
-                </Fade>
+                </Fade> */}
               </Box>
             </div>
           </div>
