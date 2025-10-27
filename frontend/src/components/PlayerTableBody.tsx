@@ -242,7 +242,6 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
       });
     }
     // --- PIN SELECTED PLAYERS TO TOP (after sorting) ---
-    // Build a set of selected ids from checked where value === true
     if (checked && Object.keys(checked).length > 0) {
       const selectedIds = new Set<number>();
       for (const [k, v] of Object.entries(checked)) {
@@ -256,7 +255,8 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
     }
 
     return sortable;
-  }, [players, order, orderBy, teamMap]);
+  // include checked and activeFilters so memo updates when selection/filters change
+  }, [players, order, orderBy, teamMap, checked, activeFilters]);
 
   // Get the players for the current page
   const paginatedPlayers = sortedPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
