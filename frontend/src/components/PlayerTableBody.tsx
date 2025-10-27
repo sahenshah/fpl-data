@@ -241,6 +241,20 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
           : String(bValue).localeCompare(String(aValue));
       });
     }
+    // --- PIN SELECTED PLAYERS TO TOP (after sorting) ---
+    // Build a set of selected ids from checked where value === true
+    if (checked && Object.keys(checked).length > 0) {
+      const selectedIds = new Set<number>();
+      for (const [k, v] of Object.entries(checked)) {
+        if (v) selectedIds.add(Number(k));
+      }
+      if (selectedIds.size > 0) {
+        const selected = sortable.filter(p => selectedIds.has(p.id));
+        const others = sortable.filter(p => !selectedIds.has(p.id));
+        sortable = [...selected, ...others];
+      }
+    }
+
     return sortable;
   }, [players, order, orderBy, teamMap]);
 
@@ -283,6 +297,13 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
   const handleFirstPage = () => setPage(0);
   const handleLastPage = () => setPage(totalPages - 1);
 
+  // Ensure current page is always within available range when players/rowsPerPage change
+  React.useEffect(() => {
+    // clamp page to the last available page (0-based)
+    const lastPageIndex = Math.max(0, totalPages - 1);
+    setPage((current) => (current > lastPageIndex ? lastPageIndex : current));
+  }, [totalPages]);
+  
   // Handle sorting when clicking header
   const handleSort = (colId: string) => {
     if (colId === 'select' || colId === 'badge') return;
