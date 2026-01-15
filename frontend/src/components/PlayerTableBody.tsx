@@ -3,7 +3,7 @@ import type { Element, Team } from '../types/fpl';
 import './PlayerTableBody.css';
 import PlayerDetail from './PlayerDetail';
 import Dialog from '@mui/material/Dialog';
-import { getCurrentGameweek } from '../App'; 
+import { getNextGameweek } from '../App'; 
 const positionMap: Record<number, string> = {
   1: 'GK',
   2: 'DEF',
@@ -19,7 +19,7 @@ interface PlayerTableBodyProps {
   activeFilters: string[];
 }
 
-const currentGw = await getCurrentGameweek();
+const currentGw = await getNextGameweek();
 
 // Generate GW columns for xPts and xMins
 const gwColumns: { id: string; label: string; minWidth: number; align: string }[] = [];

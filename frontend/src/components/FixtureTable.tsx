@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Team, Fixture } from '../types/fpl';
 import styles from './FixtureTable.module.css';
-import { getCurrentGameweek } from '../App';
+import { getNextGameweek } from '../App';
 import Slider from '@mui/material/Slider';
 
 interface FixtureTableProps {
@@ -30,7 +30,7 @@ const FixtureTable = ({ teams, fixtures }: FixtureTableProps) => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   useEffect(() => {
-    getCurrentGameweek().then(gw => {
+    getNextGameweek().then(gw => {
       if (gw) {
         setCurrentGW(gw);
         setGwRange([gw, gw + 4 > 38 ? 38 : gw + 4]);
