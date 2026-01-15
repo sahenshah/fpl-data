@@ -74,7 +74,7 @@ const METRICS = [
   },
   {
     key: 'predicted_points_next5',
-    label: 'xPts/90 nxt4',
+    label: 'xPts/90 nxt4 (x10)',
     max: 1,
     normalize: (v: number) => v / 40,
   },
