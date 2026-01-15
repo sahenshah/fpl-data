@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Fade from '@mui/material/Fade';
 import PlayerData from './components/PlayerData'; 
-// import TeamManager from './components/TeamManager'; 
+import TeamManager from './components/TeamManager'; 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -26,6 +26,18 @@ export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
     const res = await fetch('/static_json/events.json');
     const events = await res.json();
+    const nextEvent = events.find((ev: { is_current: number }) => ev.is_current === 1);
+    return nextEvent ? nextEvent.id : undefined;
+  } catch (e) {
+    console.error('Failed to fetch events:', e);
+    return undefined;
+  }
+}
+
+export async function getNextGameweek(): Promise<number | undefined> {
+  try {
+    const res = await fetch('/static_json/events.json');
+    const events = await res.json();
     const nextEvent = events.find((ev: { is_next: number }) => ev.is_next === 1);
     return nextEvent ? nextEvent.id : undefined;
   } catch (e) {
@@ -37,7 +49,7 @@ export async function getCurrentGameweek(): Promise<number | undefined> {
 function App() {
   const [fplData, setFplData] = useState<any>(null);
   const [fixtures, setFixtures] = useState<any[]>([]);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(-1);
   const [showSplash, setShowSplash] = useState(true);
   const [fadeSplash, setFadeSplash] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -143,13 +155,15 @@ function App() {
           }}
         >
           <img
-            src="/fpl_iq_logo_nb.png"
+            src={tabIndex === -1 ? "/fpl_iq_logo_nb_active.png" : "/fpl_iq_logo_nb.png"}
             alt="FPL IQ Logo"
             style={{
               width: 64,
               height: 64,
               objectFit: 'contain',
+              cursor: 'pointer'
             }}
+            onClick={() => setTabIndex(-1)}
           />
           <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end'}}>
             <Tabs
@@ -216,21 +230,25 @@ function App() {
               }}
             >
               <Box style={{ width: '100%', margin: '0 auto' }}>
-                <Fade in={tabIndex === 0} timeout={400} unmountOnExit>
-                  <div>
-                    <PlayerData />
-                  </div>
-                </Fade>
-                <Fade in={tabIndex === 1} timeout={400} unmountOnExit>
-                  <div>
-                    <FixtureTable teams={fplData.teams} fixtures={fixtures} />
-                  </div>
-                </Fade>
-                {/* <Fade in={tabIndex === 2} timeout={400} unmountOnExit>
+                {tabIndex === 0 && (
+                  <Fade in timeout={400} unmountOnExit>
+                    <div>
+                      <PlayerData />
+                    </div>
+                  </Fade>
+                )}
+                {tabIndex === 1 && (
+                  <Fade in timeout={400} unmountOnExit>
+                    <div>
+                      <FixtureTable teams={fplData.teams} fixtures={fixtures} />
+                    </div>
+                  </Fade>
+                )}
+                <Fade in={tabIndex === -1} timeout={400} unmountOnExit>
                   <div>
                     <TeamManager />
                   </div>
-                </Fade> */}
+                </Fade>
               </Box>
             </div>
           </div>

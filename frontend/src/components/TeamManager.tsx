@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styles from './TeamManager.module.css';
 import TeamSummary from './TeamSummary';
 import TeamHistory from './TeamHistory';
+// import TeamSelection from './TeamSelection';
 import TeamManagerHistory from './TeamManagerHistory';
-import TeamSelection from './TeamSelection';
+import GWDashboard from './GWDashboard';
 import { getCurrentGameweek } from '../App';
 
 function validTeamCached(teamId: string) {
@@ -144,6 +145,9 @@ const TeamManager: React.FC = () => {
 
   return (
     <div className={styles['team-planner-container']}>
+      <div className={styles['gw-dashboard-container']}>
+        <GWDashboard />
+      </div>
       {!isValidTeam ? (
         <form onSubmit={handleSubmit} className={styles['team-planner-form']}>
           <label htmlFor="team-id-input" className={styles['team-planner-label']}>
@@ -177,9 +181,11 @@ const TeamManager: React.FC = () => {
           <div className={styles['team-summary-container']}>
             <TeamSummary teamId={submittedTeamId} />
           </div>
-          <div className={styles['team-selection-container']}>
+          
+          {/* <h2>Team GW History Component</h2> */}
+          {/* <div className={styles['team-selection-container']}>
             <TeamSelection teamId={submittedTeamId} />
-          </div>
+          </div> */}
           <div className={styles['team-manager-header']}>Season History</div>
           <div className={styles['team-history-container']}>
             <TeamHistory teamId={submittedTeamId} />

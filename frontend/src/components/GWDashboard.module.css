@@ -1,0 +1,241 @@
+.header {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+  padding: 0;
+  color: #b6b6b6;
+}
+
+.deadlineDate {
+  font-size: 1.1em;
+  margin-left: 12px;
+  margin-bottom: 1em;
+  color: #fff;
+}
+
+.error {
+  color: red;
+}
+
+.loading {
+  color: #555;
+}
+
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  background: #212027;
+  border-radius: 36px;
+  padding: 0 0 0 0;
+  margin-bottom: 24px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  background: #212027;
+  border-radius: 36px 36px 0 0;
+}
+
+.playerTable {
+  width: 100%;
+  border-collapse: separate;   /* Change from collapse to separate */
+  border-spacing: 0 8px;      /* Adds 8px vertical space between rows */
+  background: #212027;
+  font-size: 0.8em;
+  padding: 12px;
+  border-radius: 36px;
+}
+
+.playerTable th,
+.playerTable td {
+  width: 60px;                /* Set a fixed width for all columns */
+  max-width: 60px;
+  min-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* border: 1px solid #212027; */
+  padding: 8px 10px;
+  text-align: center;
+  color: #fff;
+}
+
+.playerTable th {
+  background: #212027;
+  color: #fff;
+  font-weight: 400;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Remove border from table rows, keep it only on cells if desired */
+.playerTable th{
+  border: 1px solid #212027;
+  padding: 8px 10px;
+  text-align: center;
+  background: #212027;
+  color: #fff;
+  font-weight: 400;
+}
+.playerTable td {
+  padding: 8px 10px;
+  text-align: center;
+  color: #fff;
+}
+
+.playerTable tbody tr {
+  background: #1c1c20;
+}
+
+/* Optional: Remove bottom border from last row for cleaner look */
+.playerTable tr:last-child td {
+  border-bottom: none;
+}
+.playerTable tr td:first-child {
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+}
+
+.playerTable tr td:last-child {
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.playerTable tbody tr:hover {
+  background: linear-gradient(90deg, #5bbeff 0%, #23235e 100%) !important;
+  transition: background 0.2s;
+}
+
+.paginationInfo {
+  color: #fff;
+}
+
+.playerNameCol {
+  font-weight: 600;
+  color: #222;
+  text-align: left !important;
+  width: auto !important;
+  min-width: auto !important;
+  max-width: 110px !important;
+}
+
+.statCol {
+  text-align: right;
+}
+
+.playerList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playerItem {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.playerName {
+  font-weight: bold;
+  min-width: 180px;
+}
+
+.stats {
+  display: inline-block;
+  margin-left: 8px;
+  background: #f4f4f4;
+  padding: 4px;
+  font-size: 0.95em;
+  border-radius: 3px;
+  white-space: pre-wrap;
+}
+
+.teamKitIcon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.teamIconCol {
+  width: 40px;
+  min-width: 32px;
+  max-width: 48px;
+  padding: 4px !important;
+  padding-left: 12px !important;
+  text-align: center;
+}
+
+.pagination {
+  background: #212027;
+  border-radius: 0 0 36px 36px;
+  padding: 16px 24px 16px 24px;
+  text-align: center;
+  width: 100%;
+  font-size: 0.7em;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* space between buttons and info */
+}
+
+.pagination button {
+  background: #232035;
+  color: #a259ff;
+  border: none;
+  border-radius: 50%;
+  padding: 7px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px 0 rgba(162,89,255,0.08);
+  width: 36px;
+  height: 36px;
+}
+
+.pagination button:disabled {
+  background: #3a3750;
+  color: #cbb6ff;
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+.pagination button svg {
+  display: block;
+  stroke: #a259ff;
+  width: 22px;
+  height: 22px;
+}
+
+.pagination button:disabled svg {
+  stroke: #cbb6ff;
+}
+
+.tableWrapper::-webkit-scrollbar {
+  background: #212027; /* Track background */
+}
+
+.tableWrapper::-webkit-scrollbar-thumb {
+  background: #39384a; /* Thumb color */
+}
+
+.tableWrapper::-webkit-scrollbar-thumb:hover {
+  background: #57567a; /* Thumb color on hover */
+}
+
+.tableWrapper::-webkit-scrollbar-corner {
+  background: #212027;
+}
+
+/* Firefox */
+.tableWrapper {
+  scrollbar-color: #39384a #212027; /* thumb color, track color */
+}

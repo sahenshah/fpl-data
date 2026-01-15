@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styles from './TeamSelection.module.css';
-import type { Team, Element } from '../types/fpl';
-import TeamSelectionFilters from './TeamSelectionFilters';
-import TeamSelectionPlayerTable from './TeamSelectionPlayerTable';
 import FormationContainer from './TeamFormationContainer';
 
 interface TeamSelectionProps {
@@ -11,26 +8,12 @@ interface TeamSelectionProps {
 
 
 const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
-  const [elements, setElements] = useState<Element[]>([]);
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [filteredPlayers, setFilteredPlayers] = useState<Element[]>([]);
-  const [costRange, setCostRange] = useState<[number, number]>([38, 150]);
-  const [activeFilters, setActiveFilters] = React.useState<string[]>(['General']);
   const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch('/static_json/elements.json')
-      .then(res => res.json())
-      .then(data => setElements(data))
-      .catch(() => setElements([]));
     fetch('/static_json/teams.json')
       .then(res => res.json())
-      .then(data => setTeams(data))
-      .catch(() => setTeams([]));
   }, []);
-	useEffect(() => {
-		setFilteredPlayers(elements);
-	}, [elements]);
 
 
   return (
@@ -42,7 +25,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
           onSelectionHandled={() => setSelectedPlayerId(null)}
         />
       </div>
-      <div className={styles['filters-and-table-container']}>
+      {/* <div className={styles['filters-and-table-container']}>
       
         <div className={styles['filters-container']}>
           <TeamSelectionFilters
@@ -65,7 +48,7 @@ const TeamSelection: React.FC<TeamSelectionProps> = ({ teamId }) => {
             selectedPlayerId={selectedPlayerId}
           />
         </div>
-      </div>
+      </div> */}
     
     </div>
   );

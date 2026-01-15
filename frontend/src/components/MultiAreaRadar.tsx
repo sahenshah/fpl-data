@@ -44,7 +44,7 @@ interface MultiAreaRadarProps {
 const METRICS = [
   {
     key: 'points_per_game',
-    label: 'Pts /game (x10)',
+    label: 'Pts/90 (x10)',
     max: 10,
     normalize: (v: number) => v / 10,
   },
@@ -64,19 +64,19 @@ const METRICS = [
     key: 'ict_index',
     label: 'ICT index',
     max: 1,
-    normalize: (v: number) => v / 20,
+    normalize: (v: number) => v / 200,
   },
   {
     key: 'pxm_next5_per_m',
-    label: 'xMins /£M <5>',
+    label: 'xPts/90/£m nxt4',
     max: 20,
-    normalize: (v: number) => v / 20,
+    normalize: (v: number) => v / 40,
   },
   {
-    key: 'pp_next5_per_m',
-    label: 'xPoints /£M <5>',
+    key: 'predicted_points_next5',
+    label: 'xPts/90 nxt4',
     max: 1,
-    normalize: (v: number) => v / 1,
+    normalize: (v: number) => v / 40,
   },
 ];
 
