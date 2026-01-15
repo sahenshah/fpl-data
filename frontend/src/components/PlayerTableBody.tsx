@@ -19,7 +19,7 @@ interface PlayerTableBodyProps {
   activeFilters: string[];
 }
 
-const currentGw = await getNextGameweek();
+const currentGw = await getNextGameweek() || 1;
 
 // Generate GW columns for xPts and xMins
 const gwColumns: { id: string; label: string; minWidth: number; align: string }[] = [];
@@ -371,13 +371,18 @@ export default function PlayerTableBody({ players, teams, checked, setChecked, a
       .filter(([filter]) => activeFilters.includes(filter))
       .flatMap(([, cols]) => cols);
 
-    // For GW columns, only include those with data
+    // For GW columns, only include those with data and gw >= currentGw
     const gwCols = filterCols.filter(id => id.startsWith('pp_gw_') || id.startsWith('xmins_gw_'));
     const nonGwCols = filterCols.filter(id => !id.startsWith('pp_gw_') && !id.startsWith('xmins_gw_'));
-    const filteredGwCols = gwCols.filter(id => nonEmptyGwColumns.includes(id));
+    const filteredGwCols = gwCols.filter(id => {
+      // Extract GW number from id, e.g. pp_gw_5 -> 5
+      const match = id.match(/_(\d+)$/);
+      const gwNum = match ? parseInt(match[1], 10) : 0;
+      return gwNum >= currentGw && nonEmptyGwColumns.includes(id);
+    });
 
     return [...alwaysVisible, ...nonGwCols, ...filteredGwCols, ...statusColumn];
-  }, [activeFilters, nonEmptyGwColumns]);
+  }, [activeFilters, nonEmptyGwColumns, currentGw]);
 
   const visibleColumns = columns.filter(col => visibleColumnIds.includes(col.id));
   
