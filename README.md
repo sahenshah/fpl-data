@@ -91,7 +91,7 @@ All endpoints read from the pre-populated `fpl_data.db` database.
 - To update data, re-run the population scripts to rebuild `fpl_data.db`.
 
 ## Live Site
-https://fpl-iq.onrender.com/
+https://fpl-iq.pages.dev/
 
 ## License
 
