@@ -1,8 +1,16 @@
 # FPL IQ Backend
 
-The backend lives in `fpl_iq/` and uses the official FPL API as its ingestion
-source. Runtime requests read from the local application database; they do not
-scrape or proxy external websites.
+The backend lives in `fpl_iq/` and uses the official FPL API, historical
+season archives, and betting-market data as its ingestion sources.
+
+**This app does not serve production traffic.** In production, the API
+layer is a set of Cloudflare Pages Functions (`frontend/functions/`) that
+query the database directly — see the root `README.md`. This FastAPI app
+(`fpl_iq/main.py`) exists for local development, local API testing, and as
+the thing you actually run to ingest data and train the model. The Python
+`DATABASE_URL` can point at either a local SQLite file (safe for
+experimentation) or the production Neon database (for real ingestion/
+training runs) — see `backend/.env`.
 
 ## Local setup
 
@@ -11,27 +19,31 @@ source venv/bin/activate
 pip install -r backend/requirements.txt
 ```
 
+Create `backend/.env` (gitignored) with at least:
+
+```
+DATABASE_URL=sqlite:///database/fpl_iq.db   # or a postgresql+psycopg://... URL for Neon
+ODDS_API_KEY=...                            # from the-odds-api.com, needed for live odds ingestion
+```
+
 ## Database migrations
 
-Use a separate database URL for local development. The default points to
-`backend/database/fpl_iq.db`.
-
 ```sh
-DATABASE_URL=sqlite:///backend/database/fpl_iq.db \
-  alembic -c backend/alembic.ini upgrade head
+PYTHONPATH=backend alembic -c backend/alembic.ini upgrade head
 ```
 
 Populate the empty schema from the official FPL API:
 
 ```sh
-PYTHONPATH=backend DATABASE_URL=sqlite:///backend/database/fpl_iq.db \
-  python backend/scripts/ingest_bootstrap.py
+PYTHONPATH=backend python backend/scripts/ingest_bootstrap.py
 ```
 
-The database is generated locally and is intentionally excluded from version
-control. Recreate it from migrations and the ingestion command when needed.
+A local SQLite database is generated on disk and is intentionally excluded
+from version control. Recreate it from migrations and the ingestion
+commands when needed. `scripts/migrate_sqlite_to_postgres.py` is a one-off
+tool used to seed Neon from an existing local SQLite database.
 
-## Run the API
+## Run the API (local dev only)
 
 ```sh
 PYTHONPATH=backend uvicorn fpl_iq.main:app --reload
@@ -84,32 +96,42 @@ prediction is keyed by model run, player, and target gameweek. This allows
 time-based evaluation and model comparison without adding columns such as
 `pp_gw_1`, `pp_gw_2`, or `pp_gw_3` to the player table.
 
-## API-only baseline model
+## Ingestion and training
 
-First ingest player gameweek history from the official element-summary API:
-
-```sh
-PYTHONPATH=backend DATABASE_URL=sqlite:///backend/database/fpl_iq.db \
-  python backend/scripts/ingest_player_history.py
-```
-
-Then train and persist a time-split baseline for the rest of the season:
+For the routine weekly refresh (live FPL data, live odds, retrain, persist
+predictions to whatever `DATABASE_URL` points at), just run:
 
 ```sh
-PYTHONPATH=backend DATABASE_URL=sqlite:///backend/database/fpl_iq.db \
-  python backend/scripts/run_baseline_model.py --start-gameweek 6 --end-gameweek 38
+bash backend/scripts/update_predictions.sh
 ```
 
-The baseline uses only FPL data: prior points, minutes, rolling averages,
-season averages, and historical player performance available in the API. Validation
-uses the latest gameweeks as a holdout; it does not randomly mix future rows
-into training data.
+The individual pieces it chains, if you need to run them separately or set
+up something from scratch:
 
-Retrospective predictions can be requested from GW1, but GW1 itself has no
-prior current-season observations in the database. Therefore the pipeline
-produces leakage-free retrospective predictions from GW2 onward and records
-GW1 in the run metadata as unavailable rather than inventing a prediction from
-later-season data.
+```sh
+PYTHONPATH=backend python backend/scripts/ingest_bootstrap.py         # teams, players, events
+PYTHONPATH=backend python backend/scripts/ingest_fixtures.py
+PYTHONPATH=backend python backend/scripts/ingest_player_history.py    # per-player gameweek history
+PYTHONPATH=backend python backend/scripts/ingest_live_odds.py         # needs ODDS_API_KEY
+PYTHONPATH=backend python backend/scripts/run_baseline_model.py --start-gameweek 1 --end-gameweek 38
+```
+
+One-time-only ingestion (already run for this project, only needed again
+if rebuilding a database from scratch):
+
+```sh
+PYTHONPATH=backend python backend/scripts/ingest_historical_seasons.py --season 2023-24 --data-dir data/fpl-archive/data/2023-24
+PYTHONPATH=backend python backend/scripts/ingest_historical_odds.py --season 2023-24 --csv-path data/odds/Season_2324/E0.csv
+```
+
+Training uses a strict time-based holdout — the latest gameweeks are held
+out for validation, never randomly mixed with earlier training rows, to
+avoid leaking future information into the metric.
+
+GW1 has no current-season history to build the normal per-gameweek
+features from, so it's handled separately: predictions come from each
+player's historical career rate (see the root `README.md`'s "Prediction
+model" section) rather than the trained per-position models.
 
 ## Tests
 

@@ -1,97 +1,167 @@
-# FPL Data Dashboard
+# FPL IQ
 
-This project is a Fantasy Premier League (FPL) data dashboard built with React and Python (Flask). It visualizes both historical player statistics and predicted metrics for upcoming gameweeks, using a pre-populated SQLite database with data from the FPL API, Opta (via the FPL API) and online FPL points prediction models as the source for the backend API.
+A Fantasy Premier League dashboard built around a self-trained prediction
+model, rather than third-party projections. It ingests data from the
+official FPL API, historical seasons, and betting markets, trains a
+per-position gradient-boosted model, and serves live predictions and
+player/team data through a React frontend.
 
-## Features
+## Live site
 
-- Interactive player table with sorting, filtering, and search
-- Responsive charts optimised for visualisation of different player statistics/metrics
-- Predicted points and xmins charts for selected or filtered players
-- Historical points, expected data etc vs cost charts
-- Radar charts for player attacking, defensive and summary stats 
-- Player detail modal with team badge, stats, detailed historical gameweek data
-- Fixtures and Teams section for detailed team data and upcoming gameweek fixtures
-- Sort teams by fixture difficulty for any gameweek range 
-- Main data gathered from FPL API
-- Data enrichment from backend CSVs via scripts
-- Responsive design for desktop and mobile
+https://fpl-iq.pages.dev/
 
-## Tech Stack
+## Current status
 
-- **Frontend:** React, TypeScript, MUI (Material UI), MUI X Charts, Recharts
-- **Backend:** Python, Flask, Pandas
-- **Data:** `fpl_data.db` (populated from CSVs and FPL API via scripts)
+**Phase 1 (backend + prediction model): complete.** The legacy Flask +
+scraped-projections backend has been fully replaced. The site now runs on
+a self-built model trained on real historical and market data, deployed
+without any always-on server (see Architecture below).
 
-## How It Works
+**Phase 2 (frontend rebuild): not started.** The current frontend includes
+a prototype "pitch view" team dashboard built for internal testing — it is
+not the final design and is expected to be rebuilt from scratch, likely
+reusing layout ideas from other FPL sites (e.g. [fplcore.com](https://www.fplcore.com/))
+while adding data-visualization sections and a redesigned fixtures view
+that aren't in the current build.
 
-1. **Data Population:**  
-   Scripts are used to fetch and process data from the FPL API and CSV files, then populate the `fpl_data.db` SQLite database.
-2. **Backend:**  
-   The Flask backend serves API endpoints that read from `fpl_data.db`.
-3. **Frontend:**  
-   The React frontend fetches data from the backend API and displays interactive tables, charts, and player details.
+## Architecture
 
-## Setup
+There is no always-on backend server in production — this was a deliberate
+choice to avoid both the recurring cost of a VM and the cold-start delay of
+a free-tier web service that spins down when idle.
 
-### Backend
+- **Frontend**: React 19 + TypeScript + Vite, hosted on **Cloudflare
+  Pages** (`frontend/`).
+- **API (production)**: **Cloudflare Pages Functions** (TypeScript,
+  `frontend/functions/`) — edge functions co-deployed with the static
+  site, querying the database directly via Neon's serverless driver.
+  Near-instant cold starts (V8 isolates, not containers).
+- **Database**: **Neon** (serverless Postgres) — schema managed by
+  Alembic, scales to zero when idle.
+- **Model training / data ingestion**: a Python backend (`backend/fpl_iq/`,
+  FastAPI + SQLAlchemy + scikit-learn) run **locally**, writing directly
+  to the production Neon database. There's no server process for this in
+  production — it's a script you run on your own machine (see
+  [Updating the model](#updating-the-model)), and the FastAPI app it's
+  built around only serves local development/testing, not live traffic.
 
-1. **Install dependencies:**
-    ```sh
-    pip install -r requirements.txt
-    ```
-2. **Populate the database:**  
-   Run the scripts to fetch/process data and build `fpl_data.db`:
-    ```sh
-    python backend/scripts/populate_fpl_database.py
-    ```
-3. **Run the Flask server:**
-    ```sh
-    python backend/app.py
-    ```
+## Prediction model
+
+Per-position (GK/DEF/MID/FWD) `HistGradientBoostingRegressor` models
+(scikit-learn), trained with a time-based holdout (never a random split,
+to avoid leaking future gameweeks into validation). Features include:
+
+- Recency-weighted recent form (points, xGI), separate from season-long
+  averages
+- Self-derived, current-season team attack/defence strength — computed
+  from actual goals/xG rather than relying on FPL's own strength ratings,
+  shrunk toward the league average early in the season or for clubs with
+  little data (e.g. newly promoted teams)
+- A career-history prior (points-per-90 from 6 seasons of historical data,
+  matched by player name) blended with current-season form, weighted more
+  heavily before enough current-season evidence exists
+- Injury/rotation-aware expected minutes: horizon-based decay toward a
+  conservative baseline for a player with a thin track record, parsed
+  injury return-date estimates, and squad-depth discounting — but a proven
+  nailed-on starter's estimate stays flat rather than drifting down over
+  the season
+- De-vigged betting-market probabilities (match result, over/under 2.5
+  goals) from historical and live odds
+- A monotonic constraint tying predicted points to expected minutes, so
+  the model can't rank a low-minutes player above a higher-minutes one on
+  an otherwise similar profile
+
+GW1 (before any current-season data exists) falls back to the
+career-history prior blended with fixture difficulty, rather than a flat
+per-team baseline.
+
+## Data sources
+
+- Official FPL API — bootstrap data, fixtures, player gameweek history,
+  live manager team/picks data
+- [vaastav/Fantasy-Premier-League](https://github.com/vaastav/Fantasy-Premier-League) —
+  historical season data (2019-20 through 2024-25)
+- [football-data.co.uk](https://www.football-data.co.uk/) — historical
+  match odds
+- [The Odds API](https://the-odds-api.com/) — live match odds
+
+## Updating the model
+
+```sh
+bash backend/scripts/update_predictions.sh
+```
+
+Refreshes FPL data, live odds, retrains all four position models, and
+persists new predictions straight to the production database — no commit
+or redeploy needed, since this only changes data, not code. Can be run on
+a cron schedule; see the script's header comment for an example. Excludes
+historical-season/historical-odds ingestion, since those cover already-
+finished seasons and don't need refreshing.
+
+## Local development
+
+### Backend (ingestion + model training)
+
+```sh
+cd backend
+python -m venv ../venv && source ../venv/bin/activate
+pip install -r requirements.txt
+```
+
+Create `backend/.env` (gitignored):
+
+```
+DATABASE_URL=postgresql+psycopg://...   # or sqlite:///database/fpl_iq.db for local-only experimentation
+ODDS_API_KEY=...                        # from the-odds-api.com
+```
+
+```sh
+PYTHONPATH=. alembic -c alembic.ini upgrade head
+PYTHONPATH=. python scripts/ingest_bootstrap.py
+# ...and the other ingest_*.py scripts as needed
+```
 
 ### Frontend
 
-1. **Install dependencies:**
-    ```sh
-    npm install
-    ```
-2. **Start the React app:**
-    ```sh
-    npm start
-    ```
-3. **(Optional) Run in dev mode:**
-    ```sh
-    npm run dev
-    ```
+```sh
+cd frontend
+npm install
+npm run dev
+```
 
-## Usage
+To test the production API layer locally against the real database:
 
-- Filter players by position, team, minutes, cost, or name.
-- Click a player for detailed stats and fixture projections.
-- View predicted points for the next 5 gameweeks in the chart above the table.
+```sh
+cd frontend
+npm run build
+npx wrangler pages dev dist   # reads DATABASE_URL from .dev.vars (gitignored)
+```
 
-## API Endpoints
+### Deployment
 
-- `/api/fpl_data/events`  
-- `/api/fpl_data/element-summary-fixtures/<player_id>`  
-- `/api/fpl_data/element-summary-history/<player_id>`  
-- `/api/fpl_data/fixtures`  
-- ...and more (see backend code for full list)
+Cloudflare Pages auto-builds from `master`, including `frontend/functions/`
+— push to deploy code changes. `DATABASE_URL` must be set as an encrypted
+environment variable in the Cloudflare Pages project settings (Production
+environment), using the plain `postgresql://...` form — not the
+`+psycopg` SQLAlchemy dialect suffix used in the Python backend's `.env`.
 
-All endpoints read from the pre-populated `fpl_data.db` database.
+## Testing
 
-## Customization
+```sh
+cd backend && PYTHONPATH=. pytest tests
+cd frontend && npx tsc -b
+```
 
-- Update or add new data to the CSVs or scripts, then re-run the population scripts to refresh the database.
-- Adjust chart and table columns in the frontend as needed.
+## Tech stack
 
-## Notes
-
-- The app **only reads** from the database at runtime.  
-- To update data, re-run the population scripts to rebuild `fpl_data.db`.
-
-## Live Site
-https://fpl-iq.pages.dev/
+- **Frontend**: React 19, TypeScript, Vite, MUI, MUI X Charts, Recharts,
+  AG Grid (two overlapping grid libraries currently present — flagged for
+  consolidation during the Phase 2 rebuild)
+- **API (production)**: Cloudflare Pages Functions (TypeScript),
+  `@neondatabase/serverless`
+- **Backend (local ingestion/training)**: FastAPI, SQLAlchemy, Alembic,
+  scikit-learn, httpx
+- **Database**: Neon (Postgres)
 
 ## License
 
