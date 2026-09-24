@@ -10,13 +10,12 @@ import {
 import styles from './LineChart.module.css';
 import Slider from '@mui/material/Slider';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { getDashboard } from '../api/fplApi';
 
 export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
-    const res = await fetch('/static_json/events.json');
-    const events = await res.json();
-    const nextEvent = events.find((ev: { is_next: number }) => ev.is_next === 1);
-    return nextEvent ? nextEvent.id : undefined;
+    const dashboard = await getDashboard();
+    return dashboard.bootstrap.events.find((event) => event.is_next)?.id;
   } catch (e) {
     console.error('Failed to fetch events:', e);
     return undefined;
@@ -25,9 +24,8 @@ export async function getCurrentGameweek(): Promise<number | undefined> {
 
 export async function getLastPredictedGw(): Promise<number | undefined> {
   try {
-    const res = await fetch('/static_json/last_predicted_gw.json');
-    const data = await res.json();
-    return data?.last_predicted_gw;
+    const dashboard = await getDashboard();
+    return dashboard.predictions.reduce((latest, prediction) => Math.max(latest, prediction.event_id), 0) || undefined;
   } catch (e) {
     console.error('Failed to fetch last predicted gw:', e);
     return undefined;

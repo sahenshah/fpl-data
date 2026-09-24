@@ -1,0 +1,7 @@
+name = "fpl-iq"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-24"
+
+# DATABASE_URL is NOT set here — set it as a secret via the Cloudflare
+# dashboard (Pages project → Settings → Environment variables, marked
+# "Encrypt") or `wrangler pages secret put DATABASE_URL`, never committed.

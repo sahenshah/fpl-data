@@ -78,10 +78,10 @@ const columns: TableColumn[] = [
     align: 'center',
   },
   
-  { id: 'predicted_points_next5', label: 'xPoints next 5', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'pp_next5_per_m', label: 'xPoints / £M', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'predicted_xmins_next5', label: 'xMins next 5', minWidth: 100, maxWidth: 100, align: 'center' },
-  { id: 'pxm_next5_per_m', label: 'xMins / £M', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'predicted_points_next5', label: 'xPoints next 4', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value?.toFixed(1) ?? '-' },
+  { id: 'pp_next5_per_m', label: 'xPoints / £M', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value?.toFixed(2) ?? '-' },
+  { id: 'predicted_xmins_next5', label: 'xMins next 4', minWidth: 100, maxWidth: 100, align: 'center', format: (value: number) => value?.toFixed(0) ?? '-' },
+  { id: 'pxm_next5_per_m', label: 'xMins / £M', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value?.toFixed(1) ?? '-' },
   
   { id: 'expected_goals', label: 'xG', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'expected_assists', label: 'xA', minWidth: 80, maxWidth: 80, align: 'center' },

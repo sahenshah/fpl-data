@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styles from './TeamManager.module.css';
 import TeamSummary from './TeamSummary';
 import TeamHistory from './TeamHistory';
-// import TeamSelection from './TeamSelection';
+import TeamSelection from './TeamSelection';
 import TeamManagerHistory from './TeamManagerHistory';
 import GWDashboard from './GWDashboard';
-import { getCurrentGameweek } from '../App';
+import { getManagerSnapshot } from '../api/fplApi';
 
 function validTeamCached(teamId: string) {
   if (!teamId) return false;
@@ -21,56 +21,6 @@ function validTeamCached(teamId: string) {
     return false;
   }
 }
-
-const corsProxies = [
-  'https://corsproxy.io/?',
-  'https://cors-anywhere.herokuapp.com/',
-  'https://api.allorigins.win/raw?url=',
-  'https://thingproxy.freeboard.io/fetch/',
-];
-
-const fetchWithFallback = async (url: string) => {
-  for (const proxy of corsProxies) {
-    try {
-      const proxyUrl = proxy + encodeURIComponent(url);
-      const response = await fetch(proxyUrl);
-      if (response.ok) {
-        return response;
-      }
-    } catch (error) {
-      console.warn(`Failed with proxy ${proxy}:`, error);
-    }
-  }
-  throw new Error('All CORS proxies failed');
-};
-
-const fetchAllPicksWithFallback = async (teamId: string) => {
-  const picksArray = [];
-  const currGw = await getCurrentGameweek();
-  let lastFetchedPicks = null;
-
-  if (typeof currGw === 'number' && currGw > 0) {
-    for (let gw = 1; gw < currGw; gw++) {
-      try {
-        const response = await fetchWithFallback(
-          `https://fantasy.premierleague.com/api/entry/${teamId}/event/${gw}/picks/`
-        );
-        const data = await response.json();
-        picksArray.push({ gw, picks: data });
-        lastFetchedPicks = data;
-      } catch {
-        picksArray.push({ gw, picks: null });
-      }
-    }
-    // For current gameweeks, only copy the picks array (not the full object) from the last GW
-    if (lastFetchedPicks && lastFetchedPicks.picks) {
-      picksArray.push({ gw: currGw, picks: { picks: lastFetchedPicks.picks } });
-    } else {
-      picksArray.push({ gw: currGw, picks: null });
-    }
-  }
-  return picksArray;
-};
 
 const TeamManager: React.FC = () => {
   // On mount, check for any valid cached team
@@ -110,19 +60,16 @@ const TeamManager: React.FC = () => {
     setLoading(true);
 
     try {
-      // Fetch summary
-      const response = await fetchWithFallback(`https://fantasy.premierleague.com/api/entry/${teamId}/`);
-      const data = await response.json();
-      localStorage.setItem(`team_${teamId}_data`, JSON.stringify(data));
-
-      // Fetch history
-      const historyResponse = await fetchWithFallback(`https://fantasy.premierleague.com/api/entry/${teamId}/history/`);
-      const historyData = await historyResponse.json();
-      localStorage.setItem(`team_${teamId}_history_data`, JSON.stringify(historyData));
-
-      // Fetch picks for GW 1-38
-      const picksArray = await fetchAllPicksWithFallback(teamId);
-      localStorage.setItem(`team_${teamId}_picks_data`, JSON.stringify(picksArray));
+      const snapshot = await getManagerSnapshot(teamId) as {
+        team: unknown;
+        history: unknown;
+        picks: Array<{ gameweek: number; data: unknown }>;
+      };
+      localStorage.setItem(`team_${teamId}_data`, JSON.stringify(snapshot.team));
+      localStorage.setItem(`team_${teamId}_history_data`, JSON.stringify(snapshot.history));
+      localStorage.setItem(`team_${teamId}_picks_data`, JSON.stringify(
+        snapshot.picks.map(({ gameweek, data }) => ({ gw: gameweek, picks: data }))
+      ));
 
       setIsValidTeam(true);
     } catch (err) {
@@ -183,9 +130,9 @@ const TeamManager: React.FC = () => {
           </div>
           
           {/* <h2>Team GW History Component</h2> */}
-          {/* <div className={styles['team-selection-container']}>
+          <div className={styles['team-selection-container']}>
             <TeamSelection teamId={submittedTeamId} />
-          </div> */}
+          </div>
           <div className={styles['team-manager-header']}>Season History</div>
           <div className={styles['team-history-container']}>
             <TeamHistory teamId={submittedTeamId} />

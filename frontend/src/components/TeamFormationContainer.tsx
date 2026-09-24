@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './TeamFormationContainer.module.css';
 import { getCurrentGameweek } from '../App.tsx';
+import { getDashboard } from '../api/fplApi';
 import Dialog from '@mui/material/Dialog';
 
 interface FormationContainerProps {
@@ -85,19 +86,15 @@ const FormationContainer: React.FC<FormationContainerProps> = ({
   const [modalPlayer, setModalPlayer] = useState<any>(null);
 
   useEffect(() => {
-    // Load static data
-    Promise.all([
-      fetch('/static_json/elements.json').then(res => res.json()),
-      fetch('/static_json/teams.json').then(res => res.json()),
-      fetch('/static_json/element_summary_history.json').then(res => res.json()),
-      fetch('/static_json/element_summary_fixtures.json').then(res => res.json()),
-      getCurrentGameweek()
-    ]).then(([elementsData, teamsData, historyData, fixturesData, currentGw]) => {
+    Promise.all([getDashboard(), getCurrentGameweek()]).then(([dashboard, currentGw]) => {
+      const elementsData = dashboard.bootstrap.elements;
+      const teamsData = dashboard.bootstrap.teams;
+      const historyData: any[] = [];
       
       setElements(elementsData);
       setTeams(teamsData);
       setElementSummaryHistory(historyData);
-      setElementSummaryFixtures(fixturesData);
+      setElementSummaryFixtures([]);
       setCurrentGameweek(currentGw);
       
       // Set the current gameweek as default if gw hasn't been set yet

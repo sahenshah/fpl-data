@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './TeamHistory.module.css';
 import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, BarChart, Bar } from 'recharts';
+import { getDashboard } from '../api/fplApi';
 
 interface TeamHistoryProps {
   teamId: string;
@@ -25,10 +26,8 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
   const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      fetch('/static_json/elements.json').then(res => res.json()),
-      fetch('/static_json/element_summary_history.json').then(res => res.json())
-    ]).then(([elements]) => {
+    getDashboard().then(({ bootstrap }) => {
+      const elements = bootstrap.elements;
       const teamHistoryRaw = localStorage.getItem(`team_${teamId}_history_data`);
       const picksRaw = localStorage.getItem(`team_${teamId}_picks_data`);
 
@@ -47,7 +46,7 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
 
               let xPoints = 0;
               startingPicks.forEach((pick: any) => {
-                const player = elements.find((e: { id: any; }) => e.id === pick.element);
+                const player = elements.find((e: { id: any; }) => e.id === pick.element) as (typeof elements[number] & Record<string, unknown>) | undefined;
                 const ppGwKey = `pp_gw_${gw.event}`;
                 const expected = player && player[ppGwKey] !== undefined ? Number(player[ppGwKey]) : 0;
                 xPoints += pick.is_captain ? expected * 2 : expected;
@@ -77,9 +76,8 @@ const TeamHistory: React.FC<TeamHistoryProps> = ({ teamId }) => {
       }
     });
 
-    fetch('https://corsproxy.io/?https://fantasy.premierleague.com/api/bootstrap-static/')
-      .then(res => res.json())
-      .then(data => setTotalPlayers(data.total_players))
+    getDashboard()
+      .then(data => setTotalPlayers(Number(data.bootstrap.total_players ?? data.bootstrap.elements.length)))
       .catch(() => setTotalPlayers(null));
   }, [teamId]);
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { Element } from '../types/fpl';
 import styles from './PlayerPastSeasons.module.css';
+import { getPlayerPastHistory } from '../api/fplApi';
 
 // Import SVGs from the public folder
 const YCIcon = () => (
@@ -44,13 +45,9 @@ const PlayerPastSeasons: React.FC<{ player: Element }> = ({ player }) => {
   const [historyPast, setHistoryPast] = React.useState<any[]>([]);
 
   React.useEffect(() => {
-    fetch('/static_json/element_summary_history_past.json')
-      .then(res => res.json())
-      .then(data => {
-        const filtered = Array.isArray(data)
-          ? data.filter((row: any) => row.element_id === player.id)
-          : [];
-        setHistoryPast(filtered);
+    getPlayerPastHistory(player.id)
+      .then(({ history_past }) => {
+        setHistoryPast(history_past);
       })
       .catch((err) => { console.error('Fetch error:', err); });
   }, [player.id]);

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { Element, Team } from '../types/fpl';
 import styles from './PlayerFixturesResults.module.css';
+import { getDashboard, getPlayerHistory } from '../api/fplApi';
 
 interface PlayerFixturesResultsProps {
   player: Element;
@@ -16,16 +17,11 @@ const PlayerFixturesResults: React.FC<PlayerFixturesResultsProps> = ({ player, t
 
   React.useEffect(() => {
     setLoading(true);
-    Promise.all([
-      fetch('/static_json/fixtures.json').then(res => res.json()),
-      fetch('/static_json/element_summary_history.json').then(res => res.json())
-    ])
-      .then(([fixturesData, historyData]) => {
-        setAllFixtures(Array.isArray(fixturesData) ? fixturesData : []);
+    Promise.all([getDashboard(), getPlayerHistory(player.id)])
+      .then(([dashboard, historyData]) => {
+        setAllFixtures(Array.isArray(dashboard.fixtures) ? dashboard.fixtures : []);
         setHistory(
-          Array.isArray(historyData)
-            ? historyData.filter((h: any) => h.element === player.id || h.player_id === player.id)
-            : []
+          Array.isArray(historyData.history) ? historyData.history : []
         );
         setLoading(false);
       })

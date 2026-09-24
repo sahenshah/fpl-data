@@ -30,6 +30,7 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
+.dev.vars
 
 # Misc
 *.bak
@@ -55,3 +56,11 @@ coverage/
 # Static/Uploads
 frontend/public/uploads/
 backend/uploads/
+
+# Generated application databases
+backend/database/*.db
+backend/model_artifacts/
+
+# Downloaded historical season CSVs
+backend/data/historical/
+backend/data/fpl-archive/

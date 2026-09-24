@@ -41,16 +41,19 @@ const chartSections = [
 	},
 ];
 
-function PlayerData() {
-	const [players, setPlayers] = useState<Element[]>([]);
-	const [teams, setTeams] = useState<Team[]>([]);
+interface PlayerDataProps {
+	players: Element[];
+	teams: Team[];
+}
+
+function PlayerData({ players, teams }: PlayerDataProps) {
 	const [checked, setChecked] = useState<{ [id: number]: boolean }>({});
 	const [filteredPlayers, setFilteredPlayers] = useState<Element[]>([]);
 	const [chartMode, setChartMode] = useState<string>('xPoints');
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const gwRange: [number, number] = [1, 38];
-	const [costRange, setCostRange] = useState<[number, number]>([38, 150]);
+	const [costRange, setCostRange] = useState<[number, number]>([38, 160]);
 	const [activeFilters, setActiveFilters] = React.useState<string[]>(['General']);
 
 	// Get the section that contains the current chart mode
@@ -81,20 +84,6 @@ function PlayerData() {
 			return newState;
 		});
 	}, [chartMode]);
-
-	useEffect(() => {
-		fetch(`/static_json/elements.json`)
-			.then(res => res.json())
-			.then(data => setPlayers(data))
-			.catch(() => setPlayers([]));
-	}, []);
-
-	useEffect(() => {
-		fetch(`/static_json/teams.json`)
-			.then(res => res.json())
-			.then(data => setTeams(data))
-			.catch(() => setTeams([]));
-	}, []);
 
 	useEffect(() => {
 		setFilteredPlayers(players);

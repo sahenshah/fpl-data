@@ -3,6 +3,7 @@ import { AreaChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Re
 import { useMediaQuery } from '@mui/material';
 import Slider from '@mui/material/Slider';
 import { getCurrentGameweek } from '../App';
+import { getPlayerHistory } from '../api/fplApi';
 
 interface AreaAndLineChartProps {
   player: any;
@@ -54,15 +55,11 @@ const AreaAndLineChart = ({ player }: AreaAndLineChartProps) => {
     ]);
   }, [gwEnd]);
 
-  // Fetch from static_json instead of backend API
   useEffect(() => {
-    fetch('/static_json/element_summary_history.json')
-      .then(res => res.json())
-      .then(data => {
+    getPlayerHistory(player.id)
+      .then(({ history }) => {
         // If data is an array of histories, filter for this player
-        const playerHistory = Array.isArray(data)
-          ? data.filter((row: any) => row.element === player.id || row.player_id === player.id)
-          : [];
+        const playerHistory = history;
         const pointsMap: { [gw: number]: number } = {};
         const minutesMap: { [gw: number]: number } = {};
         playerHistory.forEach((row: any) => {

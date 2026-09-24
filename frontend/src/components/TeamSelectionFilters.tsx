@@ -456,11 +456,11 @@ const TeamSelectionFilters: React.FC<TeamSelectionFiltersProps> = ({
             <Slider
               value={costRange}
               min={38}
-              max={150}
+                max={160}
               step={1}
               marks={[
                 { value: 38 },
-                { value: 150 }
+                { value: 160 }
               ]}
               valueLabelDisplay="off"
               onChange={(_, value) => setCostRange(value as [number, number])}

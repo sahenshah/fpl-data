@@ -9,12 +9,7 @@ import PlayerData from './components/PlayerData';
 import TeamManager from './components/TeamManager'; 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-
-const fetchJson = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
-  return res.json();
-};
+import { getDashboard, getCurrentGameweekFromDashboard, getNextGameweekFromDashboard } from './api/fplApi';
 
 const theme = createTheme({
   typography: {
@@ -24,10 +19,7 @@ const theme = createTheme({
 
 export async function getCurrentGameweek(): Promise<number | undefined> {
   try {
-    const res = await fetch('/static_json/events.json');
-    const events = await res.json();
-    const nextEvent = events.find((ev: { is_current: number }) => ev.is_current === 1);
-    return nextEvent ? nextEvent.id : undefined;
+    return getCurrentGameweekFromDashboard(await getDashboard());
   } catch (e) {
     console.error('Failed to fetch events:', e);
     return undefined;
@@ -36,10 +28,7 @@ export async function getCurrentGameweek(): Promise<number | undefined> {
 
 export async function getNextGameweek(): Promise<number | undefined> {
   try {
-    const res = await fetch('/static_json/events.json');
-    const events = await res.json();
-    const nextEvent = events.find((ev: { is_next: number }) => ev.is_next === 1);
-    return nextEvent ? nextEvent.id : undefined;
+    return getNextGameweekFromDashboard(await getDashboard());
   } catch (e) {
     console.error('Failed to fetch events:', e);
     return undefined;
@@ -57,21 +46,16 @@ function App() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [teams, elements, events, fixturesData] = await Promise.all([
-          fetchJson('/static_json/teams.json'),
-          fetchJson('/static_json/elements.json'),
-          fetchJson('/static_json/events.json'),
-          fetchJson('/static_json/fixtures.json'),
-        ]);
+        const dashboard = await getDashboard();
         setFplData({
-          teams,
-          elements,
-          events,
+          teams: dashboard.bootstrap.teams,
+          elements: dashboard.bootstrap.elements,
+          events: dashboard.bootstrap.events,
         });
-        setFixtures(fixturesData);
+        setFixtures(dashboard.fixtures);
         setLoading(false);
       } catch (err) {
-        console.error('Error loading static_json:', err);
+        console.error('Error loading dashboard data:', err);
         setLoading(false);
       }
     };
@@ -115,7 +99,7 @@ function App() {
   }
 
   if (!fplData) {
-    return <div style={{ color: '#fff', padding: 32 }}>Failed to load data. Check your static_json files.</div>;
+    return <div style={{ color: '#fff', padding: 32 }}>Failed to load dashboard data. Please try again.</div>;
   }
 
   return (
@@ -233,7 +217,7 @@ function App() {
                 {tabIndex === 0 && (
                   <Fade in timeout={400} unmountOnExit>
                     <div>
-                      <PlayerData />
+                      <PlayerData players={fplData.elements} teams={fplData.teams} />
                     </div>
                   </Fade>
                 )}

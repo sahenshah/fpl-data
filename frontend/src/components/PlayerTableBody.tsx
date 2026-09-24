@@ -22,11 +22,11 @@ interface PlayerTableBodyProps {
 const currentGw = await getNextGameweek() || 1;
 
 // Generate GW columns for xPts and xMins
-const gwColumns: { id: string; label: string; minWidth: number; align: string }[] = [];
+const gwColumns: { id: string; label: string; minWidth: number; align: string; format: (value: any) => React.ReactNode }[] = [];
 for (let gw = 1; gw <= 38; gw++) {
   gwColumns.push(
-    { id: `pp_gw_${gw}`, label: `xPts GW${gw}`, minWidth: 50, align: 'center' },
-    { id: `xmins_gw_${gw}`, label: `xMins GW${gw}`, minWidth: 50, align: 'center' }
+    { id: `pp_gw_${gw}`, label: `xPts GW${gw}`, minWidth: 50, align: 'center', format: (value: number) => value?.toFixed(1) ?? '-' },
+    { id: `xmins_gw_${gw}`, label: `xMins GW${gw}`, minWidth: 50, align: 'center', format: (value: number) => value?.toFixed(0) ?? '-' }
   );
 }
 
@@ -81,10 +81,10 @@ const columns: TableColumn[] = [
   },
   
 
-  { id: 'predicted_points_next5', label: 'xPoints next 4', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'pp_next5_per_m', label: 'xPoints / £M', minWidth: 80, maxWidth: 80, align: 'center' },
-  { id: 'predicted_xmins_next5', label: 'xMins next 4', minWidth: 100, maxWidth: 100, align: 'center' },
-  { id: 'pxm_next5_per_m', label: 'xMins / £M', minWidth: 80, maxWidth: 80, align: 'center' },
+  { id: 'predicted_points_next5', label: 'xPoints next 4', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value?.toFixed(1) ?? '-' },
+  { id: 'pp_next5_per_m', label: 'xPoints / £M', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value?.toFixed(2) ?? '-' },
+  { id: 'predicted_xmins_next5', label: 'xMins next 4', minWidth: 100, maxWidth: 100, align: 'center', format: (value: number) => value?.toFixed(0) ?? '-' },
+  { id: 'pxm_next5_per_m', label: 'xMins / £M', minWidth: 80, maxWidth: 80, align: 'center', format: (value: number) => value?.toFixed(1) ?? '-' },
 
   { id: 'expected_goals', label: 'xG', minWidth: 80, maxWidth: 80, align: 'center' },
   { id: 'expected_assists', label: 'xA', minWidth: 80, maxWidth: 80, align: 'center' },

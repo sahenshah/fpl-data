@@ -1,30 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getCurrentGameweek } from '../App';
+import { getDashboard } from '../api/fplApi';
 import styles from './GWDashboard.module.css';
 import PlayerDetail from './PlayerDetail';
 import Dialog from '@mui/material/Dialog';
-
-const corsProxies = [
-  'https://corsproxy.io/?',
-  'https://cors-anywhere.herokuapp.com/',
-  'https://api.allorigins.win/raw?url=',
-  'https://thingproxy.freeboard.io/fetch/',
-];
-
-const fetchWithFallback = async (url: string) => {
-  for (const proxy of corsProxies) {
-    try {
-      const proxyUrl = proxy + encodeURIComponent(url);
-      const response = await fetch(proxyUrl);
-      if (response.ok) {
-        return response;
-      }
-    } catch (error) {
-      console.warn(`Failed with proxy ${proxy}:`, error);
-    }
-  }
-  throw new Error('All CORS proxies failed');
-};
 
 interface PlayerElement {
   id: number;
@@ -32,8 +11,6 @@ interface PlayerElement {
   second_name: string;
   [key: string]: any;
 }
-
-const CACHE_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
 
 function formatDeadlineTime(isoString: string) {
   const date = new Date(isoString);
@@ -96,10 +73,8 @@ const GWDashboard: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Always fetch events.json first
-        const eventsResponse = await fetch('/static_json/events.json');
-        if (!eventsResponse.ok) throw new Error('Failed to fetch events.json');
-        const eventsJson = await eventsResponse.json();
+        const dashboard = await getDashboard();
+        const eventsJson = dashboard.bootstrap.events;
 
         let gw = await getCurrentGameweek();
 
@@ -114,33 +89,9 @@ const GWDashboard: React.FC = () => {
           }
         }
         
-        const cacheKey = `gw_live_${gw}`;
-        const cached = localStorage.getItem(cacheKey);
-        let gwJson = null;
-
-        if (cached) {
-          const { data, timestamp } = JSON.parse(cached);
-          if (Date.now() - timestamp < CACHE_EXPIRY_MS) {
-            gwJson = data;
-          }
-        }
-
-        if (!gwJson) {
-          const gwResponse = await fetchWithFallback(`https://fantasy.premierleague.com/api/event/${gw}/live/`);
-          if (!gwResponse.ok) throw new Error('Failed to fetch GW data');
-          gwJson = await gwResponse.json();
-          localStorage.setItem(cacheKey, JSON.stringify({ data: gwJson, timestamp: Date.now() }));
-        }
-
-        // Fetch elements.json (no CORS needed, it's local)
-        const elementsResponse = await fetch('/static_json/elements.json');
-        if (!elementsResponse.ok) throw new Error('Failed to fetch elements.json');
-        const elementsJson = await elementsResponse.json();
-
-        // Fetch teams.json (no CORS needed, it's local)
-        const teamsResponse = await fetch('/static_json/teams.json');
-        if (!teamsResponse.ok) throw new Error('Failed to fetch teams.json');
-        const teamsJson = await teamsResponse.json();
+        const gwJson = dashboard.live;
+        const elementsJson = dashboard.bootstrap.elements;
+        const teamsJson = dashboard.bootstrap.teams;
 
         // Find next gameweek event
         if( gw ) {
